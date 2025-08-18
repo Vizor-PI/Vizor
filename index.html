@@ -5,44 +5,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/index.css">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark custom-bg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><img
-                    src="assets/imgs/Logo.png"
-                    alt=""></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
-                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Sobre nós</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Nossa tecnologia</a>
-                    </li>
-                    <li class="nav-item">
-                        <button type="button" class="btn btn-outline-info">Entrar</button>
-                    </li>
-                </ul>
+    <nav class="nav">
+        <div class="logo"><img src="assets/imgs/Logo.png" alt=""></div>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#">Sobre nós</a></li>
+            <li><a href="#">Nossa tecnologia</a></li>
+            <li><button>Entrar ></button></li>
+        </ul>
+    </nav>
+    <div class="banner1">
+        <h1>Vizor</h1>
+        <h2>Sua publicidade, sempre no ar.</h2>
+        <a href="">Saiba mais</a>
+    </div>
+    <div class="banner2">
+        <div class="card">
+            <h1>Monitoramento de microcomputadores</h1>
+            <p>A Visor acompanha cada detalhe do seu hardware, prevenindo falhas antes que elas afetem suas
+                campanhas.<br><br>
+                Monitoramos em tempo real o desempenho, temperatura e conectividade dos Mini PCs de publicidade digital,
+                prevenindo falhas, garantindo a entrega das campanhas e protegendo o investimento publicitário.</p>
+        </div>
+        <img src="assets/imgs/minipc.png" alt="mini">
+    </div>
+    <div class="banner3">
+        <h1>Por que escolher a Vizor?</h1>
+        <div class="card">
+            <img src="assets/imgs/vantagem1.png" alt="">
+            <div class="texto">
+                <h1>Monitoramento em tempo real</h1>
+                <p>Veja o status dos microcomputadores em tempo real e evite paradas inesperadas.</p>
             </div>
         </div>
-    </nav>
-    <div class="banner container-fluid">
-        <div class="texto">
-            <h1>Vizor</h1>
-            <h2>Sua publicidade, sempre no ar.</h2>
-            <button type="button" class="btn btn-outline-light">Saiba mais</button>
+        <div class="card">
+            <img src="assets/imgs/vantagem2.png" alt="">
+            <div class="texto">
+                <h1>Prevenção de falhas</h1>
+                <p>Detectamos problemas antes que causem falhas e prejuízos.</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="assets/imgs/vantagem3.png" alt="">
+            <div class="texto">
+                <h1>Relatórios e insights</h1>
+                <p>Relatórios detalhados para otimizar a performance e decisões.</p>
+            </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="banner4">
+        <div class="text1">
+            <h1>“Até 85% dos problemas técnicos poderiam ser evitados com monitoramento proativo e alertas em tempo
+                real.”</h1>
+        </div>
+        <div class="text2">
+            <h1>“O mercado DOOH no Brasil cresce 71% ao ano. Não perca visibilidade por falhas técnicas."</h1>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="info">
+            <img src="assets/imgs/Logo.png" alt="">
+        </div>
+        <div class="info">
+            <div class="info-pai">
+                <img src="assets/imgs/git.png" alt="">
+                <p>vizor</p>
+            </div>
+            <div class="info-pai">
+                <img src="assets/imgs/Email.png" alt="">
+                <p>vizor@vizor.com</p>
+            </div>
+            <div class="info-pai">
+                <img src="assets/imgs/telefone.png" alt="">
+                <p>4002-8922</p>
+            </div>
+        </div>
+        <div class="info-filho">
+            <p>Links</p>
+            <p>vizor.com</p>
+            <p>github.com/vizor</p>
+        </div>
+    </div>
 </body>
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+    });
+</script>
 
 </html>
