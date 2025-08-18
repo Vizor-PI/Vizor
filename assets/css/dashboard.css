@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Sidebar */
+.navbar.custom-bg {
+  background-color: rgba(9, 41, 66, 1);
+  padding:w3.5vh;
+  width: 18vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo */
+.navbar .navbar-brand img {
+  height: 17vh;
+}
+
+/* Itens da navbar */
+#textosNavbar {
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+  text-align: center;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#logoNavbarDash {
+  width: 2.5vw;
+  height: 5vh;
+}
+
+/* Botão sair */
+#divSair {
+  margin-bottom: 20px;
+}
+
+#divSair a {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Conteúdo principal */
+#imgEmBreve {
+  background-image: url(../imgs/imgEmBreveFundo.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 85vw;
+  height: 100vh;
+  background-size: cover;
+}

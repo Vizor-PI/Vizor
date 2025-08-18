@@ -2,17 +2,63 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+     <link rel="icon" href="assets/imgs/logosDash/home.png" type="image/x-icon">
+
 </head>
 
 <body>
-  
+  <nav class="navbar navbar-dark custom-bg d-flex flex-column align-items-center">
+    <!-- Logo -->
+    <a class="navbar-brand mb-5" href="#">
+      <img src="assets/imgs/logosDash/logoDashboard.png" alt="" class="img-fluid">
+    </a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Menu -->
+    <ul class="navbar-nav flex-column text-center" id="textosNavbar">
+      <li class="nav-item">
+        <a class="nav-link active d-flex align-items-center" href="#">
+          <img src="assets/imgs/logosDash/home.png" alt="" class="img-fluid me-2" id="logoNavbarDash">
+          Início
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active d-flex align-items-center" href="#">
+          <img src="assets/imgs/logosDash/dashboardIcon.png" alt="" class="img-fluid me-2" id="logoNavbarDash">
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active d-flex align-items-center" href="#">
+          <img src="assets/imgs/logosDash/mudarContaIcon.png" alt="" class="img-fluid me-2" id="logoNavbarDash">
+          Mudar conta
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active d-flex align-items-center" href="#">
+          <img src="assets/imgs/logosDash/configIcon.png" alt="" class="img-fluid me-2" id="logoNavbarDash">
+          Alterar dados
+        </a>
+      </li>
+    </ul>
+
+    <!-- Botão Sair -->
+    <div class="mt-auto d-flex align-items-center" id="divSair">
+      <a class="nav-link active d-flex align-items-center" href="#">
+        <img src="assets/imgs/logosDash/exitIcon.png" class="img-fluid me-2" id="logoNavbarDash">
+        Sair
+      </a>
+    </div>
+  </nav>
+
+  <!-- Conteúdo principal -->
+  <div class="container-xl" id="imgEmBreve"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
