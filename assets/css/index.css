@@ -2,284 +2,298 @@
 @import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap');
 
-body {
+* {
     margin: 0;
     padding: 0;
 }
 
-.nav {
+/*
+color: rgba(10, 203, 227, 1);
+rgba(9, 41, 66, 1);
+rgba(3, 14, 23, 1);
+font-family: "Poppins",sans-serif;
+font-family: "Fragment Mono",monospace;
+font-family: "Epilogue",sans-serif;
+
+.banner4 {
+    background-size: cover;
+    width: 100vw;
+    height: 80vh;
+    background-position: center;
+    box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-left: 5vh;
+    gap: 10vh;
+    font-family: "Epilogue", sans-serif;
     align-items: center;
-    background: black;
-    padding: 2vh 5%;
-    color: white;
-    position: relative;
-    height: 6vh;
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
+}
+    */
+
+.navbar {
+    background-color: rgba(0, 0, 0, 0.767);
+    align-items: center;
+    display: flex;
+    height: 8vw;
+    width: 100vw;
+    justify-content: space-between;
+}
+
+.navbar .logo {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2vw;
+}
+
+.navbar .logo img {
+    width: 10vw;
+}
+
+.navbar .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    margin-right: 5vw;
     font-family: "Poppins", sans-serif;
 }
 
-.nav .logo img {
-    height: 3.5vh;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 3%;
-}
-
-.nav-links li a {
+.navbar .nav-links a {
     color: white;
     text-decoration: none;
-    font-size: 2vh;
+    font-size: 0.9vw;
 }
 
-.hamburger {
-    display: none;
+.navbar .nav-links .btn {
+    color: rgba(10, 203, 227, 1);
+    text-decoration: none;
+    font-size: 0.9vw;
+    border: 0.1vw solid;
+    border-radius: 0.2vw;
+    padding: 0.2vw;
+    width: 4.2vw;
+    text-align: center;
+}
+
+.banner1 {
+    background-size: cover;
+    width: 100vw;
+    height: 55vw;
+    background-position: center;
+    box-sizing: border-box;
+    display: flex;
     flex-direction: column;
-    gap: 0.8vh;
-    cursor: pointer;
+    justify-content: flex-start;
+    font-family: "Epilogue";
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-home.png);
 }
 
-.hamburger div {
-    width: 5vw;
-    height: 0.8vh;
-    background: white;
-    border-radius: 0.2vh;
+.banner1 h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 3vw;
+    margin-left: 5vw;
+    margin-top: 35vw;
 }
 
-@media (max-width: 450px) {
-    .hamburger {
-        display: flex;
-    }
-
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: black;
-        padding: 0;
-        margin: 0;
-    }
-
-    .nav-links.show {
-        display: flex;
-    }
-
-    .nav-links li {
-        text-align: center;
-        padding: 1.5vh 0;
-        border: 0.05vh solid rgba(255, 255, 255, 0.068);
-    }
-
-    .nav-links.show button {
-        color: rgba(10, 203, 227, 1);
-        border: rgba(10, 203, 227, 1) solid 0.2vh;
-        border-radius: 0.7vh;
-        background-color: transparent;
-        padding: 0.8vh;
-        width: 9vh;
-    }
-
-    .banner1 {
-        background-size: cover;
-        width: 100vw;
-        height: 90vh;
-        background-position: center;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding-left: 5vh;
-        font-family: "Epilogue", sans-serif;
-        align-items: flex-start;
-        background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-home.png);
-    }
-
-    .banner1 h1 {
-        color: rgba(10, 203, 227, 1);
-        font-size: 5vh;
-        margin-bottom: 0;
-        margin-top: 65vh;
-    }
-
-    .banner1 h2 {
-        color: white;
-        margin-bottom: 1vh;
-        margin-top: 1vh;
-    }
-
-    .banner1 a {
-        text-decoration: none;
-        color: white;
-        border: white solid 0.2vh;
-        padding: 1vh;
-        width: 25%;
-        text-align: center;
-    }
-
-    .banner2 {
-        background-color: rgba(9, 41, 66, 1);
-        height: 50vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .banner2 .card {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-
-    .banner2 .card h1 {
-        padding-top: 5vh;
-        margin-top: 0;
-        color: rgba(10, 203, 227, 1);
-        text-align: center;
-        font-family: "Fragment Mono", monospace;
-        font-weight: normal;
-        margin-bottom: 0;
-    }
-
-    .banner2 .card p {
-        color: white;
-        text-align: left;
-        background-color: rgba(3, 14, 23, 1);
-        box-shadow: 0 0.5vh 0.1vh black;
-        padding: 2vh;
-        width: 80%;
-        font-size: 2vh;
-        border-radius: 2vh;
-        font-family: "Poppins", sans-serif;
-    }
-
-    .banner2 img {
-        display: none;
-    }
-
-    .banner3 {
-        background-color: rgba(9, 41, 66, 1);
-        height: 130vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    .banner3 h1 {
-        padding-top: 5vh;
-        margin-top: 0;
-        color: rgba(10, 203, 227, 1);
-        text-align: center;
-        font-family: "Fragment Mono", monospace;
-        font-weight: normal;
-        margin-bottom: 0;
-    }
-
-    .banner3 .card img {
-        width: 100%;
-        border-radius: 2vh;
-    }
-
-    .banner3 .card {
-        background-color: black;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        width: 95%;
-        border-radius: 2vh;
-        margin-top: 2.5vh;
-    }
-
-    .banner3 .card h1 {
-        color: white;
-        font-size: 2.5vh;
-        margin-top: 0;
-        padding-top: 1vh;
-        font-family: "Poppins", sans-serif;
-    }
-
-    .banner3 .card .texto {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .banner3 .card p {
-        color: white;
-        text-align: center;
-        width: 90%;
-        font-family: "Poppins", sans-serif;
-        font-size: 2vh;
-    }
-
-    .banner4 {
-        background-size: cover;
-        width: 100vw;
-        height: 80vh;
-        background-position: center;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        padding-left: 5vh;
-        gap: 10vh;
-        font-family: "Epilogue", sans-serif;
-        align-items: center;
-        background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
-    }
-
-    .banner4 .text1 h1 {
-        font-family: "Epilogue", sans-serif;
-        color: white;
-        margin-top: 15vh;
-        font-size: 3vh;
-    }
-
-    .banner4 .text2 h1 {
-        font-family: "Epilogue", sans-serif;
-        color: white;
-        font-size: 3vh;
-    }
-
-    .footer {
-        display: flex;
-        align-items: center;
-        background-color: black;
-        justify-content: space-around;
-        height: 20vh;
-    }
-
-    .footer .info img {
-        height: 3vh;
-    }
-
-    .footer .info .info-pai {
-        display: flex;
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .footer .info .info-pai p {
-        color: white;
-        font-family: "Epilogue", sans-serif;
-    }
-
-    .footer .info p {
-        color: white;
-    }
-
-    .footer .info-filho p {
-        font-family: "Epilogue", sans-serif;
-        color: white;
-        text-align: center;
-    }
+.banner1 h2 {
+    color: white;
+    font-weight: normal;
+    font-size: 1.8vw;
+    margin-left: 5vw;
 }
+
+.banner1 .btn-saiba {
+    text-decoration: none;
+    color: white;
+    border: 0.1vw solid;
+    width: 10vw;
+    padding: 0.35vw;
+    text-align: center;
+    border-radius: 0.2vw;
+    margin-left: 5vw;
+    font-size: 1.5vw;
+}
+
+.banner2 {
+    width: 100vw;
+    height: 60vw;
+    display: flex;
+    font-family: "Epilogue";
+    background-color: rgba(9, 41, 66, 1);
+    box-shadow: 0 0 4vw black;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner2 .card h1 {
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 4vw;
+    margin-left: 3vw;
+    margin-bottom: 2.5vw;
+}
+
+.banner2 .card {
+    width: 55vw;
+    align-items: center;
+    margin-left: 5vw;
+    margin-bottom: 6vw;
+}
+
+.banner2 .card p {
+    color: white;
+    font-weight: normal;
+    font-size: 1.8vw;
+    background-color: rgb(7, 25, 39);
+    padding: 2vw;
+    border-radius: 2vw;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0 0 10px rgb(7, 25, 39);
+}
+
+.banner2 img {
+    max-width: 45vw;
+    height: auto;
+    object-fit: contain;
+}
+
+.banner3 {
+    width: 100vw;
+    height: 60vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(9, 41, 66, 1);
+    align-items: center;
+    gap: 5vw;
+}
+
+.banner3 h1 {
+    font-size: 4vw;
+    align-items: center;
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+}
+
+.banner3 .conju-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    width: 90vw;
+}
+
+.banner3 .conju-card .card {
+    align-items: center;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: black;
+    border-radius: 1vw;
+    width: 100vw;
+}
+
+.banner3 .conju-card .card h1 {
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    font-weight: bold;
+    margin-top: 1vw;
+}
+
+.banner3 .conju-card .card img {
+    width: 30vw;
+    border-radius: 1vw;
+}
+
+.banner3 .conju-card .card p {
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    margin: 1vw;
+    padding-bottom: 2vw;
+}
+
+.banner4 {
+    background-size: cover;
+    width: 100vw;
+    height: fit-content;
+    background-position: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10vw;
+    font-family: "Epilogue";
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
+}
+
+.banner4 h1 {
+    font-family: "Epilogue", sans-serif;
+    color: white;
+    width: 40vw;
+    font-size: 2.5vw
+}
+
+.banner4 .text1 {
+    justify-content: flex-start;
+    display: flex;
+    margin-left: 6vw;
+    margin-top: 5vw;
+}
+
+.banner4 .text2 {
+    justify-content: flex-end;
+    margin-right: 6vw;
+    display: flex;
+}
+
+.footer {
+    background-color: rgba(0, 0, 0, 0.767);
+    height: 12vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1vw;
+}
+
+.footer img {
+    width: 18vw;
+}
+
+.footer-container {
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    gap: 10vw;
+    height: 10vw;
+}
+
+.footer .footer-contact img {
+    width: 1.5vw;
+}
+
+.footer .footer-container .footer-contact {
+    gap: 1vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-container .footer-filho {
+    display: flex;
+    color: white;
+    gap: 1vw;
+}
+
+.footer .footer-container .footer-links {
+    gap: 1vw;
+    display: flex;
+    flex-direction: column;
+}
+
