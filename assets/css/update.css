@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap');
+
+* {
+    font-family: "Akatab";
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* precisa disso pra centralizar no flex */
+}
+
+body {
+    background-image: url("../imgs/fundoLogin.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; /* ajusta a imagem à tela */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.updateContainer {
+    background-color: black;
+    opacity: 0.7;
+    border-radius: 1.5rem;
+    width: 60vw;
+    height: 85vh;
+    box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+input {
+    padding-left: 1vw;
+}
+
+.divCentralupdate {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    height: 80%;
+}
+
+.entradasupdate {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.up {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.up-pai {
+    display: flex;
+    align-items: center;
+    gap: 3vw;
+}
+
+#logoVizor {
+    width: 16vw;
+    height: auto;
+}
+
+.textoInput {
+    color: rgba(10, 203, 227, 1);
+    font-size: 1.2vw;
+}
+
+h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 2vw;
+}
+
+input {
+    width: 20vw;
+    height: 5vh;
+    border-radius: 0.6rem;
+    border: 1px solid white;
+    background-color: black;
+    color: white;
+}
+
+button {
+    background-color: rgba(21, 75, 82, 1);
+    width: 20vw;
+    height: 4vh;
+    border-radius: 0.6rem;
+    border: 1px solid transparent;
+    color: white;
+    font-size: 1vw;
+    margin-top: 2rem;
+    cursor: pointer;
+}
