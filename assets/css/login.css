@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  font-family: "Akatab";
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* precisa disso pra centralizar no flex */
+}
+
+body {
+  /* background: radial-gradient(circle at 50% 50%, rgba(16, 75, 121, 1) 0%, rgba(9, 41, 66, 1) 100%); */
+  background-image: url("../imgs/fundoLogin.png");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover; /* ajusta a imagem à tela */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.loginContainer {
+  background-color: black;
+  opacity: 0.7;
+  border-radius: 1.5rem;
+  width: 40vw;
+  height: 85vh;
+  box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.divCentralLogin {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 80%;
+}
+
+.entradasLogin {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+#logoVizor {
+  width: 16vw;
+  height: auto;
+}
+
+p {
+  font-size: 0.8vw;
+}
+
+.textoInput {
+  color: rgba(10, 203, 227, 1);
+  font-size: 1.2vw;
+}
+
+h1 {
+  color: rgba(10, 203, 227, 1);
+  font-size: 2vw;
+}
+input {
+  width: 20vw;
+  height: 5vh;
+  border-radius: 0.6rem;
+  border: 1px solid white;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding-left: 0.8vw;
+}
+
+button {
+  background-color: rgba(21, 75, 82, 1);
+  width: 20vw;
+  height: 4vh;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
+  color: white;
+  font-size: 1vw;
+  margin-top: 2rem;
+  cursor: pointer;
+}
+
+#textoCadastro {
+  font-size: 0.9vw;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+  color: #0ba1bd;
+}
+
+a:hover {
+  text-decoration: underline;
+}
