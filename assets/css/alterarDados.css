@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  font-family: "Akatab", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+/* Sidebar */
+.navbar {
+  background-color: rgba(9, 41, 66, 1);
+  padding: 3.5vh;
+  width: 16vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+/* Logo */
+.imagemLogoDashboard {
+  height: 17vh;
+  width: auto;
+}
+
+/* Itens da navbar */
+#textosNavbar {
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+  text-align: center;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#logoNavbarDash {
+  width: 2.5vw;
+  height: auto;
+  margin-right: 1rem;
+}
+
+/* Botão sair */
+#divSair {
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#divSair a {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Conteúdo principal */
+.container-xl {
+  flex: 1;
+  height: auto;
+  width: auto;
+  background-color: #030e17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  font-size: 1vw;
+}
+
+.alterarDadosContainer {
+  background-color: #072135;
+  opacity: 0.7;
+  border-radius: 1.5rem;
+  width: 70vw;
+  height: 90vh;
+  box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.divCentralAlterarDados {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 80%;
+}
+
+.entradasAlterarDados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+  width: 100%;
+}
+
+p {
+  font-size: 0.8vw;
+}
+
+.textoInput {
+  color: rgba(10, 203, 227, 1);
+  font-size: 1.2vw;
+}
+
+h1 {
+  color: rgba(10, 203, 227, 1);
+  font-size: 2vw;
+}
+input {
+  width: 20vw;
+  height: 5vh;
+  border-radius: 0.6rem;
+  border: 1px solid white;
+  background-color: #072135;
+  color: #072135;
+  padding-left: 0.8vw;
+}
+
+button {
+  background-color: #13495a;
+  width: 25vw;
+  height: 6vh;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
+  color: white;
+  font-size: 1.2vw;
+  margin-top: 2rem;
+  cursor: pointer;
+}
+
+#textoCadastro {
+  font-size: 0.9vw;
+}
