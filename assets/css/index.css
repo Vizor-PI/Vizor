@@ -70,6 +70,7 @@
     font-size: 3vw;
     margin-left: 5vw;
     margin-top: 35vw;
+    margin-bottom: 0.5vw;
 }
 
 .banner1 h2 {
@@ -77,6 +78,7 @@
     font-weight: normal;
     font-size: 1.8vw;
     margin-left: 5vw;
+    margin-bottom: 0.4vw;
 }
 
 .banner1 .btn-saiba {
