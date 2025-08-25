@@ -1,61 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./assets/css/cadastro.css" />
-    <link
-      rel="icon"
-      href="assets/imgs/logosDash/logoDashboard.png"
-      type="image/x-icon"
-    />
 
-    <title>Cadastro</title>
-  </head>
-  <body>
-    <div class="cadastroContainer">
-      <div class="divCentralCadastro">
-        <a href="index.html"
-          ><img src="./assets/imgs/Logo.png" id="logoVizor"
-        /></a>
-        <h1>Cadastro</h1>
-        <div class="entradasCadastro">
-          <div class="input">
-            <p class="textoInput">Nome de usuário</p>
-            <input placeholder="Usuário" />
-          </div>
-          <div class="input">
-            <p class="textoInput">CNPJ</p>
-            <input placeholder="XX. XXX. XXX/0001-XX" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Email</p>
-            <input placeholder="usuario@email.com" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Repita o email</p>
-            <input placeholder="usuario@email.com" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Senha</p>
-            <input placeholder="****************" type="password" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Repita a senha</p>
-            <input placeholder="****************" type="password" />
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/css/cadastro.css" />
+  <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+
+  <title>Cadastro</title>
+</head>
+
+<body>
+  <div class="cadastroContainer">
+    <div class="divCentralCadastro">
+      <a href="index.html"><img src="./assets/imgs/Logo.png" id="logoVizor" /></a>
+      <h1>Cadastro</h1>
+      <div class="entradasCadastro">
+        <div class="input">
+          <p class="textoInput">Nome de usuário</p>
+          <input id="nome_input" placeholder="Usuário" />
         </div>
-        <button>Cadastrar</button>
-        <p style="color: white" id="textoCadastro">
-          <span
-            style="color: rgba(10, 203, 227, 1); cursor: pointer"
-            id="textoCadastro"
-            ><a href="/login.html">Já tem uma conta?</a></span
-          >
-        </p>
+        <div class="input">
+          <p class="textoInput">CPF</p>
+          <input id="cpf_input" placeholder="XXX. XXX. XXX -XX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Email</p>
+          <input id="email_input" placeholder="usuario@email.com" />
+        </div>
+        <div class="input">
+          <p class="textoInput">numero de telefone</p>
+          <input id="telefone_input" placeholder="(XX) XXXXX-XXXX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Senha</p>
+          <input id="senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Repita a senha</p>
+          <input id="confirmacao_senha_input" placeholder="****************" type="password" />
+        </div>
       </div>
+      <button onclick="cadastrar()">Cadastrar</button>
+      <p style="color: white" id="textoCadastro">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoCadastro"><a href="/login.html">Já tem uma
+            conta?</a></span>
+      </p>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
-  </body>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+
+  <div id="mensagem_erro">
+  </div>
+  <div id="cardErro">
+  </div>
+</body>
+
 </html>
+<script>
+
+  // Array para armazenar empresas cadastradas para validação de código de ativação 
+  let listaEmpresasCadastradas = [];
+
+  function cadastrar() {
+    // aguardar();
+
+    //Recupere o valor da nova input pelo nome do id
+    // Agora vá para o método fetch logo abaixo
+    var nomeVar = nome_input.value;
+    var emailVar = email_input.value;
+    var senhaVar = senha_input.value;
+    var confirmacaoSenhaVar = confirmacao_senha_input.value;
+    var cpfVar = cpf_input.value;
+    var telefoneVar = telefone_input.value
+
+    // Verificando se há algum campo em branco
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == "" ||
+      cpfVar == "" ||
+      telefoneVar == ""
+    ) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "(Campos em branco)";
+
+      // finalizarAguardar();
+      return false;
+    } else {
+      setInterval(sumirMensagem, 5000);
+    }
+
+    // Verificando se o código de ativação é de alguma empresa cadastrada
+    /* for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
+      if (listaEmpresasCadastradas[i].codigo_ativacao == codigoVar) {
+        idEmpresaVincular = listaEmpresasCadastradas[i].id
+        console.log("Código de ativação válido.");
+        break;
+      } else {
+        cardErro.style.display = "block";
+        mensagem_erro.innerHTML = "(Mensagem de erro para código inválido)";
+        finalizarAguardar();
+      }
+    } */
+
+    // Enviando o valor da nova input
+    fetch("/usuarios/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // crie um atributo que recebe o valor recuperado aqui
+        // Agora vá para o arquivo routes/usuario.js
+        nomeServer: nomeVar,
+        emailServer: emailVar,
+        senhaServer: senhaVar,
+        cpfServer: cpfVar,
+        telefoneServer: telefoneVar
+        // idEmpresaVincularServer: idEmpresaVincular
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          cardErro.style.display = "block";
+
+          mensagem_erro.innerHTML =
+            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+          setTimeout(() => {
+            window.location = "login.html";
+          }, "2000");
+
+          // limparFormulario();
+          // finalizarAguardar();
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        // finalizarAguardar();
+      });
+
+    return false;
+  }
+
+  // Listando empresas cadastradas 
+  // function listar() {
+  //   fetch("/empresas/listar", {
+  //     method: "GET",
+  //   })
+  //     .then(function (resposta) {
+  //       resposta.json().then((empresas) => {
+  //         empresas.forEach((empresa) => {
+  //           listaEmpresasCadastradas.push(empresa);
+
+  //           console.log("listaEmpresasCadastradas")
+  //           console.log(listaEmpresasCadastradas[0].codigo_ativacao)
+  //         });
+  //       });
+  //     })
+  //     .catch(function (resposta) {
+  //       console.log(`#ERRO: ${resposta}`);
+  //     });
+  // }
+
+  function sumirMensagem() {
+    cardErro.style.display = "none";
+  }
+</script>
