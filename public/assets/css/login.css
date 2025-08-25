@@ -6,119 +6,359 @@
 
 }
 
+@media (max-width: 480px) {
 
+  html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* precisa disso pra centralizar no flex */
+  }
 
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  /* precisa disso pra centralizar no flex */
+  body {
+    /* background: radial-gradient(circle at 50% 50%, rgba(16, 75, 121, 1) 0%, rgba(9, 41, 66, 1) 100%); */
+    background-image: url("../imgs/fundoLogin.png");
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    /* ajusta a imagem à tela */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    overflow-y: hidden;
+
+    overflow-x: hidden;
+  }
+
+  .loginContainer {
+    background-color: black;
+    opacity: 0.7;
+    border-radius: 1.5rem;
+    width: 80%;
+    height: 85%;
+    box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .divCentralLogin {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    height: 80%;
+  }
+
+  .entradasLogin {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #logoVizor {
+    width: 55%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  p {
+    font-size: 12vw;
+  }
+
+  .textoInput {
+    color: rgba(10, 203, 227, 1);
+    font-size: 4vw;
+  }
+
+  h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 6vw;
+  }
+
+  input {
+    width: 60vw;
+    height: 5vh;
+    border-radius: 0.6rem;
+    border: 1px solid white;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding-left: 0.8vw;
+  }
+
+  button {
+    background-color: rgba(21, 75, 82, 1);
+    width: 60vw;
+    height: 6.5vh;
+    border-radius: 0.6rem;
+    border: 1px solid transparent;
+    color: white;
+    font-size: 5.5vw;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #textoCadastro {
+    font-size: 3vw;
+    text-decoration: none;
+  }
+
+  a {
+    text-decoration: none;
+    color: #0ba1bd;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
 }
 
-body {
-  /* background: radial-gradient(circle at 50% 50%, rgba(16, 75, 121, 1) 0%, rgba(9, 41, 66, 1) 100%); */
-  background-image: url("../imgs/fundoLogin.png");
+@media(min-width: 481px) and (max-width: 949px){
+    html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* precisa disso pra centralizar no flex */
+  }
 
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  /* ajusta a imagem à tela */
+  body {
+    /* background: radial-gradient(circle at 50% 50%, rgba(16, 75, 121, 1) 0%, rgba(9, 41, 66, 1) 100%); */
+    background-image: url("../imgs/fundoLogin.png");
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
-  margin: 0;
-  padding: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    /* ajusta a imagem à tela */
 
-  overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+  }
+
+  .loginContainer {
+    background-color: black;
+    opacity: 0.7;
+    border-radius: 1.5rem;
+    width: 80vw;
+    height: 85vh;
+    box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .divCentralLogin {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    height: 80%;
+  }
+
+  .entradasLogin {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #logoVizor {
+    width: 40vw;
+    height: auto;
+  }
+
+  p {
+    font-size: 0.8vw;
+  }
+
+  .textoInput {
+    color: rgba(10, 203, 227, 1);
+    font-size: 2vw;
+  }
+
+  h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 4vw;
+  }
+
+  input {
+    width: 40vw;
+    height: 5vh;
+    border-radius: 0.6rem;
+    border: 1px solid white;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding-left: 0.8vw;
+  }
+
+  button {
+    background-color: rgba(21, 75, 82, 1);
+    width: 40vw;
+    height: 6vh;
+    border-radius: 0.6rem;
+    border: 1px solid transparent;
+    color: white;
+    font-size: 3vw;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #textoCadastro {
+    font-size: 1.6vw;
+    text-decoration: none;
+  }
+
+  a {
+    text-decoration: none;
+    color: #0ba1bd;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
-.loginContainer {
-  background-color: black;
-  opacity: 0.7;
-  border-radius: 1.5rem;
-  width: 40vw;
-  height: 85vh;
-  box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
+@media (min-width: 950px) {
+  html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* precisa disso pra centralizar no flex */
+  }
 
-.divCentralLogin {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-direction: column;
-  height: 80%;
-}
+  body {
+    /* background: radial-gradient(circle at 50% 50%, rgba(16, 75, 121, 1) 0%, rgba(9, 41, 66, 1) 100%); */
+    background-image: url("../imgs/fundoLogin.png");
 
-.entradasLogin {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-direction: column;
-}
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    /* ajusta a imagem à tela */
 
-#logoVizor {
-  width: 16vw;
-  height: auto;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 
-p {
-  font-size: 0.8vw;
-}
+    overflow-x: hidden;
+  }
 
-.textoInput {
-  color: rgba(10, 203, 227, 1);
-  font-size: 1.2vw;
-}
+  .loginContainer {
+    background-color: black;
+    opacity: 0.7;
+    border-radius: 1.5rem;
+    width: 40vw;
+    height: 85vh;
+    box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 
-h1 {
-  color: rgba(10, 203, 227, 1);
-  font-size: 2vw;
-}
+  .divCentralLogin {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    height: 80%;
+  }
 
-input {
-  width: 20vw;
-  height: 5vh;
-  border-radius: 0.6rem;
-  border: 1px solid white;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding-left: 0.8vw;
-}
+  .entradasLogin {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+  }
 
-button {
-  background-color: rgba(21, 75, 82, 1);
-  width: 20vw;
-  height: 4vh;
-  border-radius: 0.6rem;
-  border: 1px solid transparent;
-  color: white;
-  font-size: 1vw;
-  margin-top: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-block;
-}
+  #logoVizor {
+    width: 16vw;
+    height: auto;
+  }
 
-button:hover {
-  transform: scale(1.1);
-}
+  p {
+    font-size: 0.8vw;
+  }
 
-#textoCadastro {
-  font-size: 0.9vw;
-  text-decoration: none;
-}
+  .textoInput {
+    color: rgba(10, 203, 227, 1);
+    font-size: 1.2vw;
+  }
 
-a {
-  text-decoration: none;
-  color: #0ba1bd;
-}
+  h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 2vw;
+  }
 
-a:hover {
-  text-decoration: underline;
+  input {
+    width: 20vw;
+    height: 5vh;
+    border-radius: 0.6rem;
+    border: 1px solid white;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding-left: 0.8vw;
+  }
+
+  button {
+    background-color: rgba(21, 75, 82, 1);
+    width: 20vw;
+    height: 4vh;
+    border-radius: 0.6rem;
+    border: 1px solid transparent;
+    color: white;
+    font-size: 1vw;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #textoCadastro {
+    font-size: 0.9vw;
+    text-decoration: none;
+  }
+
+  a {
+    text-decoration: none;
+    color: #0ba1bd;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
 }

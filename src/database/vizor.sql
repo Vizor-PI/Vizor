@@ -14,6 +14,8 @@ create table usuario (
     nome varchar(150) NOT NULL,
     email varchar(150) NOT NULL,
     senha varchar(150) NOT NULL,
+    cpf char(11),
+    telefone char(11),
     fkEmpresa INT,
     foreign key (fkEmpresa) references empresa(id)
 );
