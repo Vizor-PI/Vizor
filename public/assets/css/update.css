@@ -7,14 +7,16 @@
 html {
     margin: 0;
     padding: 0;
-    height: 100%; /* precisa disso pra centralizar no flex */
+    height: 100%;
+    /* precisa disso pra centralizar no flex */
 }
 
 body {
     background-image: url("../imgs/fundoLogin.png");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: cover; /* ajusta a imagem à tela */
+    background-size: cover;
+    /* ajusta a imagem à tela */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,6 +24,8 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+
 }
 
 .updateContainer {

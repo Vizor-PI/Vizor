@@ -15,57 +15,7 @@ body {
   justify-content: space-between;
 }
 
-/* Sidebar */
-.navbar {
-  background-color: rgba(9, 41, 66, 1);
-  padding: 3.5vh;
-  width: 16vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-}
 
-/* Logo */
-.imagemLogoDashboard {
-  height: 17vh;
-  width: auto;
-}
-
-/* Itens da navbar */
-#textosNavbar {
-  display: flex;
-  flex-direction: column;
-  gap: 5vh;
-  text-align: center;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-#logoNavbarDash {
-  width: 2.5vw;
-  height: auto;
-  margin-right: 1rem;
-}
-
-/* Botão sair */
-#divSair {
-  margin-bottom: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#divSair a {
-  color: white;
-  text-decoration: none;
-  cursor: pointer;
-}
 
 /* Conteúdo principal */
 .container-xl {

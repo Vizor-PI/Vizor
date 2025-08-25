@@ -5,6 +5,12 @@
 * {
   margin: 0;
   padding: 0;
+
+}
+
+body {
+  overflow-x: hidden;
+
 }
 
 .navbar {
@@ -76,12 +82,10 @@
   flex-direction: column;
   justify-content: flex-start;
   font-family: "Epilogue";
-  background-image: linear-gradient(
-      180deg,
+  background-image: linear-gradient(180deg,
       rgba(0, 0, 0, 0.68) 0%,
       rgba(0, 0, 0, 0.68) 35%,
-      rgba(0, 0, 0, 0.68) 100%
-    ),
+      rgba(0, 0, 0, 0.68) 100%),
     url(../imgs/banner-nossatech.png);
 }
 

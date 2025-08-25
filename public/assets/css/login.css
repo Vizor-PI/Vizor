@@ -2,12 +2,17 @@
 
 * {
   font-family: "Akatab";
+  overflow-x: hidden;
+
 }
+
+
 
 html {
   margin: 0;
   padding: 0;
-  height: 100%; /* precisa disso pra centralizar no flex */
+  height: 100%;
+  /* precisa disso pra centralizar no flex */
 }
 
 body {
@@ -16,7 +21,8 @@ body {
 
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover; /* ajusta a imagem à tela */
+  background-size: cover;
+  /* ajusta a imagem à tela */
 
   display: flex;
   justify-content: center;
@@ -25,6 +31,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+
+  overflow-x: hidden;
 }
 
 .loginContainer {
@@ -72,6 +80,7 @@ h1 {
   color: rgba(10, 203, 227, 1);
   font-size: 2vw;
 }
+
 input {
   width: 20vw;
   height: 5vh;
