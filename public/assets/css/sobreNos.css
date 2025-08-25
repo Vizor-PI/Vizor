@@ -5,11 +5,11 @@
 * {
   margin: 0;
   padding: 0;
-  
+
 }
 
-body{
-    overflow-x: hidden;
+body {
+  overflow-x: hidden;
 }
 
 .navbar {
@@ -81,12 +81,10 @@ body{
   flex-direction: column;
   justify-content: flex-start;
   font-family: "Epilogue";
-  background-image: linear-gradient(
-      180deg,
+  background-image: linear-gradient(180deg,
       rgba(0, 0, 0, 0.68) 0%,
       rgba(0, 0, 0, 0.68) 35%,
-      rgba(0, 0, 0, 0.68) 100%
-    ),
+      rgba(0, 0, 0, 0.68) 100%),
     url(../imgs/banner-sobrenos.png);
 }
 
@@ -308,4 +306,136 @@ body{
   gap: 1vw;
   display: flex;
   flex-direction: column;
+}
+
+
+/* CSS do Carrossel */
+
+.slider {
+  width: 99vw;
+  height: 85vh;
+  overflow: hidden;
+  position: relative;
+  border-top: solid aqua;
+  border-bottom: solid aqua;
+
+  /* box-shadow: 20px 20px 30px black; */
+}
+
+.slides {
+  width: 400%;
+  height: 639px;
+  display: flex;
+}
+
+.slides input {
+  display: none;
+}
+
+.slide {
+  width: 25%;
+  position: relative;
+  transition: 1s;
+}
+
+.slide-conteudo {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.textoEsquerda {
+  width: 60%;
+  height: 639px;
+  object-fit: cover;
+  background-color: rgb(7, 25, 39);
+  color: rgba(10, 203, 227, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-direita {
+  width: 40%;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.manual-navigation {
+  position: absolute;
+  width: 99vw;
+  left: 0;
+  margin-top: -40px;
+  display: flex;
+  justify-content: center;
+}
+
+.manual-btn {
+  border: 2px solid aqua;
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 1s;
+}
+
+.manual-btn:not(:last-child) {
+  margin-right: 40px;
+}
+
+.manual-btn:hover {
+  background-color: aqua;
+}
+
+#radio1:checked~.first {
+  margin-left: 0;
+}
+
+#radio2:checked~.first {
+  margin-left: -25%;
+}
+
+#radio3:checked~.first {
+  margin-left: -50%;
+}
+
+#radio4:checked~.first {
+  margin-left: -75%;
+}
+
+.navigation-auto div {
+  border: 2px solid aqua;
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 1s;
+}
+
+.navigation-auto {
+  position: absolute;
+  width: 99vw;
+  left: 0;
+  margin-top: 599px;
+  display: flex;
+  justify-content: center;
+}
+
+.navigation-auto div:not(:last-child) {
+  margin-right: 40px;
+}
+
+#radio1:checked~.navigation-auto .auto-btn1 {
+  background-color: aqua;
+}
+
+#radio2:checked~.navigation-auto .auto-btn2 {
+  background-color: aqua;
+}
+
+#radio3:checked~.navigation-auto .auto-btn3 {
+  background-color: aqua;
+}
+
+#radio4:checked~.navigation-auto .auto-btn4 {
+  background-color: aqua;
 }
