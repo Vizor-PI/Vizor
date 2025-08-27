@@ -6,62 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="assets/css/index.css">
-    <link rel="icon" href="assets/imgs/logosDash/home.png" type="image/x-icon">
 </head>
 
 <body>
+    <nav class="nav">
+        <div class="logo"><img src="assets/imgs/Logo.png" alt=""></div>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#">Sobre nós</a></li>
+            <li><a href="#">Nossa tecnologia</a></li>
+            <li><button>Entrar ></button></li>
+        </ul>
+    </nav>
     <div class="banner1">
-        <nav class="navbar">
-            <div class="logo">
-                <img src="./assets/imgs/Logo.png" alt="Logo">
-            </div>
-            <div class="nav-links">
-                <a href="sobreNos.html">Sobre Nós</a>
-                <a href="nossaTec.html">Nossa tecnologia</a>
-                <a href="login.html" class="btn">Entrar ></a>
-            </div>
-        </nav>
         <h1>Vizor</h1>
         <h2>Sua publicidade, sempre no ar.</h2>
-        <a href="nossaTec.html" class="btn-saiba">Saiba mais</a>
+        <a href="">Saiba mais</a>
     </div>
     <div class="banner2">
         <div class="card">
             <h1>Monitoramento de microcomputadores</h1>
             <p>A Visor acompanha cada detalhe do seu hardware, prevenindo falhas antes que elas afetem suas
                 campanhas.<br><br>
-                Monitoramos em tempo real o desempenho, temperatura e conectividade dos Mini PCs de publicidade
-                digital,
+                Monitoramos em tempo real o desempenho, temperatura e conectividade dos Mini PCs de publicidade digital,
                 prevenindo falhas, garantindo a entrega das campanhas e protegendo o investimento publicitário.</p>
         </div>
-        <div class="mini-pc-wrapper">
-            <img src="assets/imgs/sombra_minipc.png" alt="sombra" class="sombra">
-            <img src="assets/imgs/minipc.png" alt="mini pc" class="minipc">
-        </div>
+        <img src="assets/imgs/minipc.png" alt="mini">
     </div>
     <div class="banner3">
         <h1>Por que escolher a Vizor?</h1>
-        <div class="conju-card">
-            <div class="card">
-                <img src="assets/imgs/vantagem1.png" alt="">
-                <div class="texto">
-                    <h1>Monitoramento em tempo real</h1>
-                    <p>Veja o status dos microcomputadores em tempo real e evite paradas inesperadas.</p>
-                </div>
+        <div class="card">
+            <img src="assets/imgs/vantagem1.png" alt="">
+            <div class="texto">
+                <h1>Monitoramento em tempo real</h1>
+                <p>Veja o status dos microcomputadores em tempo real e evite paradas inesperadas.</p>
             </div>
-            <div class="card">
-                <img src="assets/imgs/vantagem2.png" alt="">
-                <div class="texto">
-                    <h1>Prevenção de falhas</h1>
-                    <p>Detectamos problemas antes que causem falhas e prejuízos.</p>
-                </div>
+        </div>
+        <div class="card">
+            <img src="assets/imgs/vantagem2.png" alt="">
+            <div class="texto">
+                <h1>Prevenção de falhas</h1>
+                <p>Detectamos problemas antes que causem falhas e prejuízos.</p>
             </div>
-            <div class="card">
-                <img src="assets/imgs/vantagem3.png" alt="">
-                <div class="texto">
-                    <h1>Relatórios e insights</h1>
-                    <p>Relatórios detalhados para otimizar a performance e decisões.</p>
-                </div>
+        </div>
+        <div class="card">
+            <img src="assets/imgs/vantagem3.png" alt="">
+            <div class="texto">
+                <h1>Relatórios e insights</h1>
+                <p>Relatórios detalhados para otimizar a performance e decisões.</p>
             </div>
         </div>
     </div>
@@ -73,34 +69,39 @@
         <div class="text2">
             <h1>“O mercado DOOH no Brasil cresce 71% ao ano. Não perca visibilidade por falhas técnicas."</h1>
         </div>
-        <footer class="footer">
-            <div class="footer-container">
-                <div class="footer-logo">
-                    <img src="assets/imgs/Logo.png" alt="Logo">
-                </div>
-                <div class="footer-contact">
-                    <div class="footer-filho">
-                        <img src="assets/imgs/git.png" alt="">
-                        <p>vizor</p>
-                    </div>
-                    <div class="footer-filho">
-                        <img src="assets/imgs/Email.png" alt="">
-                        <p>vizor@vizor.com</p>
-                    </div>
-                    <div class="footer-filho">
-                        <img src="assets/imgs/telefone.png" alt="">
-                        <p>4002-8922</p>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Links</h4>
-                    <p>vizor.com</p>
-                    <p>github.com/vizor</p>
-                </div>
+    </div>
+    <div class="footer">
+        <div class="info">
+            <img src="assets/imgs/Logo.png" alt="">
+        </div>
+        <div class="info">
+            <div class="info-pai">
+                <img src="assets/imgs/git.png" alt="">
+                <p>vizor</p>
             </div>
+            <div class="info-pai">
+                <img src="assets/imgs/Email.png" alt="">
+                <p>vizor@vizor.com</p>
+            </div>
+            <div class="info-pai">
+                <img src="assets/imgs/telefone.png" alt="">
+                <p>4002-8922</p>
+            </div>
+        </div>
+        <div class="info-filho">
+            <p>Links</p>
+            <p>vizor.com</p>
+            <p>github.com/vizor</p>
+        </div>
     </div>
 </body>
 <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+    });
 </script>
 
 </html>
