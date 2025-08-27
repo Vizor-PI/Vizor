@@ -13,8 +13,9 @@
     overflow-x: hidden;
   }
 
-  .navbar {
-    background-color: rgba(0, 0, 0, 0.767);
+  /* NAV */
+  .nav {
+    background-color: black;
     align-items: center;
     display: flex;
     height: 8vw;
@@ -22,17 +23,17 @@
     justify-content: space-between;
   }
 
-  .navbar .logo {
+  .nav .logo {
     display: flex;
     justify-content: flex-start;
     margin-left: 2vw;
   }
 
-  .navbar .logo img {
-    width: 10vw;
+  .nav .logo img {
+    height: 3vw;
   }
 
-  .navbar .nav-links {
+  .nav .nav-links {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,40 +43,42 @@
     width: 25vw;
   }
 
-  .navbar .nav-links a {
+  .nav .nav-links a {
     color: white;
     text-decoration: none;
-    font-size: 0.9vw;
+    font-size: 1.1vw;
+    width: 10vw;
     transition: all 0.3s ease;
     display: inline-block;
   }
 
-  .navbar .nav-links a:hover {
+  .nav .nav-links a:hover {
     transform: scale(1.1);
     color: #0acbe3;
   }
 
-  .navbar .nav-links .btn {
-    color: white;
+  .nav .nav-links button {
+    color: rgba(10, 203, 227, 1);
     text-decoration: none;
-    font-size: 0.9vw;
+    font-size: 1vw;
     border: 0.1vw solid;
     border-radius: 0.2vw;
-    padding: 0.2vw;
-    width: 4.2vw;
+    padding: 0.4vw;
+    width: 5.2vw;
     text-align: center;
     transition: all 0.3s ease;
-    display: inline-block;
-    transition: all 0.3s ease;
-    display: inline-block;
+    background: transparent;
+    cursor: pointer;
+    margin-right: 5vw;
   }
 
-  .navbar .nav-links .btn:hover {
+  .nav .nav-links button:hover {
     background: linear-gradient(135deg, #6a00f4, #00c3ff);
     transform: scale(1.1);
     color: aqua;
   }
 
+  /* BANNER 1 */
   .banner1 {
     background-size: cover;
     width: 100vw;
@@ -97,7 +100,7 @@
     color: rgba(10, 203, 227, 1);
     font-size: 3vw;
     margin-left: 5vw;
-    margin-top: 35vw;
+    margin-top: 39vw;
     margin-bottom: 0.5vw;
   }
 
@@ -109,7 +112,7 @@
     margin-bottom: 0.4vw;
   }
 
-  .banner1 .btn-saiba {
+  .banner1 a {
     text-decoration: none;
     color: white;
     border: 0.1vw solid;
@@ -123,12 +126,13 @@
     display: inline-block;
   }
 
-  .banner1 .btn-saiba:hover {
+  .banner1 a:hover {
     background: linear-gradient(135deg, #6a00f4, #00c3ff);
     transform: scale(1.1);
     color: rgba(10, 203, 227, 1);
   }
 
+  /* BANNER 2 */
   .banner2 {
     width: 100vw;
     height: 60vw;
@@ -156,6 +160,11 @@
     margin-bottom: 6vw;
   }
 
+  .banner2 img {
+    height: 45vw;
+    margin-bottom: 10vw;
+  }
+
   .banner2 .card p {
     color: white;
     font-weight: normal;
@@ -167,29 +176,10 @@
     box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
   }
 
-  .mini-pc-wrapper {
-    position: relative;
-    width: 45vw;
-    height: auto;
-  }
-
-  .mini-pc-wrapper .sombra {
-    position: absolute;
-    top: 2vw;
-    left: 0;
-    width: 100%;
-    z-index: 0;
-  }
-
-  .mini-pc-wrapper .minipc {
-    position: relative;
-    width: 100%;
-    z-index: 1;
-  }
-
+  /* BANNER 3 */
   .banner3 {
     width: 100vw;
-    height: 60vw;
+    height: 50vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -206,46 +196,44 @@
     font-weight: normal;
   }
 
-  .banner3 .conju-card {
+  .banner3 .card-pai {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3vw;
-    width: 90vw;
+    gap: 1vw;
   }
 
-  .banner3 .conju-card .card {
-    align-items: center;
-    text-align: center;
+  .banner3 .card {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    width: 32vw;
+    height: 30vw;
+    text-align: center;
     flex-direction: column;
     background-color: black;
     border-radius: 1vw;
-    width: 100vw;
     box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
-    display: inline-block;
   }
 
-  .banner3 .conju-card .card:hover {
+  .banner3 .card:hover {
     transform: scale(1.05);
   }
 
-  .banner3 .conju-card .card h1 {
+  .banner3 .card img {
+    width: 32vw;
+    border-radius: 1vw;
+    height: 15vw;
+  }
+
+  .banner3 .texto h1 {
     font-size: 1.5vw;
     font-family: "Poppins", sans-serif;
     color: white;
     font-weight: bold;
-    margin-top: 1vw;
+    margin-top: 0.5vw;
   }
 
-  .banner3 .conju-card .card img {
-    width: 30vw;
-    border-radius: 1vw;
-  }
-
-  .banner3 .conju-card .card p {
+  .banner3 .texto p {
     font-size: 1.5vw;
     font-family: "Poppins", sans-serif;
     color: white;
@@ -253,14 +241,15 @@
     padding-bottom: 2vw;
   }
 
+  /* BANNER 4 */
   .banner4 {
     background-size: cover;
     width: 100vw;
-    height: fit-content;
     background-position: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    height: 50vw;
     justify-content: center;
     gap: 10vw;
     font-family: "Epilogue";
@@ -291,48 +280,43 @@
     display: flex;
   }
 
+  /* FOOTER */
   .footer {
-    background-color: rgba(0, 0, 0, 0.767);
+    background-color: black;
     height: 12vw;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1vw;
+    gap: 5vw;
   }
 
   .footer img {
     width: 18vw;
   }
 
-  .footer-container {
+  .footer .info {
     display: flex;
+    flex-direction: column;
     color: white;
-    justify-content: center;
+    gap: 1vw;
+  }
+
+  .footer .info-pai {
+    display: flex;
     align-items: center;
-    gap: 10vw;
-    height: 10vw;
-  }
-
-  .footer .footer-contact img {
-    width: 1.5vw;
-  }
-
-  .footer .footer-container .footer-contact {
     gap: 1vw;
+  }
+
+  .footer .info-filho {
     display: flex;
     flex-direction: column;
-  }
-
-  .footer-container .footer-filho {
-    display: flex;
     color: white;
     gap: 1vw;
   }
 
-  .footer .footer-container .footer-links {
-    gap: 1vw;
-    display: flex;
-    flex-direction: column;
+  .footer .info-pai img {
+    width: 1.5vw;
   }
 }
 
