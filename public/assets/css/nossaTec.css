@@ -1,304 +1,599 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap");
 
 * {
   margin: 0;
   padding: 0;
-
 }
 
-body {
-  overflow-x: hidden;
+@media (min-width: 481px) {
 
+  body {
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  .nav {
+    background-color: black;
+    align-items: center;
+    display: flex;
+    height: 8vw;
+    width: 100vw;
+    justify-content: space-between;
+  }
+
+  .nav .logo {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2vw;
+  }
+
+  .nav .logo img {
+    height: 3vw;
+  }
+
+  .nav .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    margin-right: 5vw;
+    font-family: "Poppins", sans-serif;
+    width: 25vw;
+  }
+
+  .nav .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1vw;
+    width: 10vw;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .nav .nav-links a:hover {
+    transform: scale(1.1);
+    color: #0acbe3;
+  }
+
+  .nav .nav-links button {
+    color: rgba(10, 203, 227, 1);
+    text-decoration: none;
+    font-size: 1vw;
+    border: 0.1vw solid;
+    border-radius: 0.2vw;
+    padding: 0.4vw;
+    width: 5.2vw;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: transparent;
+    cursor: pointer;
+    margin-right: 5vw;
+  }
+
+  .nav .nav-links button:hover {
+    background: linear-gradient(135deg, #6a00f4, #00c3ff);
+    transform: scale(1.1);
+    color: aqua;
+  }
+
+  /* BANNER 1 */
+  .banner1 {
+    background-size: cover;
+    width: 100vw;
+    height: 55vw;
+    background-position: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-family: "Epilogue";
+    background-image: linear-gradient(180deg,
+        rgba(0, 0, 0, 0.68) 0%,
+        rgba(0, 0, 0, 0.68) 35%,
+        rgba(0, 0, 0, 0.68) 100%),
+      url(../imgs/banner-nossatech.png);
+  }
+
+  .banner1 h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 3vw;
+    margin-left: 5vw;
+    margin-top: 39vw;
+    margin-bottom: 0.5vw;
+  }
+
+  .banner1 h2 {
+    color: white;
+    font-weight: normal;
+    font-size: 1.8vw;
+    margin-left: 5vw;
+    margin-bottom: 0.4vw;
+  }
+
+  .banner1 a {
+    text-decoration: none;
+    color: white;
+    border: 0.1vw solid;
+    width: 10vw;
+    padding: 0.35vw;
+    text-align: center;
+    border-radius: 0.2vw;
+    margin-left: 5vw;
+    font-size: 1.5vw;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .banner1 a:hover {
+    background: linear-gradient(135deg, #6a00f4, #00c3ff);
+    transform: scale(1.1);
+    color: rgba(10, 203, 227, 1);
+  }
+
+  /* BANNER 2 */
+  .banner2 {
+    width: 100vw;
+    height: 60vw;
+    display: flex;
+    font-family: "Epilogue";
+    background-color: rgba(9, 41, 66, 1);
+    box-shadow: 0 0 4vw black;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .banner2 .card h1 {
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 4vw;
+    width: 70vw;
+    text-align: center;
+    margin-bottom: 2.5vw;
+  }
+
+  .banner2 .card {
+    width: 70vw;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 6vw;
+  }
+
+  .banner2 .card p {
+    color: white;
+    font-weight: normal;
+    font-size: 1.8vw;
+    background-color: rgb(7, 25, 39);
+    padding: 2vw;
+    border-radius: 2vw;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
+  }
+
+  /* BANNER 3 */
+  .banner3 {
+    width: 100vw;
+    height: 50vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(9, 41, 66, 1);
+    align-items: center;
+    gap: 5vw;
+  }
+
+  .banner3 h1 {
+    font-size: 4vw;
+    align-items: center;
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+  }
+
+  .banner3 .card-pai {
+    display: flex;
+    gap: 1vw;
+  }
+
+  .banner3 .card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 32vw;
+    height: 30vw;
+    text-align: center;
+    flex-direction: column;
+    background-color: black;
+    border-radius: 1vw;
+    box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .banner3 .card:hover {
+    transform: scale(1.05);
+  }
+
+  .banner3 .card img {
+    width: 32vw;
+    border-radius: 1vw;
+    height: 15vw;
+  }
+
+  .banner3 .texto h1 {
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    font-weight: bold;
+    margin-top: 0.5vw;
+  }
+
+  .banner3 .texto p {
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    margin: 1vw;
+    padding-bottom: 2vw;
+  }
+
+  /* BANNER 4 */
+  .banner4 {
+    width: 100vw;
+    background-position: center;
+    align-items: center;
+    display: flex;
+    height: 50vw;
+    justify-content: center;
+    font-family: "Epilogue";
+    background-color: rgb(2, 15, 26);
+  }
+
+  .banner4 img {
+    margin-top: 10vw;
+    height: 50vw;
+  }
+
+
+  /* FOOTER */
+  .footer {
+    background-color: black;
+    height: 12vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1vw;
+    gap: 5vw;
+  }
+
+  .footer img {
+    width: 18vw;
+  }
+
+  .footer .info {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    gap: 1vw;
+  }
+
+  .footer .info-pai {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+  }
+
+  .footer .info-filho {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    gap: 1vw;
+  }
+
+  .footer .info-pai img {
+    width: 1.5vw;
+  }
 }
 
-.navbar {
-  background-color: rgba(0, 0, 0, 0.767);
-  align-items: center;
-  display: flex;
-  height: 8vw;
-  width: 100vw;
-  justify-content: space-between;
-}
+@media (max-width: 480px) {
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: black;
+    padding: 3.5vw 8.5vw;
+    color: white;
+    position: relative;
+    height: 12vw;
+    font-family: "Poppins", sans-serif;
+  }
 
-.navbar .logo {
-  display: flex;
-  justify-content: flex-start;
-  margin-left: 2vw;
-}
+  .nav .logo img {
+    height: 7.5vw;
+  }
 
-.navbar .logo img {
-  width: 10vw;
-}
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 0.1vw;
+  }
 
-.navbar .nav-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3vw;
-  margin-right: 5vw;
-  font-family: "Poppins", sans-serif;
-}
+  .nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 3vw;
+  }
 
-.navbar .nav-links a {
-  color: white;
-  text-decoration: none;
-  font-size: 0.9vw;
-  transition: all 0.3s ease;
-  display: inline-block;
-}
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 0.6vw;
+    cursor: pointer;
+  }
 
-.navbar .nav-links a:hover {
-  transform: scale(1.1);
-  color: #0acbe3;
-}
+  .hamburger div {
+    width: 7vw;
+    height: 1.5vw;
+    background: white;
+    border-radius: 1vw;
+  }
 
-.navbar .nav-links .btn {
-  color: white;
-  text-decoration: none;
-  font-size: 0.9vw;
-  border: 0.1vw solid;
-  border-radius: 0.2vw;
-  padding: 0.2vw;
-  width: 4.2vw;
-  text-align: center;
-  transition: all 0.3s ease;
-  display: inline-block;
-}
+  .hamburger {
+    display: flex;
+  }
 
-.navbar .nav-links .btn:hover {
-  background: linear-gradient(135deg, #6a00f4, #00c3ff);
-  transform: scale(1.1);
-  color: aqua;
-}
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 16vw;
+    left: 0;
+    width: 100vw;
+    background: black;
+    padding: 0;
+    margin: 0;
+  }
 
-.banner1 {
-  background-size: cover;
-  width: 100vw;
-  height: 55vw;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  font-family: "Epilogue";
-  background-image: linear-gradient(180deg,
-      rgba(0, 0, 0, 0.68) 0%,
-      rgba(0, 0, 0, 0.68) 35%,
-      rgba(0, 0, 0, 0.68) 100%),
-    url(../imgs/banner-nossatech.png);
-}
+  .nav-links.show {
+    display: flex;
+  }
 
-.banner1 h1 {
-  color: rgba(10, 203, 227, 1);
-  font-size: 3vw;
-  margin-left: 5vw;
-  margin-top: 35vw;
-}
+  .nav-links li {
+    text-align: center;
+    padding: 2.5vw 0;
+    border: 0.05vw solid rgba(255, 255, 255, 0.068);
+  }
 
-.banner1 h2 {
-  color: white;
-  font-weight: normal;
-  font-size: 1.8vw;
-  margin-left: 5vw;
-}
+  .nav-links.show button {
+    color: rgba(10, 203, 227, 1);
+    border: rgba(10, 203, 227, 1) solid 0.2vh;
+    border-radius: 0.7vh;
+    background-color: transparent;
+    padding: 1.5vw;
+    width: 15vw;
+  }
 
-.banner1 .btn-saiba {
-  text-decoration: none;
-  color: white;
-  border: 0.1vw solid;
-  width: 10vw;
-  padding: 0.35vw;
-  text-align: center;
-  border-radius: 0.2vw;
-  margin-left: 5vw;
-  font-size: 1.5vw;
-}
+  .banner1 {
+    background-size: cover;
+    width: 100vw;
+    height: 170vw;
+    background-position: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 5.5vw;
+    font-family: "Epilogue", sans-serif;
+    align-items: flex-start;
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-home.png);
+  }
 
-.banner2 {
-  width: 100vw;
-  height: 50vw;
-  display: flex;
-  font-family: "Epilogue";
-  background-color: rgba(9, 41, 66, 1);
-  box-shadow: 0 0 4vw black;
-  justify-content: center;
-  align-items: center;
-}
+  .banner1 h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 10vw;
+    margin-bottom: 0;
+    margin-top: 110vw;
+  }
 
-.banner2 .card {
-  width: 70vw;
-  align-items: center;
-  justify-content: center;
-  margin-left: 5vw;
-  margin-bottom: 6vw;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-}
+  .banner1 h2 {
+    color: white;
+    margin-bottom: 2vw;
+    font-size: 5.5vw;
+    margin-top: 1vw;
+  }
 
-.banner2 .card h1 {
-  color: rgba(10, 203, 227, 1);
-  font-family: "Fragment Mono", monospace;
-  font-weight: normal;
-  font-size: 4vw;
-  margin-bottom: 2.5vw;
-  text-align: center;
-}
+  .banner1 a {
+    text-decoration: none;
+    color: white;
+    border: white solid 0.2vw;
+    padding: 2.5vw;
+    width: 30vw;
+    margin-bottom: 2vw;
+    text-align: center;
+  }
 
-.banner2 .card p {
-  color: white;
-  font-weight: normal;
-  font-size: 1.8vw;
-  background-color: rgb(7, 25, 39);
-  padding: 4vw;
-  width: 55vw;
-  border-radius: 2vw;
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-  box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
-}
+  .banner2 {
+    background-color: rgba(9, 41, 66, 1);
+    height: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.banner3 {
-  width: 100vw;
-  height: 50vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: rgba(9, 41, 66, 1);
-  align-items: center;
-  gap: 5vw;
-}
+  .banner2 .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 
-.banner3 h1 {
-  font-size: 4vw;
-  color: rgba(10, 203, 227, 1);
-  font-family: "Fragment Mono", monospace;
-  font-weight: normal;
-}
+  .banner2 .card h1 {
+    padding-top: 9vw;
+    margin-top: 0;
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 8vw;
+    margin-bottom: 1vw;
+  }
 
-.banner3 .conju-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3vw;
-  width: 90vw;
-}
+  .banner2 .card p {
+    color: white;
+    text-align: left;
+    background-color: rgba(3, 14, 23, 1);
+    box-shadow: 0 0.5vw 0.1vw black;
+    padding: 5vw;
+    width: 80vw;
+    font-size: 3.5vw;
+    border-radius: 4vw;
+    font-family: "Poppins", sans-serif;
+  }
 
-.banner3 .conju-card .card {
-  align-items: center;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  background-color: black;
-  border-radius: 1vw;
-  width: 100vw;
-  box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease;
-  display: inline-block;
-}
+  .banner2 img {
+    display: none;
+  }
 
-.banner3 .conju-card .card:hover {
-  transform: scale(1.05);
-}
+  .banner3 {
+    background-color: rgba(9, 41, 66, 1);
+    height: 240vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 
-.banner3 .conju-card .card h1 {
-  font-size: 1.5vw;
-  font-family: "Poppins", sans-serif;
-  color: white;
-  font-weight: bold;
-  margin-top: 1vw;
-}
+  .banner3 h1 {
+    padding-top: 4vw;
+    margin-top: 0;
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    margin-bottom: 0;
+    font-size: 8vw;
+  }
 
-.banner3 .conju-card .card img {
-  width: 30vw;
-  border-radius: 1vw;
-}
+  .banner3 .card img {
+    width: 95vw;
+    border-radius: 4vw;
+  }
 
-.banner3 .conju-card .card p {
-  font-size: 1.5vw;
-  font-family: "Poppins", sans-serif;
-  color: white;
-  margin: 1vw;
-  padding-bottom: 2vw;
-}
+  .banner3 .card {
+    background-color: black;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 95vw;
+    border-radius: 4vw;
+    margin-top: 7vw;
+  }
 
-.banner4 {
-  background-size: cover;
-  width: 100vw;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-family: "Epilogue";
-  background-color: rgb(7, 25, 39);
-}
+  .banner3 .card h1 {
+    color: white;
+    font-size: 5vw;
+    margin-top: 0;
+    padding-top: 2vw;
+    font-family: "Poppins", sans-serif;
+  }
 
-.banner4 h1 {
-  font-family: "Epilogue", sans-serif;
-  color: rgba(10, 203, 227, 1);
-  width: 50vw;
-  font-weight: normal;
-  font-size: 3vw;
-  margin-bottom: 5vw;
-  text-align: center;
-}
+  .banner3 .card .texto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.banner4 .text1 {
-  justify-content: center;
-  display: flex;
-  margin-top: 5vw;
-  flex-direction: column;
-  align-items: center;
-}
+  .banner3 .card p {
+    color: white;
+    text-align: center;
+    width: 90vw;
+    font-family: "Poppins", sans-serif;
+    font-size: 4vw;
+    margin-bottom: 3vw;
+  }
 
-.banner4 .text1 img {
-  max-width: 90vw;
-  height: auto;
-  object-fit: contain;
-}
+  .banner4 {
+    background-size: cover;
+    width: 100vw;
+    height: 120vw;
+    background-position: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-left: 10vw;
+    gap: 20vw;
+    font-family: "Epilogue", sans-serif;
+    align-items: center;
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
+  }
 
-.footer {
-  background-color: black;
-  height: 15vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1vw;
-}
+  .banner4 .text1 h1 {
+    font-family: "Epilogue", sans-serif;
+    color: white;
+    margin-top: 24vw;
+    font-size: 6vw;
+  }
 
-.footer img {
-  width: 18vw;
-}
+  .banner4 .text2 h1 {
+    font-family: "Epilogue", sans-serif;
+    color: white;
+    font-size: 6vw;
+  }
 
-.footer-container {
-  display: flex;
-  color: white;
-  justify-content: center;
-  align-items: center;
-  gap: 10vw;
-  height: 10vw;
-}
+  .footer {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    justify-content: space-around;
+    height: 50vw;
+  }
 
-.footer .footer-contact img {
-  width: 1.5vw;
-}
+  .footer .info img {
+    height: 7vw;
+  }
 
-.footer .footer-container .footer-contact {
-  gap: 1vw;
-  display: flex;
-  flex-direction: column;
-}
+  .footer .info .info-pai {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 20vw;
+    gap: 3vw;
+  }
 
-.footer-container .footer-filho {
-  display: flex;
-  color: white;
-  gap: 1vw;
-}
+  .footer .info .info-pai p {
+    color: white;
+    font-size: 3vw;
+    width: 100vw;
+    font-family: "Epilogue", sans-serif;
+  }
 
-.footer .footer-container .footer-links {
-  gap: 1vw;
-  display: flex;
-  flex-direction: column;
+  .footer .info {
+    display: flex;
+    gap: 3vw;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .footer .info p {
+    color: white;
+    font-size: 3vw;
+  }
+
+  .footer .info-filho {
+    display: flex;
+    flex-direction: column;
+    gap: 3vw;
+  }
+
+  .footer .info-filho p {
+    font-family: "Epilogue", sans-serif;
+    color: white;
+    font-size: 3vw;
+    gap: 10vw;
+    text-align: center;
+  }
 }
