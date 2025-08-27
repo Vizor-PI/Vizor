@@ -1,6 +1,6 @@
 <img src="public/assets/imgs/Logo.png" alt="Logo" style="width: 150px; height: auto;">
 
-# Shosen 🥋⚫
+# Vizor 👁️💻
 
 Fundada em 2025 por um grupo de amigos apaixonados por tecnologia e inovação, a Vizor nasceu com o propósito de transformar a forma como o mercado de publicidade digital (DOOH) garante a qualidade de suas exibições.
 
