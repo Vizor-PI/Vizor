@@ -386,7 +386,7 @@
     padding-left: 5.5vw;
     font-family: "Epilogue", sans-serif;
     align-items: flex-start;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-home.png);
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-nossatech.png);
   }
 
   .banner1 h1 {
@@ -515,32 +515,17 @@
   }
 
   .banner4 {
-    background-size: cover;
     width: 100vw;
-    height: 120vw;
-    background-position: center;
-    box-sizing: border-box;
+    height: 70vw;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-left: 10vw;
-    gap: 20vw;
-    font-family: "Epilogue", sans-serif;
+    justify-content: center;
     align-items: center;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
-  }
+    background-color: rgb(2, 15, 26);
+    }
 
-  .banner4 .text1 h1 {
-    font-family: "Epilogue", sans-serif;
-    color: white;
-    margin-top: 24vw;
-    font-size: 6vw;
-  }
-
-  .banner4 .text2 h1 {
-    font-family: "Epilogue", sans-serif;
-    color: white;
-    font-size: 6vw;
+  .banner4 img {
+    height: 60vw;
+    margin-top: 15vw;
   }
 
   .footer {
