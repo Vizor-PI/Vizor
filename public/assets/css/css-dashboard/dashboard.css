@@ -19,7 +19,7 @@ body {
 
 /* Conteúdo principal */
 #imgEmBreve {
-  background-image: url(../imgs/imgEmBreveFundo.png);
+  background-image: url(../../imgs/EmbreveVizor.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
