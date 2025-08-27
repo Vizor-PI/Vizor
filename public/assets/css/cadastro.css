@@ -4,6 +4,13 @@
   font-family: "Akatab";
 }
 
+.alerta-custom {
+  padding: 2rem !important;
+  border-radius: 15px;
+  width: 50vw;
+  height: 55vh;
+}
+
 html {
   margin: 0;
   padding: 0;

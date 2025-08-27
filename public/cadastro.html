@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./assets/css/cadastro.css" />
   <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
 
   <title>Cadastro</title>
 </head>
@@ -58,7 +60,10 @@
 </body>
 
 </html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+
 
   // Array para armazenar empresas cadastradas para validação de código de ativação 
   let listaEmpresasCadastradas = [];
@@ -84,14 +89,23 @@
       cpfVar == "" ||
       telefoneVar == ""
     ) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "(Campos em branco)";
-
-      // finalizarAguardar();
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Campos em branco!",
+        showConfirmButton: false,
+        timer: 4000,
+        background: "rgb(0,0,0,0.9)",
+        color: "#f1f1f1",
+        heightAuto: false,
+        customClass: {
+          popup: 'alerta-custom',   // caixa toda
+          title: 'alerta-titulo',   // só o título
+          icon: 'alerta-icone'      // só o ícone
+        }
+      });
       return false;
     } else {
-      setInterval(sumirMensagem, 5000);
     }
 
     // Verificando se o código de ativação é de alguma empresa cadastrada
@@ -128,19 +142,44 @@
         console.log("resposta: ", resposta);
 
         if (resposta.ok) {
-          cardErro.style.display = "block";
-
-          mensagem_erro.innerHTML =
-            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Cadastro realizado com sucesso!",
+            showConfirmButton: false,
+            timer: 4000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+              popup: 'alerta-custom',   // caixa toda
+              title: 'alerta-titulo',   // só o título
+              icon: 'alerta-icone'      // só o ícone
+            }
+          });
 
           setTimeout(() => {
             window.location = "login.html";
-          }, "2000");
+          }, "8000");
 
           // limparFormulario();
           // finalizarAguardar();
         } else {
-          throw "Houve um erro ao tentar realizar o cadastro!";
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Erro ao realizar o cadastro!",
+            showConfirmButton: false,
+            timer: 4000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+              popup: 'alerta-custom',   // caixa toda
+              title: 'alerta-titulo',   // só o título
+              icon: 'alerta-icone'      // só o ícone
+            }
+          });
         }
       })
       .catch(function (resposta) {

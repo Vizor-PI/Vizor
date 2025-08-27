@@ -2,8 +2,14 @@
 
 * {
   font-family: "Akatab";
-  overflow-x: hidden;
 
+}
+
+.alerta-custom {
+  padding: 2rem !important;
+  border-radius: 15px;
+  width: 50vw;
+  height: 55vh;
 }
 
 @media (max-width: 480px) {
@@ -32,9 +38,7 @@
     margin: 0;
     padding: 0;
 
-    overflow-y: hidden;
 
-    overflow-x: hidden;
   }
 
   .loginContainer {
@@ -154,7 +158,6 @@
     margin: 0;
     padding: 0;
 
-    overflow-x: hidden;
   }
 
   .loginContainer {
@@ -271,7 +274,6 @@
     margin: 0;
     padding: 0;
 
-    overflow-x: hidden;
   }
 
   .loginContainer {

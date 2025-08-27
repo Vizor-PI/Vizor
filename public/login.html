@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./assets/css/login.css" />
   <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <title>Login</title>
   <script src="./js/sessao.js"></script>
 </head>
@@ -39,21 +40,34 @@
 </body>
 
 </html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   function login() {
-    aguardar();
-
     var emailVar = ipt_email.value;
     var senhaVar = ipt_senha.value;
 
     if (emailVar == "" || senhaVar == "") {
-      cardErro.style.display = "block"
-      mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
-      finalizarAguardar();
+
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Campos em branco",
+        showConfirmButton: false,
+        timer: 4000,
+        background: "rgb(0,0,0,0.9)",
+        color: "#f1f1f1",
+        confirmButtonColor: "#f1f1f1",
+        heightAuto: false,
+        customClass: {
+          popup: 'alerta-custom',
+          title: 'alerta-titulo',
+          icon: 'alerta-icone'
+        }
+      });
+
       return false;
     }
     else {
-      setInterval(sumirMensagem, 5000)
     }
 
     console.log("FORM LOGIN: ", emailVar);
@@ -73,6 +87,24 @@
 
       if (resposta.ok) {
         console.log(resposta);
+
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Login realizado!",
+          showConfirmButton: false,
+          timer: 4000,
+          background: "rgb(0,0,0,0.9)", // Cor escura de fundo
+          color: "#f1f1f1",
+          confirmButtonColor: "#f1f1f1",
+          heightAuto: false,
+          customClass: {
+            popup: 'alerta-custom',
+            title: 'alerta-titulo',
+            icon: 'alerta-icone'
+          }
+        });
+
 
         resposta.json().then(json => {
           console.log(json);
@@ -94,7 +126,22 @@
 
         resposta.text().then(texto => {
           console.error(texto);
-          finalizarAguardar(texto);
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Erro ao realizar o login",
+            showConfirmButton: false,
+            timer: 4000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            confirmButtonColor: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+              popup: 'alerta-custom',
+              title: 'alerta-titulo',
+              icon: 'alerta-icone'
+            }
+          });
         });
       }
 
@@ -103,10 +150,6 @@
     })
 
     return false;
-  }
-
-  function sumirMensagem() {
-    cardErro.style.display = "none"
   }
 
 </script>
