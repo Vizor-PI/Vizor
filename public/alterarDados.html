@@ -1,115 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alterar Dados</title>
-    <link rel="stylesheet" href="assets/css/css-dashboard/alterarDados.css" />
-    <link rel="stylesheet" href="assets/css/css-dashboard/navbar.css" />
 
-    <link
-      rel="icon"
-      href="assets/imgs/logosDash/home.png"
-      type="image/x-icon"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alterar Dados</title>
+  <link rel="stylesheet" href="assets/css/css-dashboard/alterarDados.css" />
+  <link rel="stylesheet" href="assets/css/css-dashboard/navbar.css" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <link rel="icon" href="assets/imgs/logosDash/home.png" type="image/x-icon" />
+  <script src="./js/sessao.js"></script>
+</head>
 
-  <body>
-    <nav class="navbar">
-      <!-- Logo -->
-      <a href="#">
-        <img
-          src="assets/imgs/logosDash/logoDashboard.png"
-          alt=""
-          class="imagemLogoDashboard"
-        />
-      </a>
+<body>
+  <nav class="navbar">
+    <!-- Logo -->
+    <a href="#">
+      <img src="assets/imgs/logosDash/logoDashboard.png" alt="" class="imagemLogoDashboard" />
+    </a>
 
-      <!-- Menu -->
-      <ul id="textosNavbar">
-        <li class="nav-item">
-          <img
-            src="assets/imgs/logosDash/home.png"
-            alt=""
-            id="logoNavbarDash"
-          />
-          <a href="inicioDash.html"> Início </a>
-        </li>
-        <li class="nav-item">
-          <img
-            src="assets/imgs/logosDash/dashboardIcon.png"
-            alt=""
-            id="logoNavbarDash"
-          />
+    <!-- Menu -->
+    <ul id="textosNavbar">
+      <li class="nav-item">
+        <img src="assets/imgs/logosDash/home.png" alt="" id="logoNavbarDash" />
+        <a href="inicioDash.html"> Início </a>
+      </li>
+      <li class="nav-item">
+        <img src="assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
 
-          <a href="dashboard.html"> Dashboard </a>
-        </li>
-        <li class="nav-item">
-          <img
-            src="assets/imgs/logosDash/avisos.png"
-            alt=""
-            id="logoNavbarDash"
-          />
+        <a href="dashboard.html"> Dashboard </a>
+      </li>
+      <li class="nav-item">
+        <img src="assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
 
-          <a href="avisoDash.html"> Avisos </a>
-        </li>
-        <li class="nav-item">
-          <img
-            src="assets/imgs/logosDash/mudarContaIcon.png"
-            alt=""
-            id="logoNavbarDash"
-          />
+        <a href="avisoDash.html"> Avisos </a>
+      </li>
+      <li class="nav-item">
+        <img src="assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash" />
 
-          <a href="#" style="color: aqua"> Alterar dados </a>
-        </li>
-        <li class="nav-item">
-          <img
-            src="assets/imgs/logosDash/configIcon.png"
-            alt=""
-            id="logoNavbarDash"
-          />
+        <a href="#" style="color: aqua"> Alterar dados </a>
+      </li>
+      <li class="nav-item">
+        <img src="assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash" />
 
-          <a href="infoConta.html"> Info. da conta </a>
-        </li>
-      </ul>
+        <a href="infoConta.html"> Info. da conta </a>
+      </li>
+    </ul>
 
-      <!-- Botão Sair -->
-      <div id="divSair">
-        <img src="assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash" />
-        <a href="./index.html"> Sair </a>
-      </div>
-    </nav>
+    <!-- Botão Sair -->
+    <div id="divSair">
+      <img src="assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash" />
+      <a href="./index.html"> Sair </a>
+    </div>
+  </nav>
 
-    <!-- Conteúdo principal -->
-    <div class="container-xl">
-      <div class="alterarDadosContainer">
-        <div class="divCentralAlterarDados">
-          <h1>Alterar Dados</h1>
-          <div class="entradasAlterarDados">
-            <div class="input">
-              <p class="textoInput">Nome de usuário</p>
-              <input placeholder="Usuário" />
-            </div>
-            <div class="input">
-              <p class="textoInput">Email</p>
-              <input placeholder="usuario@email.com" />
-            </div>
-            <div class="input">
-              <p class="textoInput">Nova Senha</p>
-              <input placeholder="****************" />
-            </div>
-            <div class="input">
-              <p class="textoInput">Repita a nova senha</p>
-              <input placeholder="****************" />
-            </div>
+  <!-- Conteúdo principal -->
+  <div class="container-xl">
+    <div class="alterarDadosContainer">
+      <div class="divCentralAlterarDados">
+        <h1>Alterar Dados</h1>
+        <div class="entradasAlterarDados">
+          <div class="input">
+            <p class="textoInput">Nome de usuário</p>
+            <input placeholder="Usuário" />
           </div>
           <div class="input">
-            <p class="textoInput">Senha atual</p>
+            <p class="textoInput">Email</p>
+            <input id="email_input" placeholder="usuario@email.com" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Nova Senha</p>
+            <input id="senhaNova_input" placeholder="****************" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Repita a nova senha</p>
             <input placeholder="****************" />
           </div>
-          <button>Confirmar</button>
         </div>
+        <div class="input">
+          <p class="textoInput">Senha atual</p>
+          <input id="senha_input" placeholder="****************" />
+        </div>
+        <button onclick="atualizar()">Confirmar</button>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function atualizar() {
+
+    var emailVar = email_input.value;
+    var senhaVar = senha_input.value;
+    var senhaNovarVar = senhaNova_input.value;
+
+    fetch("/usuarios/atualizar", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        emailServer: emailVar,
+        senhaServer: senhaVar,
+        senhaNovaServer: senhaNovarVar,
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Senha atualizada com sucesso!",
+            showConfirmButton: false,
+            timer: 4000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+              popup: 'alerta-custom',   // caixa toda
+              title: 'alerta-titulo',   // só o título
+              icon: 'alerta-icone'      // só o ícone
+            }
+          });
+
+          setTimeout(() => {
+            window.location = "login.html";
+          }, "8000");
+
+          // limparFormulario();
+          // finalizarAguardar();
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Erro ao atualizar senha!",
+            showConfirmButton: false,
+            timer: 4000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+              popup: 'alerta-custom',   // caixa toda
+              title: 'alerta-titulo',   // só o título
+              icon: 'alerta-icone'      // só o ícone
+            }
+          });
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        // finalizarAguardar();
+      });
+
+    return false;
+  }
+</script>
+
 </html>

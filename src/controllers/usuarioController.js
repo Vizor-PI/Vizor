@@ -68,7 +68,38 @@ function cadastrar(req, res) {
     }
 }
 
+function atualizar(req, res) {
+    var email = req.body.emailServer;
+    var senha = req.body.senhaServer;
+    var senhaNova = req.body.senhaNovaServer;
+    
+    if (email == undefined) {
+        res.status(400).send("Seu email está undefined!");
+    } else if (senha == undefined) {
+        res.status(400).send("Sua senha está indefinida!");
+    } else if (senhaNova == undefined) {
+        res.status(400).send("Sua senha nova está indefinida!");
+    } else {
+        usuarioModel.atualizar(email, senha, senhaNova)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao realizar o cadastro! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+    }
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    atualizar
 }
