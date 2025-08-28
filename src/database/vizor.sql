@@ -3,72 +3,35 @@ create database vizor;
 use vizor;
 
 -- cria as tabelas
-create table empresa (
-	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome varchar(150) NOT NULL,
-    cnpj varchar(14) NOT NULL
-);
+-- Inserindo empresas
+INSERT INTO empresa (nome, cnpj, codigoAtivacao) VALUES
+('Tech Solutions', '12345678000190', 'A1234'),
+('Green Energy', '98765432000155', 'B5678'),
+('Smart Innovations', '11122233000177', 'C9012');
 
-create table usuario (
-	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    nome varchar(150) NOT NULL,
-    email varchar(150) NOT NULL,
-    senha varchar(150) NOT NULL,
-    cpf char(11),
-    telefone char(11),
-    fkEmpresa INT,
-    foreign key (fkEmpresa) references empresa(id)
-);
-
-create table miniPc (
-	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    fkEmpresa INT,
-    foreign key (fkEmpresa) references empresa(id)
-);
-
-create table endereco (
-	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	rua varchar(300) NOT NULL,
-    numero INT NOT NULL,
-    cep CHAR(8) NOT NULL,
-    fkMinipc INT,
-    foreign key (fkMinipc) references miniPc(id)
-);
-
-create table alertas (
-	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    fkMinipc INT,
-    foreign key (fkMinipc) references miniPc(id)
-);
-
-
--- Inserts
-
-
--- EMPRESA
-INSERT INTO empresa (nome, cnpj) VALUES 
-('TechCloud Solutions', '12345678000199'),
-('Pipeline Systems', '98765432000155');
-
--- USUÁRIO
+-- Inserindo usuários
 INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa) VALUES
-('João Silva', 'joao.silva@techcloud.com', 'senha123', '12345678901', '11987654321', 1),
-('Maria Oliveira', 'maria.oliveira@pipeline.com', 'segredo456', '10987654321', '11912345678', 2);
+('Guilherme Leon', 'guilherme@example.com', 'senha123', '12345678901', '11999998888', 1),
+('Ana Silva', 'ana@example.com', 'senha456', '10987654321', '11988887777', 2),
+('Carlos Pereira', 'carlos@example.com', 'senha789', '11223344556', '11977776666', 3);
 
--- MINI PC
+-- Inserindo miniPcs
 INSERT INTO miniPc (fkEmpresa) VALUES
 (1),
-(2);
+(2),
+(3);
 
--- ENDEREÇO
+-- Inserindo endereços
 INSERT INTO endereco (rua, numero, cep, fkMinipc) VALUES
-('Rua das Flores', 123, '04567890', 1),
-('Avenida Paulista', 2000, '01310940', 2);
+('Rua das Flores', 123, '01001000', 1),
+('Avenida Paulista', 456, '01311000', 2),
+('Rua Central', 789, '02020202', 3);
 
--- ALERTAS
+-- Inserindo alertas
 INSERT INTO alertas (fkMinipc) VALUES
 (1),
-(2);
+(2),
+(3);
 
 
 SELECT us.nome, us.email, us.telefone, us.email, us.cpf as CPF, em.nome
