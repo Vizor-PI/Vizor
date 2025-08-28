@@ -143,9 +143,6 @@
     } else if (textoComArroba < 0) {
       alerta("error", "Seu email deve conter um @!")
       return;
-    } else if (confirmacaoEmailVar != emailVar) {
-      alerta("error", "Os dois emails devem ser iguais!")
-      return;
     } else if (!regex.test(senhaVar)) {
       alerta("error", "Sua senha deve ter um caractere especial!")
       return;

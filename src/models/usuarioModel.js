@@ -25,7 +25,9 @@ function cadastrar(nome, email, senha, cpf, telefone) {
 function atualizar(email, senha, senhaNova) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function atualizar(): ", email, senha, senhaNova)
     var instrucaoSql = `
-        UPDATE usuario SET senha = '${senhaNova}' WHERE email = '${email}' AND senha = '${senha}';
+        UPDATE usuario 
+        SET senha = '${senhaNova}' 
+        WHERE email = '${email}' AND senha = '${senha}';
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
