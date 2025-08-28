@@ -48,6 +48,9 @@
         <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoCadastro"><a href="login.html">Já tem uma
             conta?</a></span>
       </p>
+      <p style="color: white" id="textoInstrucao">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoInstrucao" onclick="instrucoesSenha()">Instruções de cadastro </span>
+      </p>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -61,12 +64,40 @@
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./js/alertasSW"></script>
 
 <script>
-
-
   // Array para armazenar empresas cadastradas para validação de código de ativação 
   let listaEmpresasCadastradas = [];
+
+  function instrucoesSenha() {
+    Swal.fire({
+      title: "Instruções de senha",
+      html: `
+      <b>Senha:</b><br>
+      • Deve ter no mínimo 6 caracteres.<br>
+      • Deve conter ao menos uma letra maiúscula.<br>
+      • Deve conter pelo menos um caractere especial (ex: @, #, !, %, etc).<br>
+      • A confirmação de senha deve ser idêntica à senha escolhida.<br><br>
+      
+      <b>E-mail:</b><br>
+      • O e-mail informado deve conter o símbolo <b>@</b>.<br>
+      • O campo de confirmação de e-mail deve ser igual ao e-mail digitado.<br><br>
+      
+      <b>CPF:</b><br>
+      • Deve conter exatamente 11 dígitos numéricos, sem pontos ou traços.
+    `,
+      icon: "question",
+      heightAuto: false,
+      background: "rgb(0,0,0,0.9)",
+      color: '#fff',
+      customClass: {
+        popup: 'alerta-custom-senha',   // caixa toda
+        title: 'alerta-titulo',   // só o título
+        icon: 'alerta-icone'      // só o ícone
+      }
+    });
+  }
 
   function cadastrar() {
     // aguardar();
@@ -80,6 +111,15 @@
     var cpfVar = cpf_input.value;
     var telefoneVar = telefone_input.value
 
+
+    // Funcoes de validação de Email e Senha
+    var textoComArroba = emailVar.indexOf("@");
+    // Se voltar -1 é porque não tem
+
+    const regex = /[!@#$%^&*(),.?":{}|<>]/;
+    const regexLetra = /[A-Z]/;
+    //O regex na verificação com ! traz um false.
+    //É true que ele não corresponde ao regex?
     // Verificando se há algum campo em branco
     if (
       nomeVar == "" ||
@@ -89,23 +129,33 @@
       cpfVar == "" ||
       telefoneVar == ""
     ) {
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        title: "Campos em branco!",
-        showConfirmButton: false,
-        timer: 4000,
-        background: "rgb(0,0,0,0.9)",
-        color: "#f1f1f1",
-        heightAuto: false,
-        customClass: {
-          popup: 'alerta-custom',   // caixa toda
-          title: 'alerta-titulo',   // só o título
-          icon: 'alerta-icone'      // só o ícone
-        }
-      });
+      alerta("warning", "Campos em branco")
       return false;
-    } else {
+    } else if (
+      nomeVar.length < 1 ||
+      senhaVar.length < 6
+    ) {
+      alerta("error", "Sua senha deve ter mais de 6 caracteres!")
+      return;
+    } else if (confirmacaoSenhaVar != senhaVar) {
+      alerta("error", "Suas senhas não correspondem!")
+      return;
+    } else if (textoComArroba < 0) {
+      alerta("error", "Seu email deve conter um @!")
+      return;
+    } else if (confirmacaoEmailVar != emailVar) {
+      alerta("error", "Os dois emails devem ser iguais!")
+      return;
+    } else if (!regex.test(senhaVar)) {
+      alerta("error", "Sua senha deve ter um caractere especial!")
+      return;
+    } else if (!regexLetra.test(senhaVar)) {
+      alerta("error", "Você deve conter uma letra maiúscula na senha!")
+      return;
+    } else if (cpfVar.length < 11) {
+      alerta("error", "Seu cpf deve conter 11 digitos!")
+    } else if (telefoneVar < 11) {
+      alert("error", "Seu telefone deve conter 11 digitos, DDD + Número")
     }
 
     // Verificando se o código de ativação é de alguma empresa cadastrada
@@ -142,21 +192,8 @@
         console.log("resposta: ", resposta);
 
         if (resposta.ok) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Cadastro realizado com sucesso!",
-            showConfirmButton: false,
-            timer: 4000,
-            background: "rgb(0,0,0,0.9)",
-            color: "#f1f1f1",
-            heightAuto: false,
-            customClass: {
-              popup: 'alerta-custom',   // caixa toda
-              title: 'alerta-titulo',   // só o título
-              icon: 'alerta-icone'      // só o ícone
-            }
-          });
+          alerta("success", "Cadastro realizado com sucesso!")
+
 
           setTimeout(() => {
             window.location = "login.html";
@@ -165,21 +202,7 @@
           // limparFormulario();
           // finalizarAguardar();
         } else {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Erro ao realizar o cadastro!",
-            showConfirmButton: false,
-            timer: 4000,
-            background: "rgb(0,0,0,0.9)",
-            color: "#f1f1f1",
-            heightAuto: false,
-            customClass: {
-              popup: 'alerta-custom',   // caixa toda
-              title: 'alerta-titulo',   // só o título
-              icon: 'alerta-icone'      // só o ícone
-            }
-          });
+          alerta("error", "Erro ao realizar o cadastro")
         }
       })
       .catch(function (resposta) {
@@ -190,6 +213,7 @@
     return false;
   }
 
+  
   // Listando empresas cadastradas 
   // function listar() {
   //   fetch("/empresas/listar", {
@@ -210,7 +234,42 @@
   //     });
   // }
 
-  function sumirMensagem() {
-    cardErro.style.display = "none";
-  }
+
 </script>
+
+<!-- Swal.fire({
+  title: "Insira o código da sua empresa",
+  input: "text",
+  inputAttributes: {
+    autocapitalize: "off"
+  },
+  showCancelButton: true,
+  confirmButtonText: "Enviar",
+  showLoaderOnConfirm: true,
+  preConfirm: async (login) => {
+    try {
+      const githubUrl = `
+        https://api.github.com/users/${login}
+      `;
+      const response = await fetch(githubUrl);
+      if (!response.ok) {
+        return Swal.showValidationMessage(`
+          ${JSON.stringify(await response.json())}
+        `);
+      }
+      return response.json();
+    } catch (error) {
+      Swal.showValidationMessage(`
+        Request failed: ${error}
+      `);
+    }
+  },
+  allowOutsideClick: () => !Swal.isLoading()
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire({
+      title: `${result.value.login}'s avatar`,
+      imageUrl: result.value.avatar_url
+    });
+  }
+}); -->
