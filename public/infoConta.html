@@ -14,7 +14,7 @@
     />
   </head>
 
-  <body>
+  <body onload="dadosUsuario()">
     <nav class="navbar">
       <!-- Logo -->
       <a href="#">
@@ -88,19 +88,19 @@
           <div class="entradasAlterarDados">
             <div class="input">
               <p class="textoInput">Nome</p>
-              <input placeholder="Guizo" disabled />
+              <input placeholder disabled id="inputNome"/>
             </div>
             <div class="input">
-              <p class="textoInput">Empresa</p>
-              <input placeholder="Empresa" disabled/>
+              <p class="textoInput" >Empresa</p>
+              <input placeholder id="inputEmpresa" disabled/>
             </div>
             <div class="input">
               <p class="textoInput">CPF</p>
-              <input placeholder="123.456.789-00" disabled/>
+              <input placeholder id="inputCPF" disabled/>
             </div>
             <div class="input">
               <p class="textoInput">Telefone</p>
-              <input placeholder="(11) 94002-8922" disabled/>
+              <input placeholder id="inputTelefone" disabled/>
             </div>
           </div>
 
@@ -110,3 +110,37 @@
     </div>
   </body>
 </html>
+<script>
+function dadosUsuario(){
+    const id = sessionStorage.ID_USUARIO;
+
+    fetch(`/dadosUsuario/listar/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then(async (response) => {
+      if (response.ok) {
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
+      } else {
+        console.error("Nenhum dado encontrado");
+        return null;
+      }
+      console.log(response);
+    })
+    .then(resposta => {
+      if (resposta && resposta.length > 0) {
+        console.log(resposta);
+        document.getElementById('inputNome').placeholder = resposta[0].NomeUsuario || "Nome não cadastrado";
+        document.getElementById('inputEmpresa').placeholder = resposta[0].NomeEmpresa || "Empresa não cadastrada";
+        document.getElementById('inputTelefone').placeholder = resposta[0].Telefone || "Telefone não cadastrado";
+        document.getElementById('inputCPF').placeholder = resposta[0].CPF || "CPF não cadastrado";
+      }
+    })
+    .catch(erro => {
+      console.error("Erro na requisição:", erro);
+    });
+}
+</script>
