@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alterar Dados</title>
-    <link rel="stylesheet" href="assets/css/css-dashboard/alterarDados.css" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="assets/css/css-dashboard/dashboard.css" />
     <link rel="stylesheet" href="assets/css/css-dashboard/navbar.css" />
 
     <link
@@ -33,7 +33,7 @@
             alt=""
             id="logoNavbarDash"
           />
-          <a href="inicioDash.html"> Início </a>
+          <a href="#" style="color: aqua"> Início </a>
         </li>
         <li class="nav-item">
           <img
@@ -60,7 +60,7 @@
             id="logoNavbarDash"
           />
 
-          <a href="#" style="color: aqua"> Alterar dados </a>
+          <a href="alterarDados.html"> Alterar dados </a>
         </li>
         <li class="nav-item">
           <img
@@ -76,40 +76,16 @@
       <!-- Botão Sair -->
       <div id="divSair">
         <img src="assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash" />
-        <a href="./index.html"> Sair </a>
+        <a href="./index.html" onclick="limparSessao()"> Sair </a>
       </div>
     </nav>
 
     <!-- Conteúdo principal -->
-    <div class="container-xl">
-      <div class="alterarDadosContainer">
-        <div class="divCentralAlterarDados">
-          <h1>Alterar Dados</h1>
-          <div class="entradasAlterarDados">
-            <div class="input">
-              <p class="textoInput">Nome de usuário</p>
-              <input placeholder="Usuário" />
-            </div>
-            <div class="input">
-              <p class="textoInput">Email</p>
-              <input placeholder="usuario@email.com" />
-            </div>
-            <div class="input">
-              <p class="textoInput">Nova Senha</p>
-              <input placeholder="****************" />
-            </div>
-            <div class="input">
-              <p class="textoInput">Repita a nova senha</p>
-              <input placeholder="****************" />
-            </div>
-          </div>
-          <div class="input">
-            <p class="textoInput">Senha atual</p>
-            <input placeholder="****************" />
-          </div>
-          <button>Confirmar</button>
-        </div>
-      </div>
-    </div>
+    <div class="container-xl" id="imgEmBreve"></div>
   </body>
 </html>
+<script>
+  function limparSessao() {
+    sessionStorage.clear();
+  }
+</script>

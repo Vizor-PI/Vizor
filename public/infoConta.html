@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alterar Dados</title>
-    <link rel="stylesheet" href="assets/css/css-dashboard/alterarDados.css" />
+    <link rel="stylesheet" href="assets/css/css-dashboard/infoConta.css" />
     <link rel="stylesheet" href="assets/css/css-dashboard/navbar.css" />
 
     <link
@@ -60,7 +60,7 @@
             id="logoNavbarDash"
           />
 
-          <a href="#" style="color: aqua"> Alterar dados </a>
+          <a href="alterarDados.html"> Alterar dados </a>
         </li>
         <li class="nav-item">
           <img
@@ -69,7 +69,7 @@
             id="logoNavbarDash"
           />
 
-          <a href="infoConta.html"> Info. da conta </a>
+          <a href="#" style="color: aqua"> Info. da conta </a>
         </li>
       </ul>
 
@@ -84,30 +84,27 @@
     <div class="container-xl">
       <div class="alterarDadosContainer">
         <div class="divCentralAlterarDados">
-          <h1>Alterar Dados</h1>
+          <h1>Informações da conta</h1>
           <div class="entradasAlterarDados">
             <div class="input">
-              <p class="textoInput">Nome de usuário</p>
-              <input placeholder="Usuário" />
+              <p class="textoInput">Nome</p>
+              <input placeholder="Guizo" disabled />
             </div>
             <div class="input">
-              <p class="textoInput">Email</p>
-              <input placeholder="usuario@email.com" />
+              <p class="textoInput">Empresa</p>
+              <input placeholder="Empresa" />
             </div>
             <div class="input">
-              <p class="textoInput">Nova Senha</p>
-              <input placeholder="****************" />
+              <p class="textoInput">CPF</p>
+              <input placeholder="123.456.789-00" />
             </div>
             <div class="input">
-              <p class="textoInput">Repita a nova senha</p>
-              <input placeholder="****************" />
+              <p class="textoInput">Telefone</p>
+              <input placeholder="(11) 94002-8922" />
             </div>
           </div>
-          <div class="input">
-            <p class="textoInput">Senha atual</p>
-            <input placeholder="****************" />
-          </div>
-          <button>Confirmar</button>
+
+          <button>Deletar conta</button>
         </div>
       </div>
     </div>

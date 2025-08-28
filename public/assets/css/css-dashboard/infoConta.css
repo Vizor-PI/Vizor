@@ -82,8 +82,12 @@ input {
   padding-left: 0.8vw;
 }
 
+input::placeholder {
+  color: white;
+}
+
 button {
-  background-color: rgba(10, 203, 227, 1);
+  background-color: red;
   width: 25vw;
   height: 6vh;
   border-radius: 0.6rem;
@@ -101,4 +105,8 @@ button:hover {
 
 #textoCadastro {
   font-size: 0.9vw;
+}
+
+span {
+  color: white;
 }
