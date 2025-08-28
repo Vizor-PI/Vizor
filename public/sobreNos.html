@@ -10,17 +10,20 @@
 </head>
 
 <body>
+        <nav class="nav">
+        <div class="logo"><a href="./index.html"><img src="assets/imgs/Logo.png" alt=""></a></div>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="./sobreNos.html" style="color: rgba(10, 203, 227, 1);">Sobre nós</a></li>
+            <li><a href="./nossaTec.html">Nossa tecnologia</a></li>
+            <li><a href="./login.html"><button>Entrar ></button></a></li>
+        </ul>
+    </nav>
     <div class="banner1">
-        <nav class="navbar">
-            <div class="logo">
-                <a href="index.html"><img src="assets/imgs/Logo.png" alt="Logo"></a>
-            </div>
-            <div class="nav-links">
-                <a href="#" style="color: #0acbe3;">Sobre Nós</a>
-                <a href="nossaTec.html">Nossa tecnologia</a>
-                <a href="login.html" class="btn">Entrar ></a>
-            </div>
-        </nav>
         <h1>Sobre nós</h1>
         <h2>Conheça as pessoas e a visão que movem nossa empresa.</h2>
     </div>
@@ -167,32 +170,30 @@
         </div>
 
     </div>
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-logo">
-                <img src="assets/imgs/Logo.png" alt="Logo">
+    <div class="footer">
+        <div class="info">
+            <img src="assets/imgs/Logo.png" alt="">
+        </div>
+        <div class="info">
+            <div class="info-pai">
+                <img src="assets/imgs/git.png" alt="">
+                <p>vizor</p>
             </div>
-            <div class="footer-contact">
-                <div class="footer-filho">
-                    <img src="assets/imgs/git.png" alt="">
-                    <p>vizor</p>
-                </div>
-                <div class="footer-filho">
-                    <img src="assets/imgs/Email.png" alt="">
-                    <p>vizor@vizor.com</p>
-                </div>
-                <div class="footer-filho">
-                    <img src="assets/imgs/telefone.png" alt="">
-                    <p>4002-8922</p>
-                </div>
+            <div class="info-pai">
+                <img src="assets/imgs/Email.png" alt="">
+                <p>vizor@vizor.com</p>
             </div>
-            <div class="footer-links">
-                <h4>Links</h4>
-                <p>vizor.com</p>
-                <p>github.com/vizor</p>
+            <div class="info-pai">
+                <img src="assets/imgs/telefone.png" alt="">
+                <p>4002-8922</p>
             </div>
         </div>
+        <div class="info-filho">
+            <p>Links</p>
+            <p>vizor.com</p>
+            <p>github.com/vizor</p>
         </div>
+    </div>
 </body>
 <script>
 let contador = 1;
@@ -211,6 +212,14 @@ function proximaImagem() {
 
   document.getElementById("radio" + contador).checked = true;
 }
+
+
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+    });
 </script>
 
 

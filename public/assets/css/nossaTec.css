@@ -40,14 +40,13 @@
     gap: 3vw;
     margin-right: 5vw;
     font-family: "Poppins", sans-serif;
-    width: 25vw;
+    
   }
 
   .nav .nav-links a {
     color: white;
     text-decoration: none;
     font-size: 1.1vw;
-    width: 10vw;
     transition: all 0.3s ease;
     display: inline-block;
   }
@@ -64,7 +63,7 @@
     border: 0.1vw solid;
     border-radius: 0.2vw;
     padding: 0.4vw;
-    width: 5.2vw;
+    width: auto;
     text-align: center;
     transition: all 0.3s ease;
     background: transparent;
@@ -82,7 +81,7 @@
   .banner1 {
     background-size: cover;
     width: 100vw;
-    height: 55vw;
+    height: 40vw;
     background-position: center;
     box-sizing: border-box;
     display: flex;
@@ -100,7 +99,7 @@
     color: rgba(10, 203, 227, 1);
     font-size: 3vw;
     margin-left: 5vw;
-    margin-top: 39vw;
+    margin-top: 28vw;
     margin-bottom: 0.5vw;
   }
 
