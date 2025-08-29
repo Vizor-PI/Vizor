@@ -1,8 +1,47 @@
--- cria a database
-create database vizor;
-use vizor;
+-- Cria a database
+CREATE DATABASE IF NOT EXISTS vizor;
+USE vizor;
 
--- cria as tabelas
+-- Cria as tabelas
+CREATE TABLE empresa (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    cnpj VARCHAR(14) NOT NULL,
+    codigoAtivacao VARCHAR(5) NOT NULL
+);
+
+CREATE TABLE usuario (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    senha VARCHAR(150) NOT NULL,
+    cpf CHAR(11),
+    telefone CHAR(11),
+    fkEmpresa INT,
+    FOREIGN KEY (fkEmpresa) REFERENCES empresa(id)
+);
+
+CREATE TABLE miniPc (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    fkEmpresa INT,
+    FOREIGN KEY (fkEmpresa) REFERENCES empresa(id)
+);
+
+CREATE TABLE endereco (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    rua VARCHAR(300) NOT NULL,
+    numero INT NOT NULL,
+    cep CHAR(8) NOT NULL,
+    fkMinipc INT,
+    FOREIGN KEY (fkMinipc) REFERENCES miniPc(id)
+);
+
+CREATE TABLE alertas (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    fkMinipc INT,
+    FOREIGN KEY (fkMinipc) REFERENCES miniPc(id)
+);
+
 -- Inserindo empresas
 INSERT INTO empresa (nome, cnpj, codigoAtivacao) VALUES
 ('Tech Solutions', '12345678000190', 'A1234'),
@@ -33,8 +72,38 @@ INSERT INTO alertas (fkMinipc) VALUES
 (2),
 (3);
 
-
-SELECT us.nome, us.email, us.telefone, us.email, us.cpf as CPF, em.nome
+-- Consultas
+SELECT 
+    us.nome, 
+    us.email, 
+    us.telefone, 
+    us.email, 
+    us.cpf AS CPF, 
+    em.nome AS Empresa
 FROM usuario AS us
-INNER JOIN empresa AS em on us.fkEmpresa = em.id WHERE us.id = 1;
-    
+INNER JOIN empresa AS em 
+    ON us.fkEmpresa = em.id 
+WHERE us.id = 1;
+
+SELECT 
+    id AS IdEmpresa, 
+    nome AS NomeEmpresa, 
+    codigoAtivacao AS Codigo 
+FROM empresa;
+
+SELECT * FROM empresa;
+
+SELECT * FROM usuario;
+
+-- Inserindo novo usuário usando subquery
+INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa) 
+VALUES (
+    'Joao', 
+    'joao.gmail.com', 
+    '$123456', 
+    '$452313131', 
+    '$1313', 
+    (SELECT id FROM empresa WHERE codigoAtivacao = 'A1234')
+);
+
+SELECT * FROM usuario;
