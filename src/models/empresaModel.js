@@ -1,9 +1,9 @@
 var database = require("../database/config");
 
-function buscarPorCnpj(cnpj) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE cnpj = '${cnpj}'`;
+function buscarDadosEmpresa() {
+  var instrucaoSql = `SELECT id as IdEmpresa, nome as NomeEmpresa, codigoAtivacao as Codigo FROM empresa;`;
 
   return database.executar(instrucaoSql);
 }
 
-module.exports = {buscarPorCnpj};
+module.exports = {buscarDadosEmpresa};

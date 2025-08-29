@@ -12,7 +12,7 @@
   <title>Cadastro</title>
 </head>
 
-<body>
+<body onload="buscarEmpresas()">
   <div class="cadastroContainer">
     <div class="divCentralCadastro">
       <a href="index.html"><img src="./assets/imgs/Logo.png" id="logoVizor" /></a>
@@ -49,7 +49,8 @@
             conta?</a></span>
       </p>
       <p style="color: white" id="textoInstrucao">
-        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoInstrucao" onclick="instrucoesSenha()">Instruções de cadastro </span>
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoInstrucao"
+          onclick="instrucoesSenha()">Instruções de cadastro </span>
       </p>
     </div>
   </div>
@@ -69,6 +70,42 @@
 <script>
   // Array para armazenar empresas cadastradas para validação de código de ativação 
   let listaEmpresasCadastradas = [];
+ 
+  function buscarEmpresas() {
+
+  fetch("/empresa/buscar", {
+       method: "GET",
+     })
+       .then(function (resposta) {
+        resposta.json().then((empresa) => {
+         empresas.forEach((empresa) => {
+             listaEmpresasCadastradas.push(empresa);
+
+             console.log("listaEmpresasCadastradas")
+             console.log(listaEmpresasCadastradas[0].Codigo)
+           });
+         });
+       })
+       .catch(function (resposta) {
+         console.log(`#ERRO: ${resposta}`);
+       });
+   }
+
+
+  
+    // for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
+    //   if (listaEmpresasCadastradas[i].Codigo == codigoVar) {
+    //     idEmpresaVincular = listaEmpresasCadastradas[i].id
+    //     console.log("Código de ativação válido.");
+    //     break;
+    //   } else {
+    //     cardErro.style.display = "block";
+    //     mensagem_erro.innerHTML = "(Mensagem de erro para código inválido)";
+    //     finalizarAguardar();
+    //   }
+    // }
+
+  
 
   function instrucoesSenha() {
     Swal.fire({
@@ -155,18 +192,7 @@
       alert("error", "Seu telefone deve conter 11 digitos, DDD + Número")
     }
 
-    // Verificando se o código de ativação é de alguma empresa cadastrada
-    /* for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
-      if (listaEmpresasCadastradas[i].codigo_ativacao == codigoVar) {
-        idEmpresaVincular = listaEmpresasCadastradas[i].id
-        console.log("Código de ativação válido.");
-        break;
-      } else {
-        cardErro.style.display = "block";
-        mensagem_erro.innerHTML = "(Mensagem de erro para código inválido)";
-        finalizarAguardar();
-      }
-    } */
+    } 
 
     // Enviando o valor da nova input
     fetch("/usuarios/cadastrar", {
@@ -207,30 +233,7 @@
         // finalizarAguardar();
       });
 
-    return false;
-  }
-
   
-  // Listando empresas cadastradas 
-  // function listar() {
-  //   fetch("/empresas/listar", {
-  //     method: "GET",
-  //   })
-  //     .then(function (resposta) {
-  //       resposta.json().then((empresas) => {
-  //         empresas.forEach((empresa) => {
-  //           listaEmpresasCadastradas.push(empresa);
-
-  //           console.log("listaEmpresasCadastradas")
-  //           console.log(listaEmpresasCadastradas[0].codigo_ativacao)
-  //         });
-  //       });
-  //     })
-  //     .catch(function (resposta) {
-  //       console.log(`#ERRO: ${resposta}`);
-  //     });
-  // }
-
 
 </script>
 
