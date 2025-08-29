@@ -18,6 +18,25 @@
   height: 80vh;
 }
 
+.meu-confirm-btn {
+  background-color: green ; /* cor de fundo */
+  color: #ffffff;      
+}
+
+.meu-cancel-btn {
+  background-color: red;
+  color: #ffffff ;
+}
+
+.meu-titulo {
+  color: #ffffff ;
+}
+
+.alertaCodigo{
+  width: 40vw;
+  height: 50vh;
+  border-radius: 2vw;
+}
 
 html {
   margin: 0;

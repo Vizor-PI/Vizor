@@ -70,42 +70,26 @@
 <script>
   // Array para armazenar empresas cadastradas para validação de código de ativação 
   let listaEmpresasCadastradas = [];
- 
+
   function buscarEmpresas() {
 
-  fetch("/empresa/buscar", {
-       method: "GET",
-     })
-       .then(function (resposta) {
+    fetch("/empresa/buscar", {
+      method: "GET",
+    })
+      .then(function (resposta) {
         resposta.json().then((empresa) => {
-         empresas.forEach((empresa) => {
-             listaEmpresasCadastradas.push(empresa);
+          empresa.forEach((empresa) => {
+            listaEmpresasCadastradas.push(empresa);
 
-             console.log("listaEmpresasCadastradas")
-             console.log(listaEmpresasCadastradas[0].Codigo)
-           });
-         });
-       })
-       .catch(function (resposta) {
-         console.log(`#ERRO: ${resposta}`);
-       });
-   }
-
-
-  
-    // for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
-    //   if (listaEmpresasCadastradas[i].Codigo == codigoVar) {
-    //     idEmpresaVincular = listaEmpresasCadastradas[i].id
-    //     console.log("Código de ativação válido.");
-    //     break;
-    //   } else {
-    //     cardErro.style.display = "block";
-    //     mensagem_erro.innerHTML = "(Mensagem de erro para código inválido)";
-    //     finalizarAguardar();
-    //   }
-    // }
-
-  
+            console.log("listaEmpresasCadastradas")
+            console.log(listaEmpresasCadastradas[0].Codigo)
+          });
+        });
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+      });
+  }
 
   function instrucoesSenha() {
     Swal.fire({
@@ -191,85 +175,88 @@
     } else if (telefoneVar < 11) {
       alert("error", "Seu telefone deve conter 11 digitos, DDD + Número")
     }
+    validarEmpresa(nomeVar, emailVar, senhaVar, cpfVar, telefoneVar);
+  }
 
-    } 
-
-    // Enviando o valor da nova input
-    fetch("/usuarios/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // crie um atributo que recebe o valor recuperado aqui
-        // Agora vá para o arquivo routes/usuario.js
-        nomeServer: nomeVar,
-        emailServer: emailVar,
-        senhaServer: senhaVar,
-        cpfServer: cpfVar,
-        telefoneServer: telefoneVar
-        // idEmpresaVincularServer: idEmpresaVincular
-      }),
-    })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (resposta.ok) {
-          alerta("success", "Cadastro realizado com sucesso!")
-
-
-          setTimeout(() => {
-            window.location = "login.html";
-          }, "8000");
-
-          // limparFormulario();
-          // finalizarAguardar();
-        } else {
-          alerta("error", "Erro ao realizar o cadastro")
-        }
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-        // finalizarAguardar();
-      });
-
-  
-
-</script>
-
-<!-- Swal.fire({
-  title: "Insira o código da sua empresa",
-  input: "text",
-  inputAttributes: {
-    autocapitalize: "off"
-  },
-  showCancelButton: true,
-  confirmButtonText: "Enviar",
-  showLoaderOnConfirm: true,
-  preConfirm: async (login) => {
-    try {
-      const githubUrl = `
-        https://api.github.com/users/${login}
-      `;
-      const response = await fetch(githubUrl);
-      if (!response.ok) {
-        return Swal.showValidationMessage(`
-          ${JSON.stringify(await response.json())}
-        `);
-      }
-      return response.json();
-    } catch (error) {
-      Swal.showValidationMessage(`
-        Request failed: ${error}
-      `);
-    }
-  },
-  allowOutsideClick: () => !Swal.isLoading()
-}).then((result) => {
-  if (result.isConfirmed) {
+  function validarEmpresa(nomeVar, emailVar, senhaVar, cpfVar, telefoneVar) {
+    var codigoEmpresa
     Swal.fire({
-      title: `${result.value.login}'s avatar`,
-      imageUrl: result.value.avatar_url
+      title: "Insira o código da sua empresa",
+      input: "text",
+      heightAuto: false,
+      width: 600,
+      background: "rgb(0,0,0,0.9)",
+      inputAttributes: {
+        autocapitalize: "off"
+      },
+      customClass: {
+        confirmButton: 'meu-confirm-btn',
+        cancelButton: 'meu-cancel-btn',
+        title: 'meu-titulo',
+        popup : 'alertaCodigo'
+      },
+      showCancelButton: true,
+      confirmButtonText: "Enviar",
+      showLoaderOnConfirm: true,
+      preConfirm: (codigoDigitado) => {
+        const empresaValida = listaEmpresasCadastradas.find(function (empresa) {
+          return empresa.Codigo === codigoDigitado;
+        });
+
+        if (!empresaValida) {
+          Swal.showValidationMessage("Código inválido. Tente novamente!");
+        } else {
+          codigoEmpresaVar = empresaValida.Codigo;
+          return empresaValida;
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Empresa selecionada:", result.value);
+        Swal.fire(
+          "Código válido!",
+          `Você selecionou a empresa: ${result.value.NomeEmpresa}`,
+          "success"
+        );
+        fetch("/usuarios/cadastrar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            // crie um atributo que recebe o valor recuperado aqui
+            // Agora vá para o arquivo routes/usuario.js
+            // idEmpresaVincularServer: idEmpresaVincular
+
+            nomeServer: nomeVar,
+            emailServer: emailVar,
+            senhaServer: senhaVar,
+            cpfServer: cpfVar,
+            telefoneServer: telefoneVar,
+            codigoEmpresa: codigoEmpresaVar
+          }),
+        })
+          .then(function (resposta) {
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+              alerta("success", "Cadastro realizado com sucesso!")
+              setTimeout(() => {
+                window.location = "login.html";
+              }, "3000");
+
+
+            } else {
+              alerta("error", "Erro ao realizar o cadastro")
+            }
+          })
+          .catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+          });
+      }
     });
   }
-}); -->
+
+
+</script>
