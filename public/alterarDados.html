@@ -61,25 +61,25 @@
         <h1>Alterar Dados</h1>
         <div class="entradasAlterarDados">
           <div class="input">
-            <p class="textoInput">Nome de usuário</p>
-            <input placeholder="Usuário" />
+            <p class="textoInput textoInputFixo">Nome de usuário</p>
+            <input id="usuario_input" placeholder="Usuário" disabled/>
           </div>
           <div class="input">
-            <p class="textoInput">Email</p>
-            <input id="email_input" placeholder="usuario@email.com" />
+            <p class="textoInput textoInputFixo">Email</p>
+            <input id="email_input" placeholder="usuario@email.com" disabled/>
           </div>
           <div class="input">
             <p class="textoInput">Nova Senha</p>
-            <input id="senhaNova_input" placeholder="****************" />
+            <input id="senhaNova_input" placeholder="****************" type="password"/>
           </div>
           <div class="input">
             <p class="textoInput">Repita a nova senha</p>
-            <input placeholder="****************" />
+            <input placeholder="****************" type="password"/>
           </div>
         </div>
         <div class="input">
           <p class="textoInput">Senha atual</p>
-          <input id="senha_input" placeholder="****************" />
+          <input id="senha_input" placeholder="****************" type="password"/>
         </div>
         <button onclick="atualizar()">Confirmar</button>
       </div>
@@ -88,8 +88,53 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+  const id = sessionStorage.ID_USUARIO;
+
+  var nom;
+  var usu;
+  var sen;
+  
+      fetch(`/dadosUsuario/listar/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(async (response) => {
+        if (response.ok) {
+          const text = await response.text();
+          return text ? JSON.parse(text) : null;
+        } else {
+          console.error("Nenhum dado encontrado");
+          return null;
+        }
+        console.log(response);
+      })
+      .then(resposta => {
+        if (resposta && resposta.length > 0) {
+          console.log(resposta);
+          if (resposta && resposta.length > 0) {
+          console.log(resposta);
+          
+          resposta.forEach(element => {
+            nom = resposta[0].NomeUsuario,
+            usu = resposta[0].EmailUsuario,
+            sen = resposta[0].SenhaUsuario 
+          }); 
+          document.getElementById('usuario_input').placeholder = nom || "Nome não cadastrado";
+          document.getElementById('email_input').placeholder = usu || "Empresa não cadastrada";
+        }
+        }
+      })
+      .catch(erro => {
+        console.error("Erro na requisição:", erro);
+      });
+
+
   function atualizar() {
 
+    var usuarioVar = usuario_input.value;
     var emailVar = email_input.value;
     var senhaVar = senha_input.value;
     var senhaNovarVar = senhaNova_input.value;
@@ -100,6 +145,7 @@
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        usuarioServer: usuarioVar,
         emailServer: emailVar,
         senhaServer: senhaVar,
         senhaNovaServer: senhaNovarVar,

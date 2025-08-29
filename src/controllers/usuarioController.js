@@ -72,18 +72,21 @@ function cadastrar(req, res) {
 }
 
 function atualizar(req, res) {
+    var usuario = req.body.usuarioServer;
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
     var senhaNova = req.body.senhaNovaServer;
     
     if (email == undefined) {
-        res.status(400).send("Seu email está undefined!");
+        res.status(400).send("Seu email está indefindo");
     } else if (senha == undefined) {
         res.status(400).send("Sua senha está indefinida!");
     } else if (senhaNova == undefined) {
         res.status(400).send("Sua senha nova está indefinida!");
+    } else if (usuario == undefined) {
+        res.status(400).send("Seu usuário está indefinido");    
     } else {
-        usuarioModel.atualizar(email, senha, senhaNova)
+        usuarioModel.atualizar(email, senha, senhaNova, usuario)
             .then(
                 function (resultado) {
                     res.json(resultado);

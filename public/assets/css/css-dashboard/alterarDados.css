@@ -102,3 +102,10 @@ button:hover {
 #textoCadastro {
   font-size: 0.9vw;
 }
+
+#usuario_input::placeholder,
+#email_input::placeholder {
+  color: white;
+  opacity: 1; /* garante que não fique apagado */
+}
+
