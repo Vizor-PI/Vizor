@@ -732,56 +732,70 @@
   }
 
   .footer {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "logo   logo"
+      "contatos links";
+    padding: 10vw 5vw;
+    gap: 8vw 4vw;
     background-color: black;
-    justify-content: space-around;
-    height: 50vw;
+    height: auto;
   }
 
-  .footer .info img {
-    height: 7vw;
-  }
-
-  .footer .info .info-pai {
+  .footer .info:first-child {
+    grid-area: logo;
     display: flex;
-    text-align: center;
     justify-content: center;
-    align-items: center;
-    width: 20vw;
-    gap: 3vw;
   }
 
-  .footer .info .info-pai p {
-    color: white;
-    font-size: 3vw;
-    width: 100vw;
-    font-family: "Epilogue", sans-serif;
+  .footer .info:first-child img {
+    width: 35vw;
+    height: auto;
   }
 
-  .footer .info {
+  .footer .info:nth-child(2) {
+    grid-area: contatos;
     display: flex;
-    gap: 3vw;
     flex-direction: column;
-    justify-content: center;
+    gap: 4vw;
   }
 
-  .footer .info p {
+  .footer .info-pai {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer .info-pai img {
+    width: 6vw;
+    margin-right: 3vw;
+    flex-shrink: 0;
+  }
+
+  .footer .info-pai p {
     color: white;
-    font-size: 3vw;
+    font-size: 3.5vw;
+    font-family: "Epilogue", sans-serif;
+    margin: 0;
   }
 
   .footer .info-filho {
+    grid-area: links;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 3vw;
   }
 
   .footer .info-filho p {
-    font-family: "Epilogue", sans-serif;
     color: white;
-    font-size: 3vw;
-    gap: 10vw;
-    text-align: center;
+    font-size: 3.5vw;
+    font-family: "Epilogue", sans-serif;
+    text-align: right;
+    margin: 0;
+  }
+
+  .footer .info-filho p strong {
+    font-size: 4vw;
   }
 }
