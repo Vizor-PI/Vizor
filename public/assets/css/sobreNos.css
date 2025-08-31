@@ -5,11 +5,9 @@
 * {
   margin: 0;
   padding: 0;
-
 }
 
 @media (min-width: 481px) {
-
   body {
     overflow-x: hidden;
   }
@@ -40,7 +38,6 @@
     gap: 3vw;
     margin-right: 5vw;
     font-family: "Poppins", sans-serif;
-    
   }
 
   .nav .nav-links a {
@@ -86,10 +83,12 @@
     flex-direction: column;
     justify-content: flex-start;
     font-family: "Epilogue";
-    background-image: linear-gradient(180deg,
+    background-image: linear-gradient(
+        180deg,
         rgba(0, 0, 0, 0.68) 0%,
         rgba(0, 0, 0, 0.68) 35%,
-        rgba(0, 0, 0, 0.68) 100%),
+        rgba(0, 0, 0, 0.68) 100%
+      ),
       url(../imgs/banner-sobrenos.png);
   }
 
@@ -243,6 +242,7 @@
     justify-content: center;
     font-family: "Epilogue";
     background-color: rgb(7, 25, 39);
+    display: none;
   }
 
   .banner4 h1 {
@@ -306,7 +306,6 @@
   .footer .info-pai img {
     width: 1.5vw;
   }
-
 
   /* CSS do Carrossel */
 
@@ -386,25 +385,25 @@
     background-color: aqua;
   }
 
-  #radio1:checked~.first {
+  #radio1:checked ~ .first {
     margin-left: 0;
   }
 
-  #radio2:checked~.first {
+  #radio2:checked ~ .first {
     margin-left: -16.6%;
   }
 
-  #radio3:checked~.first {
+  #radio3:checked ~ .first {
     margin-left: -33.2%;
   }
 
-  #radio4:checked~.first {
+  #radio4:checked ~ .first {
     margin-left: -49.8%;
   }
-  #radio5:checked~.first {
+  #radio5:checked ~ .first {
     margin-left: -66.4%;
   }
-  #radio6:checked~.first {
+  #radio6:checked ~ .first {
     margin-left: -83%;
   }
 
@@ -429,28 +428,27 @@
     margin-right: 40px;
   }
 
-  #radio1:checked~.navigation-auto .auto-btn1 {
+  #radio1:checked ~ .navigation-auto .auto-btn1 {
     background-color: aqua;
   }
 
-  #radio2:checked~.navigation-auto .auto-btn2 {
+  #radio2:checked ~ .navigation-auto .auto-btn2 {
     background-color: aqua;
   }
 
-  #radio3:checked~.navigation-auto .auto-btn3 {
+  #radio3:checked ~ .navigation-auto .auto-btn3 {
     background-color: aqua;
   }
-  #radio4:checked~.navigation-auto .auto-btn4 {
-    background-color: aqua;
-  }
-
-  #radio5:checked~.navigation-auto .auto-btn5 {
-    background-color: aqua;
-  }
-  #radio6:checked~.navigation-auto .auto-btn6 {
+  #radio4:checked ~ .navigation-auto .auto-btn4 {
     background-color: aqua;
   }
 
+  #radio5:checked ~ .navigation-auto .auto-btn5 {
+    background-color: aqua;
+  }
+  #radio6:checked ~ .navigation-auto .auto-btn6 {
+    background-color: aqua;
+  }
 }
 
 @media (max-width: 480px) {
@@ -543,7 +541,13 @@
     padding-left: 5.5vw;
     font-family: "Epilogue", sans-serif;
     align-items: flex-start;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-sobrenos.png);
+    background-image: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.68) 0%,
+        rgba(0, 0, 0, 0.68) 35%,
+        rgba(0, 0, 0, 0.68) 100%
+      ),
+      url(../imgs/banner-sobrenos.png);
   }
 
   .banner1 h1 {
@@ -672,32 +676,54 @@
   }
 
   .banner4 {
-    background-size: cover;
-    width: 100vw;
-    height: 120vw;
-    background-position: center;
-    box-sizing: border-box;
+    height: auto;
+    background-color: rgba(9, 41, 66, 1);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding-left: 10vw;
-    gap: 20vw;
-    font-family: "Epilogue", sans-serif;
     align-items: center;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
+    justify-content: flex-start;
+    padding: 15vw 0;
   }
 
-  .banner4 .text1 h1 {
-    font-family: "Epilogue", sans-serif;
-    color: white;
-    margin-top: 24vw;
-    font-size: 6vw;
+  .banner4 h1 {
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 8vw;
+    margin-bottom: 8vw;
   }
 
-  .banner4 .text2 h1 {
-    font-family: "Epilogue", sans-serif;
+  .equipe-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 4vw;
+    width: 90vw;
+  }
+
+  .integrante {
+    background-color: rgb(7, 25, 39);
+    padding: 5vw;
+    border-radius: 4vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .integrante h3 {
+    color: rgba(10, 203, 227, 1);
+    font-family: "Poppins", sans-serif;
+    font-size: 5.5vw;
+    margin-bottom: 1.5vw;
+  }
+
+  .integrante p {
     color: white;
-    font-size: 6vw;
+    font-family: "Poppins", sans-serif;
+    font-size: 4vw;
+  }
+
+  .slider {
+    display: none;
   }
 
   .slides {
