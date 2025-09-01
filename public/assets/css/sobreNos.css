@@ -5,11 +5,9 @@
 * {
   margin: 0;
   padding: 0;
-
 }
 
 @media (min-width: 481px) {
-
   body {
     overflow-x: hidden;
   }
@@ -40,7 +38,6 @@
     gap: 3vw;
     margin-right: 5vw;
     font-family: "Poppins", sans-serif;
-    
   }
 
   .nav .nav-links a {
@@ -86,10 +83,12 @@
     flex-direction: column;
     justify-content: flex-start;
     font-family: "Epilogue";
-    background-image: linear-gradient(180deg,
+    background-image: linear-gradient(
+        180deg,
         rgba(0, 0, 0, 0.68) 0%,
         rgba(0, 0, 0, 0.68) 35%,
-        rgba(0, 0, 0, 0.68) 100%),
+        rgba(0, 0, 0, 0.68) 100%
+      ),
       url(../imgs/banner-sobrenos.png);
   }
 
@@ -243,6 +242,7 @@
     justify-content: center;
     font-family: "Epilogue";
     background-color: rgb(7, 25, 39);
+    display: none;
   }
 
   .banner4 h1 {
@@ -307,18 +307,15 @@
     width: 1.5vw;
   }
 
-
   /* CSS do Carrossel */
 
   .slider {
-    width: 99vw;
+    width: 100vw;
     height: 85vh;
     overflow: hidden;
     position: relative;
     border-top: solid aqua;
     border-bottom: solid aqua;
-
-    /* box-shadow: 20px 20px 30px black; */
   }
 
   .slides {
@@ -332,7 +329,7 @@
   }
 
   .slide {
-    width: 16.6%;
+    width: calc(100% / 6);
     position: relative;
     transition: 1s;
   }
@@ -345,7 +342,7 @@
 
   .textoEsquerda {
     width: 60%;
-    height: 100vh;
+    height: 100%;
     object-fit: cover;
     background-color: rgb(7, 25, 39);
     color: rgba(10, 203, 227, 1);
@@ -353,19 +350,32 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 2vw;
+    box-sizing: border-box;
+  }
+
+  .textoEsquerda h2 {
+    margin-top: 2vw;
+  }
+
+  .textoEsquerda p {
+    color: white;
+    text-align: center;
+    font-size: clamp(14px, 1.5vw, 18px);
+    padding: 2vw;
   }
 
   .img-direita {
     width: 40%;
-    height: 100vh;
+    height: 100%;
     object-fit: cover;
   }
 
   .manual-navigation {
     position: absolute;
-    width: 99vw;
+    width: 100%;
+    bottom: 20px;
     left: 0;
-    margin-top: -40px;
     display: flex;
     justify-content: center;
   }
@@ -386,26 +396,38 @@
     background-color: aqua;
   }
 
-  #radio1:checked~.first {
+  #radio1:checked ~ .first {
     margin-left: 0;
   }
 
-  #radio2:checked~.first {
-    margin-left: -16.6%;
+  #radio2:checked ~ .first {
+    margin-left: -16.6667%;
   }
 
-  #radio3:checked~.first {
-    margin-left: -33.2%;
+  #radio3:checked ~ .first {
+    margin-left: -33.3333%;
   }
 
-  #radio4:checked~.first {
-    margin-left: -49.8%;
+  #radio4:checked ~ .first {
+    margin-left: -50%;
   }
-  #radio5:checked~.first {
-    margin-left: -66.4%;
+
+  #radio5:checked ~ .first {
+    margin-left: -66.6667%;
   }
-  #radio6:checked~.first {
-    margin-left: -83%;
+
+  #radio6:checked ~ .first {
+    margin-left: -83.3333%;
+  }
+
+  .navigation-auto {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
   }
 
   .navigation-auto div {
@@ -416,41 +438,18 @@
     transition: 1s;
   }
 
-  .navigation-auto {
-    position: absolute;
-    width: 99vw;
-    left: 0;
-    margin-top: 599px;
-    display: flex;
-    justify-content: center;
-  }
-
   .navigation-auto div:not(:last-child) {
     margin-right: 40px;
   }
 
-  #radio1:checked~.navigation-auto .auto-btn1 {
+  #radio1:checked ~ .navigation-auto .auto-btn1,
+  #radio2:checked ~ .navigation-auto .auto-btn2,
+  #radio3:checked ~ .navigation-auto .auto-btn3,
+  #radio4:checked ~ .navigation-auto .auto-btn4,
+  #radio5:checked ~ .navigation-auto .auto-btn5,
+  #radio6:checked ~ .navigation-auto .auto-btn6 {
     background-color: aqua;
   }
-
-  #radio2:checked~.navigation-auto .auto-btn2 {
-    background-color: aqua;
-  }
-
-  #radio3:checked~.navigation-auto .auto-btn3 {
-    background-color: aqua;
-  }
-  #radio4:checked~.navigation-auto .auto-btn4 {
-    background-color: aqua;
-  }
-
-  #radio5:checked~.navigation-auto .auto-btn5 {
-    background-color: aqua;
-  }
-  #radio6:checked~.navigation-auto .auto-btn6 {
-    background-color: aqua;
-  }
-
 }
 
 @media (max-width: 480px) {
@@ -543,7 +542,13 @@
     padding-left: 5.5vw;
     font-family: "Epilogue", sans-serif;
     align-items: flex-start;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/banner-sobrenos.png);
+    background-image: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.68) 0%,
+        rgba(0, 0, 0, 0.68) 35%,
+        rgba(0, 0, 0, 0.68) 100%
+      ),
+      url(../imgs/banner-sobrenos.png);
   }
 
   .banner1 h1 {
@@ -672,32 +677,54 @@
   }
 
   .banner4 {
-    background-size: cover;
-    width: 100vw;
-    height: 120vw;
-    background-position: center;
-    box-sizing: border-box;
+    height: auto;
+    background-color: rgba(9, 41, 66, 1);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding-left: 10vw;
-    gap: 20vw;
-    font-family: "Epilogue", sans-serif;
     align-items: center;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.680) 0%, rgba(0, 0, 0, 0.680) 35%, rgba(0, 0, 0, 0.680) 100%), url(../imgs/bannerfooter.webp);
+    justify-content: flex-start;
+    padding: 15vw 0;
   }
 
-  .banner4 .text1 h1 {
-    font-family: "Epilogue", sans-serif;
-    color: white;
-    margin-top: 24vw;
-    font-size: 6vw;
+  .banner4 h1 {
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 8vw;
+    margin-bottom: 8vw;
   }
 
-  .banner4 .text2 h1 {
-    font-family: "Epilogue", sans-serif;
+  .equipe-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 4vw;
+    width: 90vw;
+  }
+
+  .integrante {
+    background-color: rgb(7, 25, 39);
+    padding: 5vw;
+    border-radius: 4vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .integrante h3 {
+    color: rgba(10, 203, 227, 1);
+    font-family: "Poppins", sans-serif;
+    font-size: 5.5vw;
+    margin-bottom: 1.5vw;
+  }
+
+  .integrante p {
     color: white;
-    font-size: 6vw;
+    font-family: "Poppins", sans-serif;
+    font-size: 4vw;
+  }
+
+  .slider {
+    display: none;
   }
 
   .slides {
@@ -705,56 +732,70 @@
   }
 
   .footer {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "logo   logo"
+      "contatos links";
+    padding: 10vw 5vw;
+    gap: 8vw 4vw;
     background-color: black;
-    justify-content: space-around;
-    height: 50vw;
+    height: auto;
   }
 
-  .footer .info img {
-    height: 7vw;
-  }
-
-  .footer .info .info-pai {
+  .footer .info:first-child {
+    grid-area: logo;
     display: flex;
-    text-align: center;
     justify-content: center;
-    align-items: center;
-    width: 20vw;
-    gap: 3vw;
   }
 
-  .footer .info .info-pai p {
-    color: white;
-    font-size: 3vw;
-    width: 100vw;
-    font-family: "Epilogue", sans-serif;
+  .footer .info:first-child img {
+    width: 35vw;
+    height: auto;
   }
 
-  .footer .info {
+  .footer .info:nth-child(2) {
+    grid-area: contatos;
     display: flex;
-    gap: 3vw;
     flex-direction: column;
-    justify-content: center;
+    gap: 4vw;
   }
 
-  .footer .info p {
+  .footer .info-pai {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer .info-pai img {
+    width: 6vw;
+    margin-right: 3vw;
+    flex-shrink: 0;
+  }
+
+  .footer .info-pai p {
     color: white;
-    font-size: 3vw;
+    font-size: 3.5vw;
+    font-family: "Epilogue", sans-serif;
+    margin: 0;
   }
 
   .footer .info-filho {
+    grid-area: links;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 3vw;
   }
 
   .footer .info-filho p {
-    font-family: "Epilogue", sans-serif;
     color: white;
-    font-size: 3vw;
-    gap: 10vw;
-    text-align: center;
+    font-size: 3.5vw;
+    font-family: "Epilogue", sans-serif;
+    text-align: right;
+    margin: 0;
+  }
+
+  .footer .info-filho p strong {
+    font-size: 4vw;
   }
 }
