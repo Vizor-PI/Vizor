@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Usuários</title>
+
+    <link rel="stylesheet" href="assets/css/css-dashboard/dashboard.css" />
+    <link rel="stylesheet" href="assets/css/css-dashboard/navbar.css" />
+
+    <link rel="icon" href="assets/imgs/logosDash/home.png" type="image/x-icon"/>
+</head>
+<body onload="construirLista()">
+    <nav class="navbar" id="navbarConstructor">   
+    </nav>
+    <div class="container-xl">
+        <div class="cabecalho">
+            <h1>Gestão de Usuários</h1>
+            <button>Cadastrar usuario</button>
+        </div>
+        <div id="listaDeUsuarios">
+        </div>
+    </div>
+</body>
+</html>
+<script src="js/navbar.js"></script>
+<script>
+    function construirLista(){
+
+        fetch("/dadosUsuario/listar",{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(resultado => {
+            resultado.json().then(json =>{
+                console.log(json)
+                const usuario = json[0];
+                console.log(usuario)
+            for(c = 0; c < json.length; c++){
+            listaDeUsuarios.innerHTML += 
+            `
+            <div class="informacoes">
+                <div class="cabecalho-Infos">nome: ${json[c].NomeUsuario}:</div>
+                <div>telefone: ${json[c].Telefone} email: ${json[c].EmailUsuario} cargo: ${json[c].cargo} </div>
+                <div class="botoes-users">    
+                    <button>Excluir</button>
+                    <button onclick="editarUser${c}.showModal()">Editar</button>
+                </div>
+            <dialog id="editarUser${c}">
+                <h1>${json[c].NomeUsuario}</h1>
+                <h3>${json[c].CPF}</h3>
+                <p>Telefone: ${json[c].Telefone}</p>
+                <input id="ipt_telefone${c+1}"">
+                <p>Email: ${json[c].EmailUsuario}</p>
+                <input id="ipt_email${c+1}">
+                <p> Cargo: ${json[c].cargo}</p>
+                <input id="ipt_cargo${c+1}">
+                <button onclick="salvarEdicao(${c+1})">Salvar</button>
+            <dialog>
+            </div>
+            `
+        }
+            })
+        })
+
+        
+    }
+    function salvarEdicao(id){
+        console.log(id)
+        novoTelefoneUser = document.getElementById("ipt_telefone" + id).value
+        novoEmailUser = document.getElementById("ipt_email" + id).value
+        novoCargoUser = document.getElementById("ipt_cargo"+id).value
+
+        fetch(`/atualizarUsuario/${id}`,{
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                emailServer: novoEmailUser,
+                telefoneServer: novoTelefoneUser,
+                cargoServer: novoCargoUser
+            }),
+        })
+        .then(function (resposta){
+            console.log("resposta: ",resposta);
+            if(resposta.ok){
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Usuario atualizado com sucesso!",
+                    showConfirmButton: false,
+                    timer: 4000,
+                    background: "rgb(0,0,0,0.9)",
+                    color: "#f1f1f1",
+                    heightAuto: false,
+                    customClass: {
+                        popup: 'alerta-custom',   // caixa toda
+                        title: 'alerta-titulo',   // só o título
+                        icon: 'alerta-icone'      // só o ícone
+                        }
+                });
+                editarUserId = document.getElementById(editarUser + (id-1))
+                setTimeout(() => {
+                    editarUserId(c-1).close();
+                },"8000");
+            }else {
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Erro ao atualizar usuário!",
+                showConfirmButton: false,
+                timer: 4000,
+                background: "rgb(0,0,0,0.9)",
+                color: "#f1f1f1",
+                heightAuto: false,
+                customClass: {
+                    popup: 'alerta-custom',   // caixa toda
+                    title: 'alerta-titulo',   // só o título
+                    icon: 'alerta-icone'      // só o ícone
+                    }
+          });
+        }
+        }).catch(function(resposta){
+            console.log(`#ERRO: ${resposta}`);
+        });
+
+    }
+</script>

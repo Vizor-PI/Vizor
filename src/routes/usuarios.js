@@ -16,4 +16,8 @@ router.put("/atualizar", function (req, res) {
     usuarioController.atualizar(req, res);
 });
 
+router.put("/atualizarUsuario/:id", function(req,res){
+    usuarioController.atualizarUsuario(req,res);
+});
+
 module.exports = router;
