@@ -73,7 +73,7 @@
         novoEmailUser = document.getElementById("ipt_email" + id).value
         novoCargoUser = document.getElementById("ipt_cargo"+id).value
 
-        fetch(`/atualizarUsuario/${id}`,{
+        fetch(`usuarios/atualizarUsuario/${id}`,{
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
