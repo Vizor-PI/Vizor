@@ -32,9 +32,21 @@ function atualizar(email, senha, senhaNova, usuario) {
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
-
+function atualizarUsuarios(email, telefone, cargo){
+    console.log("Executando a instrução atualizar usuarios")
+    var instrucaoSql = 
+    `
+    UPDATE usuario
+    set email = ${email}
+    set telefone = ${telefone}
+    set cargo = ${cargo}
+    WHERE id = ${id};
+    `
+    return database.executar(instrucaoSql);
+}
 module.exports = {
     autenticar,
     cadastrar,
-    atualizar
+    atualizar,
+    atualizarUsuarios
 };

@@ -104,8 +104,31 @@ function atualizar(req, res) {
     }
 }
 
+function atualizarUsuario(req, res){
+    var id = req.params.id;
+    var email = req.body.emailServer;
+    var telefone = req.body.telefoneServer;
+    var cargo = req.body.cargoServer;
+
+    usuarioModel.atualizarUsuarios(email,telefone,cargo,id)
+    .then(
+        function(resultado){
+            res.json(resultado);
+    }
+    ).catch(
+        function (erro){
+            console.log(erro);
+            console.log(
+                "Houve um erro ao atualizar os dados"
+            )
+            res.status(500).json(erro.sqlMessage);
+        }
+    );
+}
+
 module.exports = {
     autenticar,
     cadastrar,
-    atualizar
+    atualizar,
+    atualizarUsuario
 }

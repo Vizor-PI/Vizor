@@ -3,11 +3,55 @@ CREATE DATABASE IF NOT EXISTS vizor;
 USE vizor;
 
 -- Cria as tabelas
+
+CREATE TABLE pais(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+nome VARCHAR(200)
+);
+
+CREATE TABLE estado(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+nome VARCHAR(100),
+fkPais INT,
+FOREIGN KEY (fkPais) REFERENCES pais(id)
+);
+
+CREATE TABLE cidade(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+nome VARCHAR(200) NOT NULL,
+fkEstado INT,
+FOREIGN KEY (fkEstado) REFERENCES estado(id)
+);
+
+CREATE TABLE zona(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+zona VARCHAR(10)
+);
+
+CREATE TABLE endereco (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    rua VARCHAR(300) NOT NULL,
+    numero INT NOT NULL,
+    cep CHAR(8) NOT NULL,
+    bairro VARCHAR(100) NOT NULL,
+    fkZona INT,
+    fkCidade INT,
+    FOREIGN KEY (fkCidade) REFERENCES cidade(id),
+    FOREIGN KEY (fkZona) REFERENCES zona(id)
+);
+
+CREATE TABLE cargo(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+titulo VARCHAR(100)
+);
+
 CREATE TABLE empresa (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     nome VARCHAR(150) NOT NULL,
     cnpj VARCHAR(14) NOT NULL,
-    codigoAtivacao VARCHAR(5) NOT NULL
+    codigoAtivacao VARCHAR(5) NOT NULL,
+    fkEndereco INT,
+    FOREIGN KEY (fkEndereco) REFERENCES endereco(id)
 );
 
 CREATE TABLE usuario (
@@ -18,22 +62,31 @@ CREATE TABLE usuario (
     cpf CHAR(11),
     telefone CHAR(11),
     fkEmpresa INT,
-    FOREIGN KEY (fkEmpresa) REFERENCES empresa(id)
+    fkCargo INT,
+    FOREIGN KEY (fkEmpresa) REFERENCES empresa(id),
+    FOREIGN KEY (fkCargo) REFERENCES cargo(id)
 );
 
-CREATE TABLE miniPc (
+CREATE TABLE miniComputador (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     fkEmpresa INT,
+    fkEndereco INT,
+	FOREIGN KEY (fkEndereco) REFERENCES endereco(id),
     FOREIGN KEY (fkEmpresa) REFERENCES empresa(id)
 );
 
-CREATE TABLE endereco (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    rua VARCHAR(300) NOT NULL,
-    numero INT NOT NULL,
-    cep CHAR(8) NOT NULL,
-    fkMinipc INT,
-    FOREIGN KEY (fkMinipc) REFERENCES miniPc(id)
+CREATE TABLE componente(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+nome VARCHAR(50) NOT NULL,
+unidadeMedida VARCHAR(10)
+);
+CREATE TABLE parametro(
+id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+fkMinipc INT,
+fkComponente INT,
+qtdAlerta INT,
+FOREIGN KEY (fkMinipc) REFERENCES miniComputador(id),
+FOREIGN KEY (fkComponente) REFERENCES componente(id)
 );
 
 CREATE TABLE alertas (
@@ -47,6 +100,13 @@ INSERT INTO empresa (nome, cnpj, codigoAtivacao) VALUES
 ('Tech Solutions', '12345678000190', 'A1234'),
 ('Green Energy', '98765432000155', 'B5678'),
 ('Smart Innovations', '11122233000177', 'C9012');
+
+INSERT INTO cargo(titulo) VALUES
+('Gestor de produtos'),
+('Engenheiro de qualidade de produtos'),
+('Q&A'),
+('Administrador do site'),
+('Analista de produção');
 
 -- Inserindo usuários
 INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa) VALUES
@@ -107,3 +167,5 @@ VALUES (
 );
 
 SELECT * FROM usuario;
+
+SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario FROM usuario as us

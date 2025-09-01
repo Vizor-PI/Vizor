@@ -9,7 +9,20 @@ function listarDados(id) {
     `;
   console.log("Executando a instrução SQL: \n" + instrucaoSql);
   return database.executar(instrucaoSql);
-}module.exports = {
-  listarDados
+}
+
+function listarUsuarios(){
+  console.log("Acessei o model listarUsuarios")
+  var instrucaoSql = 
+  `
+  SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , us.cargo FROM usuario as us;
+  `
+  console.log("Executando a instrução SQL")
+  return database.executar(instrucaoSql);
+}
+
+module.exports = {
+  listarDados,
+  listarUsuarios
 }
 
