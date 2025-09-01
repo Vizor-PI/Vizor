@@ -11,11 +11,14 @@ function listarDados(id) {
   return database.executar(instrucaoSql);
 }
 
-function listarUsuarios(){
+function listarUsuarios() {
   console.log("Acessei o model listarUsuarios")
-  var instrucaoSql = 
-  `
-  SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , us.cargo FROM usuario as us;
+  var instrucaoSql =
+    `
+  SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , car.titulo 
+  FROM usuario us
+  INNER JOIN cargo car
+  WHERE us.fkcargo = car.id;
   `
   console.log("Executando a instrução SQL")
   return database.executar(instrucaoSql);
