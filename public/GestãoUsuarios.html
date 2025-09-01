@@ -43,7 +43,7 @@
             `
             <div class="informacoes">
                 <div class="cabecalho-Infos">nome: ${json[c].NomeUsuario}:</div>
-                <div>telefone: ${json[c].Telefone} email: ${json[c].EmailUsuario} cargo: ${json[c].cargo} </div>
+                <div>telefone: ${json[c].Telefone} email: ${json[c].EmailUsuario} cargo: ${json[c].Cargo} </div>
                 <div class="botoes-users">    
                     <button>Excluir</button>
                     <button onclick="editarUser${c}.showModal()">Editar</button>
@@ -55,7 +55,7 @@
                 <input id="ipt_telefone${c+1}"">
                 <p>Email: ${json[c].EmailUsuario}</p>
                 <input id="ipt_email${c+1}">
-                <p> Cargo: ${json[c].cargo}</p>
+                <p> Cargo: ${json[c].Cargo}</p>
                 <input id="ipt_cargo${c+1}">
                 <button onclick="salvarEdicao(${c+1})">Salvar</button>
             <dialog>
