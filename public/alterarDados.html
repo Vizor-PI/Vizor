@@ -26,23 +26,23 @@
         <a href="inicioDash.html"> Início </a>
       </li>
       <li class="nav-item">
+        <img src="assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
+        <a href="gestaoUsuarios.html"> Painel </a>
+      </li>
+      <li class="nav-item">
         <img src="assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
-
         <a href="dashboard.html"> Dashboard </a>
       </li>
       <li class="nav-item">
         <img src="assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
-
         <a href="avisoDash.html"> Avisos </a>
       </li>
       <li class="nav-item">
         <img src="assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash" />
-
-        <a href="#" style="color: aqua"> Alterar dados </a>
+        <a href="alterarDados.html" style="color: aqua"> Alterar dados </a>
       </li>
       <li class="nav-item">
         <img src="assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash" />
-
         <a href="infoConta.html"> Info. da conta </a>
       </li>
     </ul>
@@ -62,24 +62,24 @@
         <div class="entradasAlterarDados">
           <div class="input">
             <p class="textoInput textoInputFixo">Nome de usuário</p>
-            <input id="usuario_input" placeholder="Usuário" disabled/>
+            <input id="usuario_input" placeholder="Usuário" disabled />
           </div>
           <div class="input">
             <p class="textoInput textoInputFixo">Email</p>
-            <input id="email_input" placeholder="usuario@email.com" disabled/>
+            <input id="email_input" placeholder="usuario@email.com" disabled />
           </div>
           <div class="input">
             <p class="textoInput">Nova Senha</p>
-            <input id="senhaNova_input" placeholder="****************" type="password"/>
+            <input id="senhaNova_input" placeholder="****************" type="password" />
           </div>
           <div class="input">
             <p class="textoInput">Repita a nova senha</p>
-            <input placeholder="****************" type="password"/>
+            <input placeholder="****************" type="password" />
           </div>
         </div>
         <div class="input">
           <p class="textoInput">Senha atual</p>
-          <input id="senha_input" placeholder="****************" type="password"/>
+          <input id="senha_input" placeholder="****************" type="password" />
         </div>
         <button onclick="atualizar()">Confirmar</button>
       </div>
@@ -94,42 +94,42 @@
   var nom;
   var usu;
   var sen;
-  
-      fetch(`/dadosUsuario/listar/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(async (response) => {
-        if (response.ok) {
-          const text = await response.text();
-          return text ? JSON.parse(text) : null;
-        } else {
-          console.error("Nenhum dado encontrado");
-          return null;
-        }
-        console.log(response);
-      })
-      .then(resposta => {
+
+  fetch(`/dadosUsuario/listar/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
+      } else {
+        console.error("Nenhum dado encontrado");
+        return null;
+      }
+      console.log(response);
+    })
+    .then(resposta => {
+      if (resposta && resposta.length > 0) {
+        console.log(resposta);
         if (resposta && resposta.length > 0) {
           console.log(resposta);
-          if (resposta && resposta.length > 0) {
-          console.log(resposta);
-          
+
           resposta.forEach(element => {
             nom = resposta[0].NomeUsuario,
-            usu = resposta[0].EmailUsuario,
-            sen = resposta[0].SenhaUsuario 
-          }); 
+              usu = resposta[0].EmailUsuario,
+              sen = resposta[0].SenhaUsuario
+          });
           document.getElementById('usuario_input').placeholder = nom || "Nome não cadastrado";
           document.getElementById('email_input').placeholder = usu || "Empresa não cadastrada";
         }
-        }
-      })
-      .catch(erro => {
-        console.error("Erro na requisição:", erro);
-      });
+      }
+    })
+    .catch(erro => {
+      console.error("Erro na requisição:", erro);
+    });
 
 
   function atualizar() {
