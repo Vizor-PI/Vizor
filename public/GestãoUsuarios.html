@@ -19,7 +19,12 @@
     <div class="container-xl">
         <div class="cabecalho">
             <h1>Gestão de Usuários</h1>
-            <button>Cadastrar usuario</button>
+            <button>
+                <a href="cadastro.html">
+                  Cadastrar usuario  
+                </a>
+                
+            </button>
         </div>
         <div id="listaDeUsuarios">
         </div>
@@ -85,11 +90,9 @@
                     })
                         .then(resultado => resultado.json())
                         .then(cargos => {
-                            console.log(cargos)
                             for (c = 0; c < json.length; c++) {
                                 for (i = 0; i < cargos.length; i++) {
                                     let select_cargo = document.getElementById("select_cargo" + json[c].id);
-                                    console.log(cargos[i]);
                                     select_cargo.innerHTML +=
                                         ` 
                                                 <option value="${cargos[i].idCargo}">${cargos[i].titulo}</option> 
