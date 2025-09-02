@@ -20,4 +20,8 @@ router.put("/atualizarUsuario/:id", function(req,res){
     usuarioController.atualizarUsuario(req,res);
 });
 
+router.delete("/deletarUsuario/:id", function(req,res){
+    usuarioController.deletarUsuario(req,res);
+})
+
 module.exports = router;

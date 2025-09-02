@@ -20,7 +20,7 @@ function listarUsuarios(req,res){
         if(resultado.length > 0){
             res.status(200).json(resultado);
         } else {
-            res.status(204).send("Nenhum dado dado encontrado")
+            res.status(204).send("Nenhum dado encontrado")
         }
     }).catch(function (erro){
         console.log(erro);
@@ -29,8 +29,22 @@ function listarUsuarios(req,res){
     });
 }
 
+function listarCargos(req,res){
+    dadosUsuarioModel.listarCargos().then(function (resultado){
+        if(resultado.length > 0){
+            res.status(200).json(resultado);
+        } else {
+            res.status(204).send("Nenhum dado encontrado")
+        }
+    }).catch(function(erro){
+        console.log(erro);
+        console.log("Houve um erro ao buscar os dados: ", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
 
 module.exports = {
     listarDados,
-    listarUsuarios
+    listarUsuarios,
+    listarCargos
 }

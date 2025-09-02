@@ -15,7 +15,7 @@ function listarUsuarios() {
   console.log("Acessei o model listarUsuarios")
   var instrucaoSql =
     `
-  SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , car.titulo 
+  SELECT us.id, us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , car.titulo 
   FROM usuario us
   INNER JOIN cargo car
   WHERE us.fkcargo = car.id;
@@ -24,8 +24,18 @@ function listarUsuarios() {
   return database.executar(instrucaoSql);
 }
 
+function listarCargos(){
+console.log("Acessei o model listarCargos")
+var instrucaoSql = 
+`
+SELECT id as idCargo, titulo FROM cargo;
+`
+return database.executar(instrucaoSql);
+}
+
 module.exports = {
   listarDados,
-  listarUsuarios
+  listarUsuarios,
+  listarCargos
 }
 

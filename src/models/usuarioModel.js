@@ -37,14 +37,25 @@ function atualizarUsuarios(email, telefone, cargo,id){
     var instrucaoSql = 
     `
     UPDATE usuario
-    SET email = "${email}", telefone = "${telefone}", cargo = "${cargo}"
+    SET email = "${email}", telefone = "${telefone}", titulo = "${cargo}"
     WHERE id = ${id};
     `
     return database.executar(instrucaoSql);
+}
+
+function deletarUsuario(id){
+console.log("Executando a instrução deletar usuarios")
+var instrucaoSql =
+`
+DELETE FROM usuario WHERE id = ${id};
+`
+console.log(instrucaoSql)
+return database.executar(instrucaoSql);
 }
 module.exports = {
     autenticar,
     cadastrar,
     atualizar,
-    atualizarUsuarios
+    atualizarUsuarios,
+    deletarUsuario
 };
