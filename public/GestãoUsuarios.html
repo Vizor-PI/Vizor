@@ -153,11 +153,12 @@
                 }
             })
     }
+    
     function salvarEdicao(id) {
         console.log(id)
         novoTelefoneUser = document.getElementById("ipt_telefone" + id).value
         novoEmailUser = document.getElementById("ipt_email" + id).value
-        novoCargoUser = document.getElementById("ipt_cargo" + id).value
+        novoCargoUser = document.getElementById("select_cargo" + id).value
 
         fetch(`usuarios/atualizarUsuario/${id}`, {
             method: "PUT",

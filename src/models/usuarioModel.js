@@ -37,7 +37,7 @@ function atualizarUsuarios(email, telefone, cargo,id){
     var instrucaoSql = 
     `
     UPDATE usuario
-    SET email = "${email}", telefone = "${telefone}", titulo = "${cargo}"
+    SET email = "${email}", telefone = "${telefone}", fkCargo = "${cargo}"
     WHERE id = ${id};
     `
     return database.executar(instrucaoSql);
