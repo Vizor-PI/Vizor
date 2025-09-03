@@ -30,6 +30,7 @@
     flex-direction: column;
     color: rgb(12, 145, 145);
     padding-bottom: 2vw;
+    margin-top: 2vw;
 }
 
 .container .container-xl .cabecalho button {
@@ -44,7 +45,7 @@
 .container .container-xl .listaDeUsuarios {
     display: block;
     width: 95%;
-    height: 20vw;
+    height: 17vw;
     gap: 0.2vw;
     margin-bottom: 2vw;
     flex-direction: column;
@@ -128,20 +129,31 @@
     color: white;
     font-weight: normal;
     font-size: 1vw;
+    align-items: center;
 }
 
 .tex .telefonee {
-    margin-left: 1.2vw;
+    padding-left: 7vw;
+}
+
+.tex .nomee {
+    margin-left: 2.5vw;
+}
+
+.tex .emaill {
+    margin-left: 2vw;
 }
 
 .tex .cargoo {
-    margin-right: 1.5vw;
+    margin-left: 2vw;
 }
 
-.tex button {
-    color: transparent;
-    background-color: transparent;
-    border: transparent;
+.tex input {
+    border-radius: 0.5vw;
+    width: 12vw;
+    height: 1.5vw;
+    margin-right: 1.8vw;
+    padding-left: 0.5vw;
 }
 
 .botoes-users {

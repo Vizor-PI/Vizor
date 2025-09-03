@@ -64,11 +64,11 @@
                 </button>
             </div>
             <div class="tex">
-            <p class="nomee">Nome:</p>
-            <p class="telefonee">Telefone:</p>
-            <p class="emaill">Email:</p>
-            <p class="cargoo">Cargo:</p>
-            <button> </button>
+                <p class="nomee">Nome:</p>
+                <p class="telefonee">Telefone:</p>
+                <p class="emaill">Email:</p>
+                <p class="cargoo">Cargo:</p>
+                <input placeholder="Pesquisar por nome" type="text" id="filtroNome" oninput="filtrarUsuarios()">
             </div>
             <div class="listaDeUsuarios" id="listaDeUsuarios">
             </div>
@@ -80,6 +80,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/navbar.js"></script>
 <script>
+    let usuarios = [];
+
     function construirLista() {
         fetch("/dadosUsuario/listar", {
             method: "GET",
@@ -89,6 +91,7 @@
         })
             .then(resultado => {
                 resultado.json().then(json => {
+                    usuarios = json;
                     console.log(json)
                     for (c = 0; c < json.length; c++) {
                         listaDeUsuarios.innerHTML +=
@@ -265,4 +268,55 @@
             });
 
     }
+
+    function filtrarUsuarios() {
+    const termo = document.getElementById("filtroNome").value.toLowerCase();
+    const lista = document.getElementById("listaDeUsuarios");
+    lista.innerHTML = "";
+
+    usuarios.forEach(user => {
+        if (user.NomeUsuario.toLowerCase().includes(termo)) {
+            lista.innerHTML += `
+                <div class="linha">
+                    <div class="informacoes">
+                        <div class="cabecalho-Infos">${user.NomeUsuario}:</div>
+                        <div class="dadosPessoais">
+                            <div>${user.Telefone}</div> 
+                            <div>${user.EmailUsuario}</div> 
+                            <div>${user.titulo}</div>
+                        </div>
+                    </div>
+                    <div class="botoes-users">    
+                        <button class="excluir" onclick="document.getElementById('excluirUser${user.id}').showModal()">
+                            <img src="assets/imgs/logosDash/recycle-bin.png" alt="">
+                        </button>
+                        <button class="editar" onclick="document.getElementById('editarUser${user.id}').showModal()">
+                            <img src="assets/imgs/logosDash/edit.png" alt="">
+                        </button>
+                    </div>
+                </div>
+                <dialog id="editarUser${user.id}">
+                    <h1>${user.NomeUsuario}</h1>
+                    <h3>${user.CPF}</h3>
+                    <p>Telefone: ${user.Telefone}</p>
+                    <input id="ipt_telefone${user.id}">
+                    <p>Email: ${user.EmailUsuario}</p>
+                    <input id="ipt_email${user.id}">
+                    <p>Cargo: ${user.titulo}</p>
+                    <div>
+                        <select id="select_cargo${user.id}"></select>
+                    </div>
+                    <button onclick="salvarEdicao(${user.id})">Salvar</button>
+                </dialog>
+                <dialog id="excluirUser${user.id}">
+                    <h1>Excluir o usuário ${user.NomeUsuario}</h1>
+                    <h3>${user.titulo}</h3>
+                    <p>Digite o nome do usuário</p>
+                    <input id="confExcluir${user.id}" placeholder="${user.NomeUsuario}">
+                    <button onclick="excluirUser(${user.id})">Confirmar</button>
+                </dialog>
+            `;
+        }
+    });
+}
 </script>
