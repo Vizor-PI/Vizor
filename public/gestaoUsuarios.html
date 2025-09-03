@@ -90,6 +90,7 @@
             },
         })
             .then(resultado => {
+                listaDeUsuarios.innerHTML = ""
                 resultado.json().then(json => {
                     usuarios = json;
                     console.log(json)
@@ -98,12 +99,15 @@
                             `
                             <div class="linha">
                             <div class="informacoes">
-                                <div class="cabecalho-Infos">${json[c].NomeUsuario}:</div>
+                                <div class="cabecalho-Infos">${json[c].NomeUsuario}</div>
                                 <div class="dadosPessoais"><div>${json[c].Telefone}</div> <div>${json[c].EmailUsuario}</div> <div>${json[c].titulo}</div> </div>
                             </div>
                                 <div class="botoes-users">    
-                                    <button class="excluir" onclick="excluirUser${c}.showModal()"><img src="assets/imgs/logosDash/recycle-bin.png" alt=""></button>
-                                    <button class="editar" onclick="editarUser${c}.showModal()"><img src="assets/imgs/logosDash/edit.png" alt=""></button>
+                                    <button class="excluir" id = "botaoGestao" onclick="excluirUser(${json[c].id}, '${json[c].NomeUsuario}')">
+                                        <img src="assets/imgs/logosDash/recycle-bin.png" alt="">
+                                    </button>
+
+                                    <button class="editar" id = "botaoGestao" onclick="editarUser${c}.showModal()"><img src="assets/imgs/logosDash/edit.png" alt=""></button>
                                 </div>
                             </div>
                                 <dialog id="editarUser${c}">
@@ -157,55 +161,84 @@
     }
 
 
-    function excluirUser(id) {
-        console.log("Peguei o ID: " + id);
-        fetch(`usuarios/deletarUsuario/${id}`, {
-            method: "DELETE",
-            header: {
-                "Content-Type": "application/json",
+    function excluirUser(id, nomeUsuario) {
+        Swal.fire({
+            title: `Excluir o usuário ${nomeUsuario}?`,
+            text: "Digite o nome do usuário para confirmar:",
+            input: "text",
+            inputPlaceholder: nomeUsuario,
+            showCancelButton: true,
+            confirmButtonText: "Excluir",
+            cancelButtonText: "Cancelar",
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+                popup: 'alerta-custom',
+                title: 'alerta-titulo',
+                icon: 'alerta-icone'
+            },
+            preConfirm: (valorDigitado) => {
+                if (valorDigitado !== nomeUsuario) {
+                    Swal.showValidationMessage("Nome incorreto! Digite exatamente como aparece.");
+                    return false;
+                }
+                return true;
             }
-        })
-            .then(function (resposta) {
-                console.log("resposta: ", resposta);
-                if (resposta.ok) {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Usuario deletado com sucesso!",
-                        showConfirmButton: false,
-                        timer: 4000,
-                        background: "rgb(0,0,0,0.9)",
-                        color: "#f1f1f1",
-                        heightAuto: false,
-                        customClass: {
-                            popup: 'alerta-custom',   // caixa toda
-                            title: 'alerta-titulo',   // só o título
-                            icon: 'alerta-icone'      // só o ícone
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Se o usuário confirmou e digitou certo, chama o fetch
+                fetch(`usuarios/deletarUsuario/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                })
+                    .then((resposta) => {
+                        if (resposta.ok) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Usuário deletado com sucesso!",
+                                timer: 3000,
+                                showConfirmButton: false,
+                                background: "rgb(0,0,0,0.9)",
+                                color: "#f1f1f1",
+                                heightAuto: false,
+                                customClass: {
+                                    popup: 'alerta-custom',
+                                    title: 'alerta-titulo',
+                                    icon: 'alerta-icone'
+                                },
+                            });
+
+                            // Atualiza a lista
+                            construirLista();
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Erro ao deletar usuário!",
+                                timer: 3000,
+                                showConfirmButton: false,
+                                background: "rgb(0,0,0,0.9)",
+                                color: "#f1f1f1",
+                                heightAuto: false,
+                                customClass: {
+                                    popup: 'alerta-custom',
+                                    title: 'alerta-titulo',
+                                    icon: 'alerta-icone'
+                                },
+                            });
                         }
                     })
-                    excluirUserId = document.getElementById(excluirUser + id)
-                    setTimeout(() => {
-                        excluirUserId(id).close();
-                    }, "8000");
-                } else {
-                    Swal.fire({
-                        position: "center",
-                        icon: "error",
-                        title: "Erro ao deletar usuário!",
-                        showConfirmButton: false,
-                        timer: 4000,
-                        background: "rgb(0,0,0,0.9)",
-                        color: "#f1f1f1",
-                        heightAuto: false,
-                        customClass: {
-                            popup: 'alerta-custom',   // caixa toda
-                            title: 'alerta-titulo',   // só o título
-                            icon: 'alerta-icone'      // só o ícone
-                        }
+                    .catch((erro) => {
+                        console.error("Erro no fetch: ", erro);
+                        Swal.fire("Erro", "Não foi possível excluir o usuário", "error");
                     });
-                }
-            })
+            }
+        });
     }
+
 
     function salvarEdicao(id) {
         console.log(id)
@@ -270,13 +303,13 @@
     }
 
     function filtrarUsuarios() {
-    const termo = document.getElementById("filtroNome").value.toLowerCase();
-    const lista = document.getElementById("listaDeUsuarios");
-    lista.innerHTML = "";
+        const termo = document.getElementById("filtroNome").value.toLowerCase();
+        const lista = document.getElementById("listaDeUsuarios");
+        lista.innerHTML = "";
 
-    usuarios.forEach(user => {
-        if (user.NomeUsuario.toLowerCase().includes(termo)) {
-            lista.innerHTML += `
+        usuarios.forEach(user => {
+            if (user.NomeUsuario.toLowerCase().includes(termo)) {
+                lista.innerHTML += `
                 <div class="linha">
                     <div class="informacoes">
                         <div class="cabecalho-Infos">${user.NomeUsuario}:</div>
@@ -308,15 +341,8 @@
                     </div>
                     <button onclick="salvarEdicao(${user.id})">Salvar</button>
                 </dialog>
-                <dialog id="excluirUser${user.id}">
-                    <h1>Excluir o usuário ${user.NomeUsuario}</h1>
-                    <h3>${user.titulo}</h3>
-                    <p>Digite o nome do usuário</p>
-                    <input id="confExcluir${user.id}" placeholder="${user.NomeUsuario}">
-                    <button onclick="excluirUser(${user.id})">Confirmar</button>
-                </dialog>
             `;
-        }
-    });
-}
+            }
+        });
+    }
 </script>

@@ -49,7 +49,7 @@
     gap: 0.2vw;
     margin-bottom: 2vw;
     flex-direction: column;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .container .container-xl .listaDeUsuarios::-webkit-scrollbar {
@@ -168,4 +168,28 @@
     display: flex;
     gap: 0.5vw;
     margin-right: 0.5vw;
+}
+
+
+#botaoGestao{
+    cursor: pointer;
+}
+
+.alerta-custom {
+    width: 90%;
+    max-width: 600px;
+    height: auto;
+    max-height: 80vh;
+}
+
+  .alerta-custom-senha {
+    padding: 2rem !important;
+    border-radius: 15px;
+    width: 50vw;
+    height: 80vh;
+  }
+
+.alerta-icone {
+    width: 8rem;       
+    margin: 0 auto;     
 }
