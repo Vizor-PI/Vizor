@@ -112,10 +112,10 @@
           sessionStorage.EMAIL_USUARIO = json.email;
           sessionStorage.NOME_USUARIO = json.nome;
           sessionStorage.ID_USUARIO = json.id;
-          sessionStorage.CODIGO = json.codigo;
+          sessionStorage.CODIGO = json.codigoAtivacao;
 
           setTimeout(function () {
-            window.location = "dashboard.html";
+            window.location = "telasDashboard/dashboard.html";
           }, 1000); // apenas para exibir o loading
 
         });

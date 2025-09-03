@@ -39,9 +39,16 @@
           <input id="senha_input" placeholder="****************" type="password" />
         </div>
         <div class="input">
-          <p class="textoInput">Repita a senha</p>
+          <p class="textoInput">Confirme a senha</p>
           <input id="confirmacao_senha_input" placeholder="****************" type="password" />
         </div>
+        <div class="input-Container" style="flex-direction: row;display: flex;">
+          <p class="textoInput">Cargo</p>
+          <select disabled id="selectCargo">
+            <option>Administrador</option>
+          </select>
+        </div>
+
       </div>
       <button onclick="cadastrar()">Cadastrar</button>
       <p style="color: white" id="textoCadastro">
@@ -193,7 +200,7 @@
         confirmButton: 'meu-confirm-btn',
         cancelButton: 'meu-cancel-btn',
         title: 'meu-titulo',
-        popup : 'alertaCodigo'
+        popup: 'alertaCodigo'
       },
       showCancelButton: true,
       confirmButtonText: "Enviar",
