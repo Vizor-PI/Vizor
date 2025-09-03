@@ -1,44 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/login.css" />
+    <link
+      rel="icon"
+      href="assets/imgs/logosDash/logoDashboard.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <title>Login</title>
+    <script src="./js/sessao.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./assets/css/login.css" />
-  <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-  <title>Login</title>
-  <script src="./js/sessao.js"></script>
-</head>
-
-<body>
-  <div class="loginContainer">
-    <div class="divCentralLogin">
-      <a href="index.html"><img src="./assets/imgs/Logo.png" id="logoVizor" /></a>
-      <div class="entradasLogin">
-        <h1>Login</h1>
-        <div class="input">
-          <p class="textoInput">Email</p>
-          <input id="ipt_email" placeholder="user@email.com" />
+  <body>
+    <div class="loginContainer">
+      <div class="divCentralLogin">
+        <a href="index.html"
+          ><img src="./assets/imgs/Logo.png" id="logoVizor"
+        /></a>
+        <div class="entradasLogin">
+          <h1>Login</h1>
+          <div class="input">
+            <p class="textoInput">Email</p>
+            <input id="ipt_email" placeholder="user@email.com" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Senha</p>
+            <input
+              id="ipt_senha"
+              placeholder="****************"
+              type="password"
+            />
+          </div>
+          <button onclick="login()">Entrar</button>
         </div>
-        <div class="input">
-          <p class="textoInput">Senha</p>
-          <input id="ipt_senha" placeholder="****************" type="password" />
-        </div>
-        <button onclick="login()">Entrar</button>
         <p style="color: white" id="textoCadastro">
           Ainda não tem uma conta?
-          <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoCadastro"><a
-              href="cadastro.html">Cadastre-se</a></span>
+          <span
+            style="color: rgba(10, 203, 227, 1); cursor: pointer"
+            id="textoCadastro"
+            ><a href="cadastro.html">Cadastre-se</a></span
+          >
           gratuitamente
+        </p>
+        <p>
+          <a onclick="validarSenha()" id="textoCadastro">Cadastro de empresa</a>
         </p>
       </div>
     </div>
-  </div>
-  <div id="div_aguardar">
-  </div>
-</body>
-
+    <div id="div_aguardar"></div>
+  </body>
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -47,7 +63,6 @@
     var senhaVar = ipt_senha.value;
 
     if (emailVar == "" || senhaVar == "") {
-
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -59,15 +74,14 @@
         confirmButtonColor: "#f1f1f1",
         heightAuto: false,
         customClass: {
-          popup: 'alerta-custom',
-          title: 'alerta-titulo',
-          icon: 'alerta-icone'
-        }
+          popup: "alerta-custom",
+          title: "alerta-titulo",
+          icon: "alerta-icone",
+        },
       });
 
       return false;
-    }
-    else {
+    } else {
     }
 
     console.log("FORM LOGIN: ", emailVar);
@@ -76,80 +90,139 @@
     fetch("/usuarios/autenticar", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         emailServer: emailVar,
-        senhaServer: senhaVar
-      })
-    }).then(function (resposta) {
-      console.log("ESTOU NO THEN DO entrar()!")
+        senhaServer: senhaVar,
+      }),
+    })
+      .then(function (resposta) {
+        console.log("ESTOU NO THEN DO entrar()!");
 
-      if (resposta.ok) {
-        console.log(resposta);
+        if (resposta.ok) {
+          console.log(resposta);
 
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Login realizado!",
-          showConfirmButton: false,
-          timer: 4000,
-          background: "rgb(0,0,0,0.9)", // Cor escura de fundo
-          color: "#f1f1f1",
-          confirmButtonColor: "#f1f1f1",
-          heightAuto: false,
-          customClass: {
-            popup: 'alerta-custom',
-            title: 'alerta-titulo',
-            icon: 'alerta-icone'
-          }
-        });
-
-
-        resposta.json().then(json => {
-          console.log(json);
-          console.log(JSON.stringify(json));
-          sessionStorage.EMAIL_USUARIO = json.email;
-          sessionStorage.NOME_USUARIO = json.nome;
-          sessionStorage.ID_USUARIO = json.id;
-          sessionStorage.AQUARIOS = JSON.stringify(json.aquarios)
-
-          setTimeout(function () {
-            window.location = "dashboard.html";
-          }, 1000); // apenas para exibir o loading
-
-        });
-
-      } else {
-
-        console.log("Houve um erro ao tentar realizar o login!");
-
-        resposta.text().then(texto => {
-          console.error(texto);
           Swal.fire({
             position: "center",
-            icon: "error",
-            title: "Erro ao realizar o login",
+            icon: "success",
+            title: "Login realizado!",
             showConfirmButton: false,
             timer: 4000,
-            background: "rgb(0,0,0,0.9)",
+            background: "rgb(0,0,0,0.9)", // Cor escura de fundo
             color: "#f1f1f1",
             confirmButtonColor: "#f1f1f1",
             heightAuto: false,
             customClass: {
-              popup: 'alerta-custom',
-              title: 'alerta-titulo',
-              icon: 'alerta-icone'
-            }
+              popup: "alerta-custom",
+              title: "alerta-titulo",
+              icon: "alerta-icone",
+            },
           });
-        });
-      }
 
-    }).catch(function (erro) {
-      console.log(erro);
-    })
+          resposta.json().then((json) => {
+            console.log(json);
+            console.log(JSON.stringify(json));
+            sessionStorage.EMAIL_USUARIO = json.email;
+            sessionStorage.NOME_USUARIO = json.nome;
+            sessionStorage.ID_USUARIO = json.id;
+            sessionStorage.AQUARIOS = JSON.stringify(json.aquarios);
+
+            setTimeout(function () {
+              window.location = "dashboard.html";
+            }, 1000); // apenas para exibir o loading
+          });
+        } else {
+          console.log("Houve um erro ao tentar realizar o login!");
+
+          resposta.text().then((texto) => {
+            console.error(texto);
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Erro ao realizar o login",
+              showConfirmButton: false,
+              timer: 4000,
+              background: "rgb(0,0,0,0.9)",
+              color: "#f1f1f1",
+              confirmButtonColor: "#f1f1f1",
+              heightAuto: false,
+              customClass: {
+                popup: "alerta-custom",
+                title: "alerta-titulo",
+                icon: "alerta-icone",
+              },
+            });
+          });
+        }
+      })
+      .catch(function (erro) {
+        console.log(erro);
+      });
 
     return false;
   }
 
+  async function validarSenha() {
+    const senhaCorreta = "vizorcadastrar";
+
+    const { value: senhaDigitada } = await Swal.fire({
+      title: "Acesso Restrito",
+      input: "password",
+      inputLabel:
+        "Para cadastrar uma nova empresa, por favor, insira a senha de administrador.",
+      inputPlaceholder: "Digite a senha",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      background: "rgb(0,0,0,0.9)",
+      color: "#f1f1f1",
+      customClass: {
+        popup: "alerta-custom",
+        title: "alerta-titulo",
+        input: "alerta-input",
+        confirmButton: "alerta-confirm-button",
+        cancelButton: "alerta-cancel-button",
+      },
+      inputValidator: (value) => {
+        if (!value) {
+          return "Você precisa digitar uma senha!";
+        }
+      },
+    });
+
+    if (senhaDigitada) {
+      if (senhaDigitada === senhaCorreta) {
+        Swal.fire({
+          icon: "success",
+          title: "Acesso Permitido!",
+          text: "Redirecionando para a página de cadastro...",
+          timer: 2000,
+          showConfirmButton: false,
+          background: "rgb(0,0,0,0.9)",
+          color: "#f1f1f1",
+          customClass: {
+            popup: "alerta-custom",
+            title: "alerta-titulo",
+          },
+        });
+
+        setTimeout(() => {
+          window.location.href = "cadastroEmpresa.html";
+        }, 2000);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Senha Incorreta!",
+          text: "A senha inserida não é válida. Tente novamente.",
+          background: "rgb(0,0,0,0.9)",
+          color: "#f1f1f1",
+          customClass: {
+            popup: "alerta-custom",
+            title: "alerta-titulo",
+          },
+        });
+      }
+    }
+  }
 </script>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/cadastroEmpresa.css" />
+    <link
+      rel="icon"
+      href="assets/imgs/logosDash/logoDashboard.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+
+    <title>Cadastro</title>
+  </head>
+
+  <body onload="buscarEmpresas()">
+    <div class="cadastroContainer">
+      <div class="divCentralCadastro">
+        <a href="index.html"
+          ><img src="./assets/imgs/Logo.png" id="logoVizor"
+        /></a>
+        <h1>Cadastro de empresa</h1>
+        <div class="entradasCadastro">
+          <div class="input">
+            <p class="textoInput">Nome da empresa</p>
+            <input id="nome_input" placeholder="Empresa" />
+          </div>
+          <div class="input">
+            <p class="textoInput">CNPJ</p>
+            <input id="cnpj_input" placeholder="XX.XXX.XXX/0001-XX" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Codigo de ativação</p>
+            <input id="codigo_input" placeholder="XXXX" />
+          </div>
+        </div>
+        <button onclick="cadastrar()">Cadastrar</button>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+
+    <div id="mensagem_erro"></div>
+    <div id="cardErro"></div>
+  </body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./js/alertasSW.js"></script>
+
+<script>
+  function cadastrar() {
+    // aguardar();
+
+    //Recupere o valor da nova input pelo nome do id
+    // Agora vá para o método fetch logo abaixo
+    var nomeVar = nome_input.value;
+    var cnpjVar = cnpj_input.value;
+    var codigoVar = codigo_input.value;
+
+    if (nomeVar == "" || cnpjVar == "" || codigoVar == "") {
+      Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "Todos os campos precisam ser preenchidos!",
+        background: "rgb(20, 20, 20)",
+        color: "#f1f1f1",
+      });
+      return false;
+    }
+
+    var cnpjLimpo = cnpjVar.replace(/[^\d]/g, "");
+
+    if (cnpjLimpo.length < 14) {
+      Swal.fire({
+        icon: "error",
+        title: "CNPJ Inválido",
+        text: "O CNPJ deve conter 14 dígitos.",
+        background: "rgb(20, 20, 20)",
+        color: "#f1f1f1",
+      });
+      return false;
+    }
+
+    fetch("/empresa/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nomeServer: nomeVar,
+        cnpjServer: cnpjLimpo,
+        codigoServer: codigoVar,
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          Swal.fire({
+            title: "Empresa cadastrada com sucesso!",
+            text: "Redirecionando para a tela de Login...",
+            icon: "success",
+            draggable: true,
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            background: "rgb(20, 20, 20)",
+            color: "#f1f1f1",
+          });
+
+          setTimeout(() => {
+            window.location = "login.html";
+          }, 3000);
+        } else {
+          resposta.json().then((erro) => {
+            console.error(erro);
+            Swal.fire({
+              title: "Erro ao cadastrar!",
+              text:
+                erro.mensagem || "Houve um erro no servidor. Tente novamente.",
+              icon: "error",
+              draggable: true,
+              background: "rgb(20, 20, 20)",
+              color: "#f1f1f1",
+            });
+          });
+        }
+      })
+      .catch(function (erro) {
+        console.log(`#ERRO: ${erro}`);
+        Swal.fire({
+          title: "Erro na comunicação!",
+          text: "Não foi possível se conectar ao servidor. Verifique sua conexão.",
+          icon: "error",
+          draggable: true,
+          background: "rgb(20, 20, 20)",
+          color: "#f1f1f1",
+        });
+      });
+
+    return false;
+  }
+</script>
