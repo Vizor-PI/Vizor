@@ -30,6 +30,7 @@
     flex-direction: column;
     color: rgb(12, 145, 145);
     padding-bottom: 2vw;
+    margin-top: 2vw;
 }
 
 .container .container-xl .cabecalho button {
@@ -44,11 +45,11 @@
 .container .container-xl .listaDeUsuarios {
     display: block;
     width: 95%;
-    height: 20vw;
+    height: 17vw;
     gap: 0.2vw;
     margin-bottom: 2vw;
     flex-direction: column;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .container .container-xl .listaDeUsuarios::-webkit-scrollbar {
@@ -128,20 +129,38 @@
     color: white;
     font-weight: normal;
     font-size: 1vw;
+    align-items: center;
 }
 
 .tex .telefonee {
-    margin-left: 1.2vw;
+    padding-left: 7vw;
+}
+
+.tex .nomee {
+    margin-left: 2.5vw;
+}
+
+.tex .emaill {
+    margin-left: 2vw;
 }
 
 .tex .cargoo {
-    margin-right: 1.5vw;
+    margin-left: 2vw;
 }
 
-.tex button {
-    color: transparent;
+.tex input {
+    border-radius: 0.5vw;
+    width: 12vw;
+    height: 1.5vw;
+    margin-right: 1.8vw;
+    padding-left: 0.5vw;
     background-color: transparent;
-    border: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.tex input::placeholder {
+    color: white;
 }
 
 .botoes-users {
@@ -149,4 +168,28 @@
     display: flex;
     gap: 0.5vw;
     margin-right: 0.5vw;
+}
+
+
+#botaoGestao{
+    cursor: pointer;
+}
+
+.alerta-custom {
+    width: 90%;
+    max-width: 600px;
+    height: auto;
+    max-height: 80vh;
+}
+
+  .alerta-custom-senha {
+    padding: 2rem !important;
+    border-radius: 15px;
+    width: 50vw;
+    height: 80vh;
+  }
+
+.alerta-icone {
+    width: 8rem;       
+    margin: 0 auto;     
 }
