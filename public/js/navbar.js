@@ -1,4 +1,3 @@
- 
  navbarConstructor.innerHTML +=
  `
  <!-- Logo -->

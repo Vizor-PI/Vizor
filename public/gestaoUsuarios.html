@@ -82,12 +82,16 @@
 <script>
     let usuarios = [];
 
+
     function construirLista() {
+        let codigo = sessionStorage.CODIGO;
+
         fetch("/dadosUsuario/listar", {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
+            body: JSON.stringify({ codigoEmpresa: codigo })
         })
             .then(resultado => {
                 listaDeUsuarios.innerHTML = ""

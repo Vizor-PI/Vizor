@@ -11,26 +11,27 @@ function listarDados(id) {
   return database.executar(instrucaoSql);
 }
 
-function listarUsuarios() {
+function listarUsuarios(codigo) {
   console.log("Acessei o model listarUsuarios")
   var instrucaoSql =
     `
-  SELECT us.id, us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , car.titulo 
+   SELECT us.id, us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , car.titulo 
   FROM usuario us
-  INNER JOIN cargo car
-  WHERE us.fkcargo = car.id;
+  INNER JOIN cargo car ON car.id = us.fkCargo
+  INNER JOIN empresa emp ON emp.id = us.fkEmpresa
+  WHERE us.fkcargo = car.id AND codigoAtivacao = '${codigo}';
   `
   console.log("Executando a instrução SQL")
   return database.executar(instrucaoSql);
 }
 
-function listarCargos(){
-console.log("Acessei o model listarCargos")
-var instrucaoSql = 
-`
+function listarCargos() {
+  console.log("Acessei o model listarCargos")
+  var instrucaoSql =
+    `
 SELECT id as idCargo, titulo FROM cargo;
 `
-return database.executar(instrucaoSql);
+  return database.executar(instrucaoSql);
 }
 
 module.exports = {

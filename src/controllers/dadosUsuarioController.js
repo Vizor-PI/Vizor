@@ -16,7 +16,9 @@ function listarDados(req, res) {
 }
 
 function listarUsuarios(req,res){
-    dadosUsuarioModel.listarUsuarios().then(function (resultado){
+    let codigo = req.body.codigoEmpresa;
+
+    dadosUsuarioModel.listarUsuarios(codigo).then(function (resultado){
         if(resultado.length > 0){
             res.status(200).json(resultado);
         } else {
