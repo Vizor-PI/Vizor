@@ -35,18 +35,31 @@
 .container .container-xl .cabecalho button {
     border-radius: 0.3vw;
     background-color: rgb(12, 145, 145);
-    border: none;    
+    border: none;
     font-weight: 600;
     padding: 0.5vw;
     width: 16vw;
 }
 
 .container .container-xl .listaDeUsuarios {
-    display: flex;
+    display: block;
     width: 95%;
+    height: 20vw;
     gap: 0.2vw;
-    padding-bottom: 2vw;
+    margin-bottom: 2vw;
     flex-direction: column;
+    overflow-y: scroll;
+}
+
+.container .container-xl .listaDeUsuarios::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgb(3, 14, 23);
+}
+
+.container .container-xl .listaDeUsuarios::-webkit-scrollbar-thumb {
+    background-color: rgb(12, 145, 145);
+    border-radius: 5vw;
+    border: 1px solid white;
 }
 
 .container .container-xl .informacoes {
@@ -63,13 +76,13 @@
     width: 15%;
 }
 
-.container .container-xl .informacoes .dadosPessoais{
+.container .container-xl .informacoes .dadosPessoais {
     display: flex;
     justify-content: space-evenly;
     width: 70%;
 }
 
-.container .container-xl .informacoes .dadosPessoais div{
+.container .container-xl .informacoes .dadosPessoais div {
     width: 100%;
 }
 
@@ -96,7 +109,7 @@
 
 .editar {
     background-color: transparent;
-    border-radius: 0.3vw;    
+    border-radius: 0.3vw;
     font-weight: 600;
     margin-top: 0.3vw;
     margin-bottom: 0.3vw;
@@ -132,7 +145,7 @@
 }
 
 .botoes-users {
-    margin-left: 2vw; 
+    margin-left: 2vw;
     display: flex;
     gap: 0.5vw;
     margin-right: 0.5vw;
