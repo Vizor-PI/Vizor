@@ -154,6 +154,13 @@
     height: 1.5vw;
     margin-right: 1.8vw;
     padding-left: 0.5vw;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.tex input::placeholder {
+    color: white;
 }
 
 .botoes-users {
