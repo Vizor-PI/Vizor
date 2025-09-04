@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./assets/css/cadastroUsuario.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/cadastroUsuario.css">
     <link
       rel="icon"
       href="assets/imgs/logosDash/logoDashboard.png"
@@ -21,7 +22,7 @@
     <div class="cadastroContainer">
       <div class="divCentralCadastro">
         <a href="index.html"
-          ><img src="./assets/imgs/Logo.png" id="logoVizor"
+          ><img src="../assets/imgs/Logo.png" id="logoVizor"
         /></a>
         <h1>Cadastro</h1>
         <div class="entradasCadastro">
@@ -62,19 +63,13 @@
             style="flex-direction: row; display: flex"
           >
             <p class="textoInput">Cargo</p>
-            <select disabled id="selectCargo">
-              <option>Administrador</option>
+            <select id="selectCargo">
+              <option value="2">Gestor de produtos</option>
+              <option value="3">Engenheiro de qualidade</option>
             </select>
           </div>
         </div>
         <button onclick="cadastrar()">Cadastrar</button>
-        <p style="color: white" id="textoCadastro">
-          <span
-            style="color: rgba(10, 203, 227, 1); cursor: pointer"
-            id="textoCadastro"
-            ><a href="login.html">Já tem uma conta?</a></span
-          >
-        </p>
         <p style="color: white" id="textoInstrucao">
           <span
             style="color: rgba(10, 203, 227, 1); cursor: pointer"
