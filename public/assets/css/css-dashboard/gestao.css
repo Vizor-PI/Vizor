@@ -4,9 +4,9 @@
   font-family: "Inter", sans-serif;
 }
 
-body {
+/* body {
   overflow: hidden;
-}
+} */
 
 .container {
   width: 84vw;
@@ -53,7 +53,7 @@ body {
   gap: 0.2vw;
   margin-bottom: 2vw;
   flex-direction: column;
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
 }
 
 .container .container-xl .listaDeUsuarios::-webkit-scrollbar {
@@ -179,10 +179,8 @@ body {
 }
 
 .alerta-custom {
-  width: 90%;
-  max-width: 600px;
-  height: auto;
-  max-height: 80vh;
+  width: 40vw;
+  height: 30vh;
 }
 
 .alerta-custom-senha {
@@ -193,6 +191,64 @@ body {
 }
 
 .alerta-icone {
-  width: 8rem;
+  width: 20vw;
+  height: 20vh;
   margin: 0 auto;
+  display: block;
+  position: relative;
+}
+
+dialog {
+    border: none;               
+    border-radius: 10px;
+    padding: 3vw;
+    height: 60vh;              
+    width: 40vw;
+    max-width: 90%;
+    background-color: black;
+    opacity: 1;
+    color: white;
+    text-align: center; 
+    border: 2px solid white;         
+}
+
+dialog input,
+dialog button {
+    display: block;               
+    margin: 0.8vw auto;          
+    width: 80%;                  
+    padding: 0.8vw;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+    font-size: 1vw;
+}
+
+dialog select {
+    display: block;               
+    margin: 0.8vw auto;          
+    width: 80%;                  
+    padding: 0.8vw;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+    font-size: 1vw;
+}
+
+select option{
+  color: black;
+}
+
+dialog button{
+  background-color: #7066E0;
+  color: white !important;
+}
+
+dialog h1,
+dialog h3,
+dialog p {
+    margin: 0.8vw 0;     
+          
 }
