@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
 
-*{
-  font-family: "Akatab", sans-serif;;
+* {
+  font-family: "Akatab", sans-serif;
   overflow-x: hidden;
 }
-
 
 body {
   margin: 0;
@@ -14,6 +13,7 @@ body {
   height: 100vh;
   width: 100vw;
   /* overflow-y: hidden; */
+  overflow: hidden;
 }
 
 /* Conteúdo principal */
@@ -27,7 +27,7 @@ body {
   width: auto;
 }
 
-a{
+a {
   text-decoration: none;
   color: white;
   font-size: 1vw;

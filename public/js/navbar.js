@@ -1,5 +1,4 @@
-// navbarConstructor.innerHTML +=
- `
+navbarConstructor.innerHTML += `
  <!-- Logo -->
       <a href="#">
         <img
@@ -42,6 +41,4 @@
         <img src="../assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash" />
         <a href="../index.html" onclick="limparSessao()"> Sair </a>
       </div>
- `
- 
- 
+ `;

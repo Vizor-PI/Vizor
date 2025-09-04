@@ -1,195 +1,198 @@
-@import url('https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 * {
-    font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  overflow: hidden;
 }
 
 .container {
-    width: 84vw;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    background-color: rgb(3, 14, 23);
+  width: 84vw;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  background-color: rgb(3, 14, 23);
 }
 
 .container .container-xl {
-    background-color: rgb(7, 33, 53);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 75vw;
-    border-radius: 1.5vw;
-    height: fit-content;
+  background-color: rgb(7, 33, 53);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 75vw;
+  border-radius: 1.5vw;
+  height: fit-content;
 }
 
 .container .container-xl .cabecalho {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: rgb(12, 145, 145);
-    padding-bottom: 2vw;
-    margin-top: 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: rgb(12, 145, 145);
+  padding-bottom: 2vw;
+  margin-top: 2vw;
 }
 
 .container .container-xl .cabecalho button {
-    border-radius: 0.3vw;
-    background-color: rgb(12, 145, 145);
-    border: none;
-    font-weight: 600;
-    padding: 0.5vw;
-    width: 16vw;
+  border-radius: 0.3vw;
+  background-color: rgb(12, 145, 145);
+  border: none;
+  font-weight: 600;
+  padding: 0.5vw;
+  width: 16vw;
 }
 
 .container .container-xl .listaDeUsuarios {
-    display: block;
-    width: 95%;
-    height: 17vw;
-    gap: 0.2vw;
-    margin-bottom: 2vw;
-    flex-direction: column;
-    /* overflow-y: scroll; */
+  display: block;
+  width: 95%;
+  height: 17vw;
+  gap: 0.2vw;
+  margin-bottom: 2vw;
+  flex-direction: column;
+  /* overflow-y: scroll; */
 }
 
 .container .container-xl .listaDeUsuarios::-webkit-scrollbar {
-    width: 10px;
-    background-color: rgb(3, 14, 23);
+  width: 10px;
+  background-color: rgb(3, 14, 23);
 }
 
 .container .container-xl .listaDeUsuarios::-webkit-scrollbar-thumb {
-    background-color: rgb(12, 145, 145);
-    border-radius: 5vw;
-    border: 1px solid white;
+  background-color: rgb(12, 145, 145);
+  border-radius: 5vw;
+  border: 1px solid white;
 }
 
 .container .container-xl .informacoes {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    padding: 1vw;
-    font-size: 0.8vw;
-    font-weight: bold;
-    color: rgb(12, 145, 145);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 1vw;
+  font-size: 0.8vw;
+  font-weight: bold;
+  color: rgb(12, 145, 145);
 }
 
 .container .container-xl .informacoes div {
-    width: 15%;
+  width: 15%;
 }
 
 .container .container-xl .informacoes .dadosPessoais {
-    display: flex;
-    justify-content: space-evenly;
-    width: 70%;
+  display: flex;
+  justify-content: space-evenly;
+  width: 70%;
 }
 
 .container .container-xl .informacoes .dadosPessoais div {
-    width: 100%;
+  width: 100%;
 }
 
 .container .container-xl .linha {
-    border: 1px rgb(255, 255, 255) solid;
-    display: flex;
-    border-radius: 0.3vw;
-    justify-content: space-evenly;
-    justify-content: center;
-    align-items: center;
+  border: 1px rgb(255, 255, 255) solid;
+  display: flex;
+  border-radius: 0.3vw;
+  justify-content: space-evenly;
+  justify-content: center;
+  align-items: center;
 }
 
 .excluir {
-    border-color: transparent;
-    background-color: rgb(255, 255, 255);
-    padding: 0.5vw;
-    margin-bottom: 0.3vw;
-    border-radius: 0.3vw;
-    width: 3.5vw;
-    font-weight: 600;
-    margin-top: 0.3vw;
-    text-align: center;
+  border-color: transparent;
+  background-color: rgb(255, 255, 255);
+  padding: 0.5vw;
+  margin-bottom: 0.3vw;
+  border-radius: 0.3vw;
+  width: 3.5vw;
+  font-weight: 600;
+  margin-top: 0.3vw;
+  text-align: center;
 }
 
 .editar {
-    background-color: transparent;
-    border-radius: 0.3vw;
-    font-weight: 600;
-    margin-top: 0.3vw;
-    margin-bottom: 0.3vw;
-    color: rgb(255, 255, 255);
-    border-color: rgb(255, 255, 255);
-    padding: 0.5vw;
-    width: 3.5vw;
-    text-align: center;
+  background-color: transparent;
+  border-radius: 0.3vw;
+  font-weight: 600;
+  margin-top: 0.3vw;
+  margin-bottom: 0.3vw;
+  color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  padding: 0.5vw;
+  width: 3.5vw;
+  text-align: center;
 }
 
 .tex {
-    display: flex;
-    width: 100%;
-    justify-content: space-evenly;
-    gap: 9vw;
-    color: white;
-    font-weight: normal;
-    font-size: 1vw;
-    align-items: center;
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  gap: 9vw;
+  color: white;
+  font-weight: normal;
+  font-size: 1vw;
+  align-items: center;
 }
 
 .tex .telefonee {
-    padding-left: 7vw;
+  padding-left: 7vw;
 }
 
 .tex .nomee {
-    margin-left: 2.5vw;
+  margin-left: 2.5vw;
 }
 
 .tex .emaill {
-    margin-left: 2vw;
+  margin-left: 2vw;
 }
 
 .tex .cargoo {
-    margin-left: 2vw;
+  margin-left: 2vw;
 }
 
 .tex input {
-    border-radius: 0.5vw;
-    width: 12vw;
-    height: 1.5vw;
-    margin-right: 1.8vw;
-    padding-left: 0.5vw;
-    background-color: transparent;
-    border: 1px solid white;
-    color: white;
+  border-radius: 0.5vw;
+  width: 12vw;
+  height: 1.5vw;
+  margin-right: 1.8vw;
+  padding-left: 0.5vw;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
 }
 
 .tex input::placeholder {
-    color: white;
+  color: white;
 }
 
 .botoes-users {
-    margin-left: 2vw;
-    display: flex;
-    gap: 0.5vw;
-    margin-right: 0.5vw;
+  margin-left: 2vw;
+  display: flex;
+  gap: 0.5vw;
+  margin-right: 0.5vw;
 }
 
-
-#botaoGestao{
-    cursor: pointer;
+#botaoGestao {
+  cursor: pointer;
 }
 
 .alerta-custom {
-    width: 90%;
-    max-width: 600px;
-    height: auto;
-    max-height: 80vh;
+  width: 90%;
+  max-width: 600px;
+  height: auto;
+  max-height: 80vh;
 }
 
-  .alerta-custom-senha {
-    padding: 2rem !important;
-    border-radius: 15px;
-    width: 50vw;
-    height: 80vh;
-  }
+.alerta-custom-senha {
+  padding: 2rem !important;
+  border-radius: 15px;
+  width: 50vw;
+  height: 80vh;
+}
 
 .alerta-icone {
-    width: 8rem;       
-    margin: 0 auto;     
+  width: 8rem;
+  margin: 0 auto;
 }
