@@ -78,7 +78,7 @@
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/navbar.js"></script>
+<script src="../js/navbar.js"></script>
 <script>
     let usuarios = [];
 
@@ -108,10 +108,10 @@
                             </div>
                                 <div class="botoes-users">    
                                     <button class="excluir" id = "botaoGestao" onclick="excluirUser(${json[c].id}, '${json[c].NomeUsuario}')">
-                                        <img src="assets/imgs/logosDash/recycle-bin.png" alt="">
+                                        <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
                                     </button>
 
-                                    <button class="editar" id = "botaoGestao" onclick="editarUser${c}.showModal()"><img src="assets/imgs/logosDash/edit.png" alt=""></button>
+                                    <button class="editar" id = "botaoGestao" onclick="editarUser${c}.showModal()"><img src="../assets/imgs/logosDash/edit.png" alt=""></button>
                                 </div>
                             </div>
                                 <dialog id="editarUser${c}">

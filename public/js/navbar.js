@@ -1,4 +1,4 @@
- navbarConstructor.innerHTML +=
+// navbarConstructor.innerHTML +=
  `
  <!-- Logo -->
       <a href="#">
