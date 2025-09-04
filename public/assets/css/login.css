@@ -12,12 +12,13 @@
 }
 
 @media (max-width: 480px) {
+
   .alerta-custom {
-    padding: 2rem !important;
-    border-radius: 15px;
-    width: 80vw;
-    height: 55vh;
-  }
+  padding: 2rem !important;
+  border-radius: 15px;
+  width: 80vw;
+  height: 55vh;
+}
   html {
     margin: 0;
     padding: 0;
