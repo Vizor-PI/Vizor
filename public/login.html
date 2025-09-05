@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./assets/css/login.css" />
-    <link
-      rel="icon"
-      href="assets/imgs/logosDash/logoDashboard.png"
-      type="image/x-icon"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-      rel="stylesheet"
-    />
-    <title>Login</title>
-    <script src="./js/sessao.js"></script>
-  </head>
 
-  <body>
-    <div class="loginContainer">
-      <div class="divCentralLogin">
-        <a href="index.html"
-          ><img src="./assets/imgs/Logo.png" id="logoVizor"
-        /></a>
-        <div class="entradasLogin">
-          <h1>Login</h1>
-          <div class="input">
-            <p class="textoInput">Email</p>
-            <input id="ipt_email" placeholder="user@email.com" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Senha</p>
-            <input
-              id="ipt_senha"
-              placeholder="****************"
-              type="password"
-            />
-          </div>
-          <button onclick="login()">Entrar</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/css/login.css" />
+  <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+  <title>Login</title>
+  <script src="./js/sessao.js"></script>
+</head>
+
+<body>
+  <div class="loginContainer">
+    <div class="divCentralLogin">
+      <a href="index.html"><img src="./assets/imgs/Logo.png" id="logoVizor" /></a>
+      <div class="entradasLogin">
+        <h1>Login</h1>
+        <div class="input">
+          <p class="textoInput">Email</p>
+          <input id="ipt_email" placeholder="user@email.com" />
         </div>
-        <p style="color: white" id="textoCadastro">
-          Ainda não tem uma conta?
-          <span
-            style="color: rgba(10, 203, 227, 1); cursor: pointer"
-            id="textoCadastro"
-            ><a href="cadastro.html">Cadastre-se</a></span
-          >
-          gratuitamente
-        </p>
-        <p>
-          <a onclick="validarSenha()" id="textoCadastro">Cadastro de empresa</a>
-        </p>
+        <div class="input">
+          <p class="textoInput">Senha</p>
+          <input id="ipt_senha" placeholder="****************" type="password" />
+        </div>
+        <button onclick="login()">Entrar</button>
       </div>
+      <p style="color: white" id="textoCadastro">
+        Ainda não tem uma conta?
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoCadastro"><a
+            href="cadastro.html">Cadastre-se</a></span>
+        gratuitamente
+      </p>
+      <p>
+        <a onclick="validarSenha()" id="textoCadastroEmpresa">Cadastro de empresa</a>
+      </p>
     </div>
-    <div id="div_aguardar"></div>
-  </body>
+  </div>
+  <div id="div_aguardar"></div>
+</body>
+
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

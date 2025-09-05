@@ -18,6 +18,7 @@
     width: 80vw;
     height: 55vh;
   }
+
   html {
     margin: 0;
     padding: 0;
@@ -134,6 +135,15 @@
   }
 }
 
+  #textoCadastroEmpresa {
+    font-size: 1.6vw;
+    text-decoration: none;
+  }
+
+  #textoCadastroEmpresa:hover {
+    cursor: pointer;
+  }
+  
 @media (min-width: 481px) and (max-width: 949px) {
   html {
     margin: 0;
