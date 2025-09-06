@@ -78,7 +78,7 @@ CREATE TABLE cargo(
 CREATE TABLE usuario (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     nome VARCHAR(150) NOT NULL,
-    email VARCHAR(150) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
     senha VARCHAR(150) NOT NULL,
     cpf CHAR(11),
     telefone CHAR(11),
@@ -121,16 +121,17 @@ INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
 ('Smart Innovations', '11122233000177', 'C9012', NULL);
 
 INSERT INTO cargo(titulo) VALUES
+('Administrador'),
 ('Gestor de produtos'),
-('Engenheiro de qualidade de produtos'),
-('Q&A'),
-('Administrador do site'),
-('Analista de produção');
+('Engenheiro de qualidade de produtos');
 
 INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) VALUES
 ('Guilherme Leon', 'guilherme@example.com', 'senha123', '12345678901', '11999998888', 1, 1),
 ('Ana Silva', 'ana@example.com', 'senha456', '10987654321', '11988887777', 2, 2),
 ('Carlos Pereira', 'carlos@example.com', 'senha789', '11223344556', '11977776666', 3, 3);
+
+INSERT INTO usuario(nome,email,senha,cpf,telefone,fkEmpresa,fkCargo) VALUES
+('Guilherme Leon', 'guilherme@example.com', 'senha123', '12345678901', '11999998888', 1, 1);
 
 INSERT INTO miniComputador (fkEmpresa, fkEndereco) VALUES
 (1, NULL),
@@ -183,5 +184,6 @@ SELECT * FROM usuario;
 SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario 
 FROM usuario as us;
 
-
 SELECT * FROM usuario;
+
+SELECT us.id, us.nome, us.email, empresa.codigoAtivacao, us.fkcargo FROM usuario AS us INNER JOIN empresa ON empresa.id = us.fkEmpresa WHERE email = email AND senha = senha;

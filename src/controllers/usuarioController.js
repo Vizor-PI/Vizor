@@ -65,7 +65,12 @@ function cadastrar(req, res) {
       })
       .catch(function (erro) {
         console.log(erro);
-        console.log(
+
+        if (erro.errno === 1062) {
+          res.status(409).send("Esse email já está cadastrado! Tente outro")
+          return
+        }
+         console.log(
           "\nHouve um erro ao realizar o cadastro! Erro: ",
           erro.sqlMessage
         );

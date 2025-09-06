@@ -1,96 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./assets/css/cadastro.css" />
-    <link
-      rel="icon"
-      href="assets/imgs/logosDash/logoDashboard.png"
-      type="image/x-icon"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-      rel="stylesheet"
-    />
 
-    <title>Cadastro</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/css/cadastro.css" />
+  <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 
-  <body onload="buscarEmpresas()">
-    <div class="cadastroContainer">
-      <div class="divCentralCadastro">
-        <a href="index.html"
-          ><img src="./assets/imgs/Logo.png" id="logoVizor"
-        /></a>
-        <h1>Cadastro</h1>
-        <div class="entradasCadastro">
-          <div class="input">
-            <p class="textoInput">Nome de usuário</p>
-            <input id="nome_input" placeholder="Usuário" />
-          </div>
-          <div class="input">
-            <p class="textoInput">CPF</p>
-            <input id="cpf_input" placeholder="XXX. XXX. XXX -XX" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Email</p>
-            <input id="email_input" placeholder="usuario@email.com" />
-          </div>
-          <div class="input">
-            <p class="textoInput">numero de telefone</p>
-            <input id="telefone_input" placeholder="(XX) XXXXX-XXXX" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Senha</p>
-            <input
-              id="senha_input"
-              placeholder="****************"
-              type="password"
-            />
-          </div>
-          <div class="input">
-            <p class="textoInput">Confirme a senha</p>
-            <input
-              id="confirmacao_senha_input"
-              placeholder="****************"
-              type="password"
-            />
-          </div>
-          <div
-            class="input-Container"
-            style="flex-direction: row; display: flex"
-          >
-            <p class="textoInput">Cargo</p>
-            <select disabled id="cargo_input">
-              <option value="1">Administrador</option>
-            </select>
-          </div>
+  <title>Cadastro</title>
+</head>
+
+<body onload="buscarEmpresas()">
+  <div class="cadastroContainer">
+    <div class="divCentralCadastro">
+      <a href="index.html"><img src="./assets/imgs/Logo.png" id="logoVizor" /></a>
+      <h1>Cadastro</h1>
+      <div class="entradasCadastro">
+        <div class="input">
+          <p class="textoInput">Nome de usuário</p>
+          <input id="nome_input" placeholder="Usuário" />
         </div>
-        <button onclick="cadastrar()">Cadastrar</button>
-        <p style="color: white" id="textoCadastro">
-          <span
-            style="color: rgba(10, 203, 227, 1); cursor: pointer"
-            id="textoCadastro"
-            ><a href="login.html">Já tem uma conta?</a></span
-          >
-        </p>
-        <p style="color: white" id="textoInstrucao">
-          <span
-            style="color: rgba(10, 203, 227, 1); cursor: pointer"
-            id="textoInstrucao"
-            onclick="instrucoesSenha()"
-            >Instruções de cadastro
-          </span>
-        </p>
+        <div class="input">
+          <p class="textoInput">CPF</p>
+          <input id="cpf_input" placeholder="XXX. XXX. XXX -XX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Email</p>
+          <input id="email_input" placeholder="usuario@email.com" />
+        </div>
+        <div class="input">
+          <p class="textoInput">numero de telefone</p>
+          <input id="telefone_input" placeholder="(XX) XXXXX-XXXX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Senha</p>
+          <input id="senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Confirme a senha</p>
+          <input id="confirmacao_senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input-Container" style="flex-direction: row; display: flex">
+          <p class="textoInput">Cargo</p>
+          <select disabled id="cargo_input">
+            <option value="1">Administrador</option>
+          </select>
+        </div>
       </div>
+      <button onclick="cadastrar()">Cadastrar</button>
+      <p style="color: white" id="textoCadastro">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoCadastro"><a href="login.html">Já tem uma
+            conta?</a></span>
+      </p>
+      <p style="color: white" id="textoInstrucao">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoInstrucao"
+          onclick="instrucoesSenha()">Instruções de cadastro
+        </span>
+      </p>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
 
-    <div id="mensagem_erro"></div>
-    <div id="cardErro"></div>
-  </body>
+  <div id="mensagem_erro"></div>
+  <div id="cardErro"></div>
+</body>
+
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="./js/alertasSW.js"></script>
@@ -278,6 +254,10 @@
                 window.location = "login.html";
               }, "3000");
             } else {
+              resposta.text().then(textoErro => {
+                alerta("error", `${textoErro}`)
+                return
+              })
               alerta("error", "Erro ao realizar o cadastro");
             }
           })

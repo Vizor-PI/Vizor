@@ -1,94 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
-    <link
-      rel="stylesheet"
-      href="../assets/css/css-dashboard/cadastroUsuario.css"
-    />
-    <link
-      rel="icon"
-      href="assets/imgs/logosDash/logoDashboard.png"
-      type="image/x-icon"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-      rel="stylesheet"
-    />
 
-    <title>Cadastro</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/cadastroUsuario.css" />
+  <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 
-  <body onload="buscarEmpresas()">
-    <div class="cadastroContainer">
-      <div class="divCentralCadastro">
-        <a href="./gestaoUsuarios.html"
-          ><img src="../assets/imgs/Logo.png" id="logoVizor"
-        /></a>
-        <h1>Cadastro de usuários</h1>
-        <div class="entradasCadastro">
-          <div class="input">
-            <p class="textoInput">Nome de usuário</p>
-            <input id="nome_input" placeholder="Usuário" />
-          </div>
-          <div class="input">
-            <p class="textoInput">CPF</p>
-            <input id="cpf_input" placeholder="XXX. XXX. XXX -XX" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Email</p>
-            <input id="email_input" placeholder="usuario@email.com" />
-          </div>
-          <div class="input">
-            <p class="textoInput">numero de telefone</p>
-            <input id="telefone_input" placeholder="(XX) XXXXX-XXXX" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Senha</p>
-            <input
-              id="senha_input"
-              placeholder="****************"
-              type="password"
-            />
-          </div>
-          <div class="input">
-            <p class="textoInput">Confirme a senha</p>
-            <input
-              id="confirmacao_senha_input"
-              placeholder="****************"
-              type="password"
-            />
-          </div>
-          <div
-            class="input-Container"
-            style="flex-direction: row; display: flex"
-          >
-            <p class="textoInput">Cargo</p>
-            <select id="cargo_input">
-              <option value="2">Gestor de produtos</option>
-              <option value="3">Engenheiro de qualidade</option>
-            </select>
-          </div>
+  <title>Cadastro</title>
+</head>
+
+<body onload="buscarEmpresas()">
+  <div class="cadastroContainer">
+    <div class="divCentralCadastro">
+      <a href="./gestaoUsuarios.html"><img src="../assets/imgs/Logo.png" id="logoVizor" /></a>
+      <h1>Cadastro de usuários</h1>
+      <div class="entradasCadastro">
+        <div class="input">
+          <p class="textoInput">Nome de usuário</p>
+          <input id="nome_input" placeholder="Usuário" />
         </div>
-        <button onclick="cadastrar()">Cadastrar</button>
-        <p style="color: white" id="textoInstrucao">
-          <span
-            style="color: rgba(10, 203, 227, 1); cursor: pointer"
-            id="textoInstrucao"
-            onclick="instrucoesSenha()"
-            >Instruções de cadastro
-          </span>
-        </p>
+        <div class="input">
+          <p class="textoInput">CPF</p>
+          <input id="cpf_input" placeholder="XXX. XXX. XXX -XX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Email</p>
+          <input id="email_input" placeholder="usuario@email.com" />
+        </div>
+        <div class="input">
+          <p class="textoInput">numero de telefone</p>
+          <input id="telefone_input" placeholder="(XX) XXXXX-XXXX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Senha</p>
+          <input id="senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Confirme a senha</p>
+          <input id="confirmacao_senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input-Container" style="flex-direction: row; display: flex">
+          <p class="textoInput">Cargo</p>
+          <select id="cargo_input">
+            <option value="2">Gestor de produtos</option>
+            <option value="3">Engenheiro de qualidade</option>
+          </select>
+        </div>
       </div>
+      <button onclick="cadastrar()">Cadastrar</button>
+      <p style="color: white" id="textoInstrucao">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoInstrucao"
+          onclick="instrucoesSenha()">Instruções de cadastro
+        </span>
+      </p>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
 
-    <div id="mensagem_erro"></div>
-    <div id="cardErro"></div>
-  </body>
+  <div id="mensagem_erro"></div>
+  <div id="cardErro"></div>
+</body>
+
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/public/js/alertasSW.js"></script>
@@ -105,7 +81,6 @@
         resposta.json().then((empresa) => {
           empresa.forEach((empresa) => {
             listaEmpresasCadastradas.push(empresa);
-
             console.log("listaEmpresasCadastradas");
             console.log(listaEmpresasCadastradas[0].Codigo);
           });
@@ -138,9 +113,28 @@
       background: "rgb(0,0,0,0.9)",
       color: "#fff",
       customClass: {
-        popup: "alerta-custom-senha", // caixa toda
-        title: "alerta-titulo", // só o título
-        icon: "alerta-icone", // só o ícone
+        popup: "alerta-custom-senha",
+        title: "alerta-titulo",
+        icon: "alerta-icone",
+      },
+    });
+  }
+
+  // Função genérica para todos os alertas
+  function alerta(icone, texto) {
+    Swal.fire({
+      position: "center",
+      icon: icone,
+      title: texto,
+      showConfirmButton: false,
+      timer: 4000,
+      background: "rgb(0,0,0,0.9)",
+      color: "#f1f1f1",
+      heightAuto: false,
+      customClass: {
+        popup: "alerta-custom",
+        title: "alerta-titulo",
+        icon: "alerta-icone",
       },
     });
   }
@@ -170,125 +164,39 @@
       telefoneVar == "" ||
       cargoVar == ""
     ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Atenção!",
-        text: "Todos os campos devem ser preenchidos!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("warning", "Todos os campos devem ser preenchidos!");
       return;
     }
     if (senhaVar.length < 6) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "Sua senha deve ter mais de 6 caracteres!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "Sua senha deve ter mais de 6 caracteres!");
       return;
     }
     if (confirmacaoSenhaVar != senhaVar) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "As senhas não correspondem!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "As senhas não correspondem!");
       return;
     }
     if (textoComArroba < 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "Seu email deve conter um @!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "Seu email deve conter um @!");
       return;
     }
     if (!regex.test(senhaVar)) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "Sua senha deve ter um caractere especial!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "Sua senha deve ter um caractere especial!");
       return;
     }
     if (!regexLetra.test(senhaVar)) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "Sua senha deve conter uma letra maiúscula!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "Sua senha deve conter uma letra maiúscula!");
       return;
     }
+
     var cpfApenasNumeros = cpfVar.replace(/\D/g, "");
     if (cpfApenasNumeros.length != 11) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "Seu CPF deve conter exatamente 11 dígitos!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "Seu CPF deve conter exatamente 11 dígitos!");
       return;
     }
+
     var telefoneApenasNumeros = telefoneVar.replace(/\D/g, "");
     if (telefoneApenasNumeros.length < 11) {
-      Swal.fire({
-        icon: "error",
-        title: "Atenção!",
-        text: "Seu telefone deve conter 11 dígitos (DDD + Número)!",
-        heightAuto: false,
-        background: "rgb(0,0,0,0.9)",
-        color: "#fff",
-        customClass: {
-          confirmButton: "botao-swal-pequeno",
-          cancelButton: "botao-swal-pequeno",
-        },
-      });
+      alerta("error", "Seu telefone deve conter 11 dígitos (DDD + Número)!");
       return;
     }
 
@@ -309,52 +217,32 @@
         if (resposta.ok) {
           Swal.fire({
             icon: "success",
-            title: "Sucesso!",
-            text: "Usuário cadastrado com sucesso!",
+            title: "Usuário cadastrado com sucesso!",
             showConfirmButton: false,
             heightAuto: false,
             background: "rgb(0,0,0,0.9)",
             color: "#fff",
             timer: 2000,
             customClass: {
-              confirmButton: "botao-swal-pequeno",
-              cancelButton: "botao-swal-pequeno",
+              popup: "alerta-custom",
+              title: "alerta-titulo",
+              icon: "alerta-icone",
             },
           }).then(() => {
             window.location = "gestaoUsuarios.html";
           });
         } else {
-          resposta.json().then((texto) => {
-            console.error(texto);
-            Swal.fire({
-              icon: "error",
-              title: "Ops... Erro no cadastro",
-              heightAuto: false,
-              background: "rgb(0,0,0,0.9)",
-              color: "#fff",
-              text: texto,
-              customClass: {
-                confirmButton: "botao-swal-pequeno",
-                cancelButton: "botao-swal-pequeno",
-              },
-            });
-          });
+
+          resposta.text().then(textoErro => {
+            alerta("error", `${textoErro}`)
+            return
+          })
+          alerta("error", "Erro ao realizar o cadastro");
         }
       })
       .catch(function (erro) {
         console.log(`#ERRO: ${erro}`);
-        Swal.fire({
-          icon: "error",
-          title: "Ops...",
-          text: "Ocorreu um erro de comunicação com o servidor.",
-          heightAuto: false,
-          background: "rgb(0,0,0,0.9)",
-          color: "#fff",
-          customClass: {
-            confirmButton: "botao-swal-pequeno",
-            cancelButton: "botao-swal-pequeno",
-          },
-        });
+        alerta("error", "Ocorreu um erro de comunicação com o servidor.");
       });
   }
 </script>
