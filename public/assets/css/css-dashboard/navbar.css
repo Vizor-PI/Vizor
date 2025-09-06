@@ -41,6 +41,7 @@
 
 .nav-item a:hover {
   transform: scale(1.1);
+  color: rgba(10, 203, 227, 1);
 }
 
 #logoNavbarDash {
@@ -70,6 +71,6 @@
 }
 
 .nav-item.active a {
-  color: aqua;
+  color: rgba(10, 203, 227, 1);
   font-weight: bold;
 }

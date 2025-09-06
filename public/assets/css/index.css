@@ -86,10 +86,12 @@
     flex-direction: column;
     justify-content: flex-start;
     font-family: "Epilogue";
-    background-image: linear-gradient(180deg,
+    background-image: linear-gradient(
+        180deg,
         rgba(0, 0, 0, 0.68) 0%,
         rgba(0, 0, 0, 0.68) 35%,
-        rgba(0, 0, 0, 0.68) 100%),
+        rgba(0, 0, 0, 0.68) 100%
+      ),
       url(../imgs/banner-home.png);
   }
 
@@ -250,10 +252,12 @@
     justify-content: center;
     gap: 10vw;
     font-family: "Epilogue";
-    background-image: linear-gradient(180deg,
+    background-image: linear-gradient(
+        180deg,
         rgba(0, 0, 0, 0.68) 0%,
         rgba(0, 0, 0, 0.68) 35%,
-        rgba(0, 0, 0, 0.68) 100%),
+        rgba(0, 0, 0, 0.68) 100%
+      ),
       url(../imgs/bannerfooter.webp);
   }
 
@@ -314,6 +318,81 @@
 
   .footer .info-pai img {
     width: 1.5vw;
+  }
+
+  .banner-contato {
+    width: 100vw;
+    padding: 5vw 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(9, 41, 66, 1);
+    gap: 1.5vw;
+  }
+  .banner-contato h1 {
+    font-size: 4vw;
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    margin-bottom: 0;
+  }
+  .banner-contato p {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.5vw;
+    margin-bottom: 2vw;
+  }
+  .form-contato {
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+    gap: 1vw;
+  }
+  .form-contato label {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+  }
+  .form-contato input,
+  .form-contato textarea {
+    background-color: rgb(7, 25, 39);
+    border: 0.1vw solid rgba(10, 203, 227, 0.5);
+    border-radius: 0.5vw;
+    padding: 1vw;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.1vw;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  .form-contato input:focus,
+  .form-contato textarea:focus {
+    border-color: rgba(10, 203, 227, 1);
+    box-shadow: 0 0 1vw rgba(10, 203, 227, 0.5);
+  }
+  .form-contato textarea {
+    resize: vertical;
+  }
+  .form-contato button {
+    text-decoration: none;
+    color: white;
+    border: 0.1vw solid white;
+    padding: 0.8vw;
+    text-align: center;
+    border-radius: 0.2vw;
+    font-size: 1.5vw;
+    transition: all 0.3s ease;
+    background: transparent;
+    cursor: pointer;
+    margin-top: 1.5vw;
+    font-family: "Epilogue", sans-serif;
+  }
+  .form-contato button:hover {
+    background: linear-gradient(135deg, #6a00f4, #00c3ff);
+    transform: scale(1.05);
+    border-color: #00c3ff;
+    color: white;
   }
 }
 
@@ -409,10 +488,12 @@
     padding-left: 5.5vw;
     font-family: "Epilogue", sans-serif;
     align-items: flex-start;
-    background-image: linear-gradient(180deg,
+    background-image: linear-gradient(
+        180deg,
         rgba(0, 0, 0, 0.68) 0%,
         rgba(0, 0, 0, 0.68) 35%,
-        rgba(0, 0, 0, 0.68) 100%),
+        rgba(0, 0, 0, 0.68) 100%
+      ),
       url(../imgs/banner-home.png);
   }
 
@@ -554,10 +635,12 @@
     gap: 20vw;
     font-family: "Epilogue", sans-serif;
     align-items: center;
-    background-image: linear-gradient(180deg,
+    background-image: linear-gradient(
+        180deg,
         rgba(0, 0, 0, 0.68) 0%,
         rgba(0, 0, 0, 0.68) 35%,
-        rgba(0, 0, 0, 0.68) 100%),
+        rgba(0, 0, 0, 0.68) 100%
+      ),
       url(../imgs/bannerfooter.webp);
   }
 
@@ -640,5 +723,63 @@
 
   .footer .info-filho p strong {
     font-size: 4vw;
+  }
+
+  .banner-contato {
+    background-color: rgba(9, 41, 66, 1);
+    padding: 15vw 5vw;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5vw;
+  }
+  .banner-contato h1 {
+    font-size: 8vw;
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    text-align: center;
+  }
+  .banner-contato p {
+    font-size: 4vw;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    margin-bottom: 5vw;
+  }
+  .form-contato {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4vw;
+  }
+  .form-contato label {
+    font-size: 4.5vw;
+    color: white;
+    font-family: "Poppins", sans-serif;
+  }
+  .form-contato input,
+  .form-contato textarea {
+    padding: 3.5vw;
+    font-size: 4vw;
+    border-radius: 2vw;
+    background-color: rgb(7, 25, 39);
+    border: 0.1vw solid rgba(10, 203, 227, 0.5);
+    color: white;
+    font-family: "Poppins", sans-serif;
+  }
+  .form-contato button {
+    padding: 3.5vw;
+    font-size: 4.5vw;
+    border-radius: 1vw;
+    margin-top: 3vw;
+    text-decoration: none;
+    color: white;
+    border: 0.1vw solid white;
+    text-align: center;
+    background: transparent;
+    cursor: pointer;
+    font-family: "Epilogue", sans-serif;
   }
 }

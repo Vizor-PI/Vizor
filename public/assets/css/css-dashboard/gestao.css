@@ -44,6 +44,7 @@
   font-weight: 600;
   padding: 0.5vw;
   width: 16vw;
+  cursor: pointer;
 }
 
 .container .container-xl .listaDeUsuarios {
@@ -110,6 +111,7 @@
   font-weight: 600;
   margin-top: 0.3vw;
   text-align: center;
+  cursor: pointer;
 }
 
 .editar {
@@ -123,6 +125,7 @@
   padding: 0.5vw;
   width: 3.5vw;
   text-align: center;
+  cursor: pointer;
 }
 
 .tex {
