@@ -120,6 +120,11 @@
   margin-top: 0.3vw;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.excluir:hover, .editar:hover {
+  transform: scale(1.03);
 }
 
 .editar {
@@ -133,6 +138,7 @@
   padding: 0.5vw;
   width: 3.5vw;
   text-align: center;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
