@@ -74,7 +74,7 @@
   padding: 1vw;
   font-size: 0.8vw;
   font-weight: bold;
-  color: rgb(12, 145, 145);
+  color: white;
 }
 
 .container .container-xl .informacoes div {
@@ -130,7 +130,7 @@
   width: 100%;
   justify-content: space-evenly;
   gap: 9vw;
-  color: white;
+  color: rgb(12, 145, 145);
   font-weight: normal;
   font-size: 1vw;
   align-items: center;
@@ -199,56 +199,55 @@
 }
 
 dialog {
-    border: none;               
-    border-radius: 10px;
-    padding: 3vw;
-    height: 60vh;              
-    width: 40vw;
-    max-width: 90%;
-    background-color: black;
-    opacity: 1;
-    color: white;
-    text-align: center; 
-    border: 2px solid white;         
+  border: none;
+  border-radius: 10px;
+  padding: 3vw;
+  height: 60vh;
+  width: 40vw;
+  max-width: 90%;
+  background-color: black;
+  opacity: 1;
+  color: white;
+  text-align: center;
+  border: 2px solid white;
 }
 
 dialog input,
 dialog button {
-    display: block;               
-    margin: 0.8vw auto;          
-    width: 80%;                  
-    padding: 0.8vw;
-    border-radius: 5px;
-    border: 1px solid white;
-    background-color: transparent;
-    color: white;
-    font-size: 1vw;
+  display: block;
+  margin: 0.8vw auto;
+  width: 80%;
+  padding: 0.8vw;
+  border-radius: 5px;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  font-size: 1vw;
 }
 
 dialog select {
-    display: block;               
-    margin: 0.8vw auto;          
-    width: 80%;                  
-    padding: 0.8vw;
-    border-radius: 5px;
-    border: 1px solid white;
-    background-color: transparent;
-    color: white;
-    font-size: 1vw;
+  display: block;
+  margin: 0.8vw auto;
+  width: 80%;
+  padding: 0.8vw;
+  border-radius: 5px;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  font-size: 1vw;
 }
 
-select option{
+select option {
   color: black;
 }
 
-dialog button{
-  background-color: #7066E0;
+dialog button {
+  background-color: #7066e0;
   color: white !important;
 }
 
 dialog h1,
 dialog h3,
 dialog p {
-    margin: 0.8vw 0;     
-          
+  margin: 0.8vw 0;
 }

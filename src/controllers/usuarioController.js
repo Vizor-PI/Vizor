@@ -19,6 +19,7 @@ function autenticar(req, res) {
             nome: resultadoAutenticar[0].nome,
             codigoAtivacao: resultadoAutenticar[0].codigoAtivacao,
             fkpermissao: resultadoAutenticar[0].fkpermissao,
+            codigocargo: resultadoAutenticar[0].fkcargo,
           });
         } else {
           res.status(403).send("Email e/ou senha inválido(s)");
@@ -38,6 +39,7 @@ function cadastrar(req, res) {
   var cpf = req.body.cpfServer;
   var telefone = req.body.telefoneServer;
   var codigoEmpresa = req.body.codigoEmpresa;
+  var cargo = req.body.cargoServer;
 
   // Faça as validações dos valores
   if (nome == undefined) {
@@ -52,10 +54,12 @@ function cadastrar(req, res) {
     res.status(400).send("Seu telefone está undefined!");
   } else if (codigoEmpresa == undefined) {
     res.status(400).send("Empresa não encontrada");
+  } else if (cargo == undefined) {
+    res.status(400).send("Cargo está undefinied!");
   } else {
     // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
     usuarioModel
-      .cadastrar(nome, email, senha, cpf, telefone, codigoEmpresa)
+      .cadastrar(nome, email, senha, cpf, telefone, codigoEmpresa, cargo)
       .then(function (resultado) {
         res.json(resultado);
       })

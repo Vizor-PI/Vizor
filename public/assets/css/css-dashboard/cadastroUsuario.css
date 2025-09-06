@@ -4,7 +4,7 @@
   font-family: "Akatab";
 }
 
-@media(max-width: 480px) {
+@media (max-width: 480px) {
   .alerta-custom {
     padding: 2rem !important;
     border-radius: 15px;
@@ -86,7 +86,6 @@
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
-
   }
 
   .entradasCadastro {
@@ -162,7 +161,7 @@
   }
 }
 
-@media(min-width: 481px) {
+@media (min-width: 481px) {
   .alerta-custom {
     padding: 2rem !important;
     border-radius: 15px;
@@ -326,5 +325,28 @@
     margin-left: 2vw;
   }
 
+  #cargo_input {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    margin-left: 1vw;
+    margin-top: 1vw;
+    height: 2vw;
+    width: 10vw;
+  }
 
+  #cargo_input option {
+    background-color: #04101a;
+    color: white;
+    padding: 10px;
+  }
+
+  .botao-swal-pequeno {
+    height: 2vw;
+    width: 5vw;
+    padding: 0.05em 2.2em !important;
+    font-size: 0.9em !important;
+  }
 }

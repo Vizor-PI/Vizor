@@ -1,207 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alterar Dados</title>
+    <link
+      rel="stylesheet"
+      href="../assets/css/css-dashboard/alterarDados.css"
+    />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="../assets/imgs/logosDash/home.png"
+      type="image/x-icon"
+    />
+    <script src="../js/sessao.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alterar Dados</title>
-  <link rel="stylesheet" href="../assets/css/css-dashboard/alterarDados.css" />
-  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
-  <script src="../js/sessao.js"></script>
-</head>
+  <body onload="verificarCargo()">
+    <nav class="navbar" id="navbarConstructor"></nav>
 
-<body>
-  <nav class="navbar">
-    <!-- Logo -->
-    <a href="#">
-      <img src="../assets/imgs/logosDash/logoDashboard.png" alt="" class="imagemLogoDashboard" />
-    </a>
-
-    <!-- Menu -->
-    <ul id="textosNavbar">
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/home.png" alt="" id="logoNavbarDash" />
-        <a href="inicioDash.html"> Início </a>
-      </li>
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
-        <a href="gestaoUsuarios.html"> Painel </a>
-      </li>
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
-        <a href="dashboard.html"> Dashboard </a>
-      </li>
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
-        <a href="avisoDash.html"> Avisos </a>
-      </li>
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash" />
-        <a href="alterarDados.html" style="color: aqua"> Alterar dados </a>
-      </li>
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash" />
-        <a href="infoConta.html"> Info. da conta </a>
-      </li>
-    </ul>
-
-    <!-- Botão Sair -->
-    <div id="divSair">
-      <img src="../assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash" />
-      <a href="../index.html"> Sair </a>
-    </div>
-  </nav>
-
-  <!-- Conteúdo principal -->
-  <div class="container-xl">
-    <div class="alterarDadosContainer">
-      <div class="divCentralAlterarDados">
-        <h1>Alterar Dados</h1>
-        <div class="entradasAlterarDados">
-          <div class="input">
-            <p class="textoInput textoInputFixo">Nome de usuário</p>
-            <input id="usuario_input" placeholder="Usuário" disabled />
+    <!-- Conteúdo principal -->
+    <div class="container-xl">
+      <div class="alterarDadosContainer">
+        <div class="divCentralAlterarDados">
+          <h1>Alterar Dados</h1>
+          <div class="entradasAlterarDados">
+            <div class="input">
+              <p class="textoInput textoInputFixo">Nome de usuário</p>
+              <input id="usuario_input" placeholder="Usuário" disabled />
+            </div>
+            <div class="input">
+              <p class="textoInput textoInputFixo">Email</p>
+              <input
+                id="email_input"
+                placeholder="usuario@email.com"
+                disabled
+              />
+            </div>
+            <div class="input">
+              <p class="textoInput">Nova Senha</p>
+              <input
+                id="senhaNova_input"
+                placeholder="****************"
+                type="password"
+              />
+            </div>
+            <div class="input">
+              <p class="textoInput">Repita a nova senha</p>
+              <input placeholder="****************" type="password" />
+            </div>
           </div>
           <div class="input">
-            <p class="textoInput textoInputFixo">Email</p>
-            <input id="email_input" placeholder="usuario@email.com" disabled />
+            <p class="textoInput">Senha atual</p>
+            <input
+              id="senha_input"
+              placeholder="****************"
+              type="password"
+            />
           </div>
-          <div class="input">
-            <p class="textoInput">Nova Senha</p>
-            <input id="senhaNova_input" placeholder="****************" type="password" />
-          </div>
-          <div class="input">
-            <p class="textoInput">Repita a nova senha</p>
-            <input placeholder="****************" type="password" />
-          </div>
+          <button onclick="atualizar()">Confirmar</button>
         </div>
-        <div class="input">
-          <p class="textoInput">Senha atual</p>
-          <input id="senha_input" placeholder="****************" type="password" />
-        </div>
-        <button onclick="atualizar()">Confirmar</button>
       </div>
     </div>
-  </div>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+  </body>
+  <script src="../js/verificadorCargo.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const id = sessionStorage.ID_USUARIO;
 
-  const id = sessionStorage.ID_USUARIO;
+    var nom;
+    var usu;
+    var sen;
 
-  var nom;
-  var usu;
-  var sen;
-
-  fetch(`/dadosUsuario/listar/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then(async (response) => {
-      if (response.ok) {
-        const text = await response.text();
-        return text ? JSON.parse(text) : null;
-      } else {
-        console.error("Nenhum dado encontrado");
-        return null;
-      }
-      console.log(response);
-    })
-    .then(resposta => {
-      if (resposta && resposta.length > 0) {
-        console.log(resposta);
-        if (resposta && resposta.length > 0) {
-          console.log(resposta);
-
-          resposta.forEach(element => {
-            nom = resposta[0].NomeUsuario,
-              usu = resposta[0].EmailUsuario,
-              sen = resposta[0].SenhaUsuario
-          });
-          document.getElementById('usuario_input').placeholder = nom || "Nome não cadastrado";
-          document.getElementById('email_input').placeholder = usu || "Empresa não cadastrada";
-        }
-      }
-    })
-    .catch(erro => {
-      console.error("Erro na requisição:", erro);
-    });
-
-
-  function atualizar() {
-
-    var usuarioVar = usuario_input.value;
-    var emailVar = email_input.value;
-    var senhaVar = senha_input.value;
-    var senhaNovarVar = senhaNova_input.value;
-
-    fetch("/usuarios/atualizar", {
-      method: "PUT",
+    fetch(`/dadosUsuario/listar/${id}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        usuarioServer: usuarioVar,
-        emailServer: emailVar,
-        senhaServer: senhaVar,
-        senhaNovaServer: senhaNovarVar,
-      }),
     })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (resposta.ok) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Senha atualizada com sucesso!",
-            showConfirmButton: false,
-            timer: 4000,
-            background: "rgb(0,0,0,0.9)",
-            color: "#f1f1f1",
-            heightAuto: false,
-            customClass: {
-              popup: 'alerta-custom',   // caixa toda
-              title: 'alerta-titulo',   // só o título
-              icon: 'alerta-icone'      // só o ícone
-            }
-          });
-
-          setTimeout(() => {
-            window.location = "login.html";
-          }, "8000");
-
-          // limparFormulario();
-          // finalizarAguardar();
+      .then(async (response) => {
+        if (response.ok) {
+          const text = await response.text();
+          return text ? JSON.parse(text) : null;
         } else {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Erro ao atualizar senha!",
-            showConfirmButton: false,
-            timer: 4000,
-            background: "rgb(0,0,0,0.9)",
-            color: "#f1f1f1",
-            heightAuto: false,
-            customClass: {
-              popup: 'alerta-custom',   // caixa toda
-              title: 'alerta-titulo',   // só o título
-              icon: 'alerta-icone'      // só o ícone
-            }
-          });
+          console.error("Nenhum dado encontrado");
+          return null;
+        }
+        console.log(response);
+      })
+      .then((resposta) => {
+        if (resposta && resposta.length > 0) {
+          console.log(resposta);
+          if (resposta && resposta.length > 0) {
+            console.log(resposta);
+
+            resposta.forEach((element) => {
+              (nom = resposta[0].NomeUsuario),
+                (usu = resposta[0].EmailUsuario),
+                (sen = resposta[0].SenhaUsuario);
+            });
+            document.getElementById("usuario_input").placeholder =
+              nom || "Nome não cadastrado";
+            document.getElementById("email_input").placeholder =
+              usu || "Empresa não cadastrada";
+          }
         }
       })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-        // finalizarAguardar();
+      .catch((erro) => {
+        console.error("Erro na requisição:", erro);
       });
 
-    return false;
-  }
-</script>
+    function atualizar() {
+      var usuarioVar = usuario_input.value;
+      var emailVar = email_input.value;
+      var senhaVar = senha_input.value;
+      var senhaNovarVar = senhaNova_input.value;
 
+      fetch("/usuarios/atualizar", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          usuarioServer: usuarioVar,
+          emailServer: emailVar,
+          senhaServer: senhaVar,
+          senhaNovaServer: senhaNovarVar,
+        }),
+      })
+        .then(function (resposta) {
+          console.log("resposta: ", resposta);
+
+          if (resposta.ok) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Senha atualizada com sucesso!",
+              showConfirmButton: false,
+              timer: 4000,
+              background: "rgb(0,0,0,0.9)",
+              color: "#f1f1f1",
+              heightAuto: false,
+              customClass: {
+                popup: "alerta-custom", // caixa toda
+                title: "alerta-titulo", // só o título
+                icon: "alerta-icone", // só o ícone
+              },
+            });
+
+            setTimeout(() => {
+              window.location = "login.html";
+            }, "8000");
+
+            // limparFormulario();
+            // finalizarAguardar();
+          } else {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Erro ao atualizar senha!",
+              showConfirmButton: false,
+              timer: 4000,
+              background: "rgb(0,0,0,0.9)",
+              color: "#f1f1f1",
+              heightAuto: false,
+              customClass: {
+                popup: "alerta-custom", // caixa toda
+                title: "alerta-titulo", // só o título
+                icon: "alerta-icone", // só o ícone
+              },
+            });
+          }
+        })
+        .catch(function (resposta) {
+          console.log(`#ERRO: ${resposta}`);
+          // finalizarAguardar();
+        });
+
+      return false;
+    }
+  </script>
 </html>

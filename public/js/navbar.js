@@ -12,9 +12,9 @@ navbarConstructor.innerHTML += `
       <ul id="textosNavbar">
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/home.png" alt="" id="logoNavbarDash" />
-        <a href="inicioDash.html" style="color: aqua"> Início </a>
+        <a href="inicioDash.html"> Início </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" id="adm-only">
         <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
         <a href="gestaoUsuarios.html"> Painel </a>
       </li>
@@ -28,9 +28,9 @@ navbarConstructor.innerHTML += `
       </li>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash" />
-        <a href="gestaoUsuarios.html"> Alterar dados </a>
+        <a href="alterarDados.html"> Alterar dados </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" id="adm-only2">
         <img src="../assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash" />
         <a href="infoConta.html"> Info. da conta </a>
       </li>
