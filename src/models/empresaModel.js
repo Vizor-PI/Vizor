@@ -6,18 +6,51 @@ function buscarDadosEmpresa() {
   return database.executar(instrucaoSql);
 }
 
-function cadastrar(nome, cnpj, codigo) {
-  console.log(
-    "ACESSEI O EMPRESA MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():",
-    nome,
-    cnpj,
-    codigo
-  );
-  var instrucaoSql = `
-        INSERT INTO empresa (nome, cnpj, codigoAtivacao) VALUES ('${nome}', '${cnpj}', '${codigo}');
-    `;
-  console.log("Executando a instrução SQL: \n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+function cadastrar(
+  nome,
+  cnpj,
+  codigo,
+  cep,
+  estado,
+  cidade,
+  bairro,
+  rua,
+  numero
+) {
+  console.log("ACESSEI O EMPRESA MODEL - Iniciando cadastro em cascata...");
+
+  const instrucaoEstado = `INSERT INTO estado (nome) VALUES ('${estado}');`;
+  console.log("Executando SQL para Estado: \n" + instrucaoEstado);
+
+  return database
+    .executar(instrucaoEstado)
+    .then(function (resultadoEstado) {
+      const idEstado = resultadoEstado.insertId;
+      console.log("ID do Estado inserido:", idEstado);
+
+      const instrucaoCidade = `INSERT INTO cidade (nome, fkEstado) VALUES ('${cidade}', ${idEstado});`;
+      console.log("Executando SQL para Cidade: \n" + instrucaoCidade);
+
+      return database.executar(instrucaoCidade);
+    })
+    .then(function (resultadoCidade) {
+      const idCidade = resultadoCidade.insertId;
+      console.log("ID da Cidade inserida:", idCidade);
+
+      const instrucaoEndereco = `INSERT INTO endereco (rua, numero, cep, bairro, fkCidade) VALUES ('${rua}', '${numero}', '${cep}', '${bairro}', ${idCidade});`;
+      console.log("Executando SQL para Endereço: \n" + instrucaoEndereco);
+
+      return database.executar(instrucaoEndereco);
+    })
+    .then(function (resultadoEndereco) {
+      const idEndereco = resultadoEndereco.insertId;
+      console.log("ID do Endereço inserido:", idEndereco);
+
+      const instrucaoEmpresa = `INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES ('${nome}', '${cnpj}', '${codigo}', ${idEndereco});`;
+      console.log("Executando SQL para Empresa: \n" + instrucaoEmpresa);
+
+      return database.executar(instrucaoEmpresa);
+    });
 }
 
 module.exports = {

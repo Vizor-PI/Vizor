@@ -34,6 +34,34 @@
             <input id="cnpj_input" placeholder="XX.XXX.XXX/0001-XX" />
           </div>
           <div class="input">
+            <p class="textoInput">CEP</p>
+            <input
+              id="cep_input"
+              placeholder="XXXXX-XXX"
+              onblur="pesquisacep(this.value)"
+            />
+          </div>
+          <div class="input">
+            <p class="textoInput">Estado</p>
+            <input id="estado_input" placeholder="SP" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Cidade</p>
+            <input id="cidade_input" placeholder="São Paulo" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Bairro</p>
+            <input id="bairro_input" placeholder="Vila Mangalot" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Logradouro</p>
+            <input id="rua_input" placeholder="Rua alvorada do norte" />
+          </div>
+          <div class="input">
+            <p class="textoInput">Número</p>
+            <input id="numero_input" placeholder="XXXX" />
+          </div>
+          <div class="input">
             <p class="textoInput">Codigo de ativação</p>
             <input id="codigo_input" placeholder="XXXX" />
           </div>
@@ -41,17 +69,93 @@
         <button onclick="cadastrar()">Cadastrar</button>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
 
     <div id="mensagem_erro"></div>
     <div id="cardErro"></div>
   </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="./js/alertasSW.js"></script>
 
 <script>
+  // SCRIPT VIACEP AUTOCOMPLETE DE CAMPOS
+
+  function limpa_formulário_cep() {
+    // Limpa valores do formulário de cep.
+    document.getElementById("rua_input").value = "";
+    document.getElementById("bairro_input").value = "";
+    document.getElementById("cidade_input").value = "";
+    document.getElementById("estado_input").value = "";
+  }
+
+  function meu_callback(conteudo) {
+    if (!("erro" in conteudo)) {
+      // Atualiza os campos com os valores.
+      document.getElementById("rua_input").value = conteudo.logradouro;
+      document.getElementById("bairro_input").value = conteudo.bairro;
+      document.getElementById("cidade_input").value = conteudo.localidade;
+      document.getElementById("estado_input").value = conteudo.uf;
+    } //end if.
+    else {
+      // CEP não Encontrado.
+      limpa_formulário_cep();
+      // ALERTA MELHORADO com SweetAlert2
+      Swal.fire({
+        icon: "error",
+        title: "CEP não encontrado.",
+        background: "rgb(20, 20, 20)",
+        color: "#f1f1f1",
+      });
+    }
+  }
+
+  function pesquisacep(valor) {
+    // Nova variável "cep" somente com dígitos.
+    var cep = valor.replace(/\D/g, "");
+
+    // Verifica se campo cep possui valor informado.
+    if (cep != "") {
+      // Expressão regular para validar o CEP.
+      var validacep = /^[0-9]{8}$/;
+
+      // Valida o formato do CEP.
+      if (validacep.test(cep)) {
+        // Preenche os campos com "..." enquanto consulta webservice.
+        document.getElementById("rua_input").value = "...";
+        document.getElementById("bairro_input").value = "...";
+        document.getElementById("cidade_input").value = "...";
+        document.getElementById("estado_input").value = "...";
+
+        // Cria um elemento javascript.
+        var script = document.createElement("script");
+
+        // Sincroniza com o callback.
+        script.src =
+          "https://viacep.com.br/ws/" + cep + "/json/?callback=meu_callback";
+
+        // Insere script no documento e carrega o conteúdo.
+        document.body.appendChild(script);
+      } //end if.
+      else {
+        // cep é inválido.
+        limpa_formulário_cep();
+        // ALERTA MELHORADO com SweetAlert2
+        Swal.fire({
+          icon: "error",
+          title: "Formato de CEP inválido.",
+          background: "rgb(20, 20, 20)",
+          color: "#f1f1f1",
+        });
+      }
+    } //end if.
+    else {
+      // cep sem valor, limpa formulário.
+      limpa_formulário_cep();
+    }
+  }
+
   function cadastrar() {
     // aguardar();
 
@@ -60,8 +164,24 @@
     var nomeVar = nome_input.value;
     var cnpjVar = cnpj_input.value;
     var codigoVar = codigo_input.value;
+    var cepVar = cep_input.value;
+    var estadoVar = estado_input.value;
+    var cidadeVar = cidade_input.value;
+    var bairroVar = bairro_input.value;
+    var ruaVar = rua_input.value;
+    var numeroVar = numero_input.value;
 
-    if (nomeVar == "" || cnpjVar == "" || codigoVar == "") {
+    if (
+      nomeVar == "" ||
+      cnpjVar == "" ||
+      codigoVar == "" ||
+      cepVar == "" ||
+      estadoVar == "" ||
+      cidadeVar == "" ||
+      bairroVar == "" ||
+      ruaVar == "" ||
+      numeroVar == ""
+    ) {
       Swal.fire({
         icon: "warning",
         title: "Oops...",
@@ -73,6 +193,7 @@
     }
 
     var cnpjLimpo = cnpjVar.replace(/[^\d]/g, "");
+    var cepLimpo = cepVar.replace(/[^\d]/g, "");
 
     if (cnpjLimpo.length < 14) {
       Swal.fire({
@@ -94,6 +215,12 @@
         nomeServer: nomeVar,
         cnpjServer: cnpjLimpo,
         codigoServer: codigoVar,
+        cepServer: cepLimpo,
+        estadoServer: estadoVar,
+        cidadeServer: cidadeVar,
+        bairroServer: bairroVar,
+        ruaServer: ruaVar,
+        numeroServer: numeroVar,
       }),
     })
       .then(function (resposta) {

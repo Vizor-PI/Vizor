@@ -73,7 +73,7 @@
     opacity: 0.7;
     border-radius: 1.5rem;
     width: 90vw;
-    height: 90vh;
+    height: 200vh;
     box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
     display: flex;
     justify-content: space-around;
@@ -226,13 +226,14 @@
     background-color: black;
     opacity: 0.7;
     border-radius: 1.5rem;
-    width: 40vw;
-    height: 90vh;
+    width: 80vw;
+    min-height: 90vh;
     box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 1.5vw;
+    height: auto;
   }
 
   .divCentralCadastro {
@@ -244,10 +245,14 @@
   }
 
   .entradasCadastro {
-    display: flex;
-    flex-direction: column;
-    gap: 10px 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 2fr);
+    gap: 15px 50px;
     width: 100%;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
   }
 
   #logoVizor {
@@ -270,7 +275,8 @@
   }
 
   input {
-    width: 30vw;
+    width: 20vw;
+    box-sizing: border-box;
     height: 5vh;
     border-radius: 0.6rem;
     border: 1px solid white;
@@ -281,13 +287,13 @@
 
   button {
     background-color: rgba(10, 203, 227, 1);
-    width: 25vw;
+    width: 20vw;
     height: 6vh;
     border-radius: 0.6rem;
     border: 1px solid transparent;
     color: white;
     font-size: 1.2vw;
-    margin-top: 2rem;
+    margin-top: 6rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: inline-block;
