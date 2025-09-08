@@ -67,10 +67,10 @@ function cadastrar(req, res) {
         console.log(erro);
 
         if (erro.errno === 1062) {
-          res.status(409).send("Esse email já está cadastrado! Tente outro")
-          return
+          res.status(409).send("Esse email já está cadastrado! Tente outro");
+          return;
         }
-         console.log(
+        console.log(
           "\nHouve um erro ao realizar o cadastro! Erro: ",
           erro.sqlMessage
         );
@@ -97,12 +97,18 @@ function atualizar(req, res) {
     usuarioModel
       .atualizar(email, senha, senhaNova, usuario)
       .then(function (resultado) {
-        res.json(resultado);
+        if (resultado.affectedRows > 0) {
+          res.status(200).json(resultado);
+        } else {
+          res
+            .status(404)
+            .send("Senha atual incorreta ou usuário não encontrado!");
+        }
       })
       .catch(function (erro) {
         console.log(erro);
         console.log(
-          "\nHouve um erro ao realizar o cadastro! Erro: ",
+          "\nHouve um erro ao realizar a atualização! Erro: ",
           erro.sqlMessage
         );
         res.status(500).json(erro.sqlMessage);

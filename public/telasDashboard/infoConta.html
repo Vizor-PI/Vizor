@@ -130,12 +130,12 @@
             title: "Deletado!",
             text: "Sua conta foi deletada com sucesso. Redirecionando...",
             background: "rgb(20, 20, 20)",
+            heightAuto: false,
             color: "#f1f1f1",
-            timer: 2000, // O alerta fecha sozinho após 2000ms (2 segundos)
-            timerProgressBar: true, // Mostra uma barrinha de progresso do timer
-            showConfirmButton: false, // Esconde o botão "OK"
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
           }).then(() => {
-            // Esta parte será executada DEPOIS que o alerta de 2 segundos fechar.
             sessionStorage.clear();
             window.location.href = "../login.html";
           });

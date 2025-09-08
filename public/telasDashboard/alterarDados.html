@@ -32,14 +32,14 @@
           <div class="entradasAlterarDados">
             <div class="input">
               <p class="textoInput textoInputFixo">Nome de usuário</p>
-              <input id="usuario_input" placeholder="Usuário" disabled />
+              <input id="usuario_input" placeholder="Usuário" readonly />
             </div>
             <div class="input">
               <p class="textoInput textoInputFixo">Email</p>
               <input
                 id="email_input"
                 placeholder="usuario@email.com"
-                disabled
+                readonly
               />
             </div>
             <div class="input">
@@ -52,7 +52,11 @@
             </div>
             <div class="input">
               <p class="textoInput">Repita a nova senha</p>
-              <input placeholder="****************" type="password" />
+              <input
+                id="senhaRepetida_input"
+                placeholder="****************"
+                type="password"
+              />
             </div>
           </div>
           <div class="input">
@@ -72,118 +76,113 @@
   <script src="../js/navbar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    const id = sessionStorage.ID_USUARIO;
+    function dadosUsuario() {
+      const idUsuario = sessionStorage.ID_USUARIO;
 
-    var nom;
-    var usu;
-    var sen;
-
-    fetch(`/dadosUsuario/listar/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (response) => {
-        if (response.ok) {
-          const text = await response.text();
-          return text ? JSON.parse(text) : null;
-        } else {
-          console.error("Nenhum dado encontrado");
-          return null;
-        }
-        console.log(response);
+      fetch(`/dadosUsuario/listar/${idUsuario}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       })
-      .then((resposta) => {
-        if (resposta && resposta.length > 0) {
-          console.log(resposta);
-          if (resposta && resposta.length > 0) {
-            console.log(resposta);
-
-            resposta.forEach((element) => {
-              (nom = resposta[0].NomeUsuario),
-                (usu = resposta[0].EmailUsuario),
-                (sen = resposta[0].SenhaUsuario);
-            });
-            document.getElementById("usuario_input").placeholder =
-              nom || "Nome não cadastrado";
-            document.getElementById("email_input").placeholder =
-              usu || "Empresa não cadastrada";
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error(
+              "Nenhum dado encontrado ou erro na resposta do servidor."
+            );
           }
-        }
-      })
-      .catch((erro) => {
-        console.error("Erro na requisição:", erro);
-      });
+        })
+        .then((resposta) => {
+          if (resposta && resposta.length > 0) {
+            console.log("Dados recebidos do servidor:", resposta);
+            const usuario = resposta[0];
+
+            document.getElementById("usuario_input").value =
+              usuario.NomeUsuario || "Nome não cadastrado";
+            document.getElementById("email_input").value =
+              usuario.EmailUsuario || "Email não cadastrado";
+          } else {
+            console.error(
+              "Dados do usuário não encontrados na resposta do servidor. A resposta veio vazia."
+            );
+          }
+        })
+        .catch((erro) => {
+          console.error("Erro na requisição para buscar dados:", erro);
+        });
+    }
 
     function atualizar() {
-      var usuarioVar = usuario_input.value;
-      var emailVar = email_input.value;
-      var senhaVar = senha_input.value;
-      var senhaNovarVar = senhaNova_input.value;
+      const usuarioVar = usuario_input.value;
+      const emailVar = email_input.value;
+      const senhaAtualVar = senha_input.value;
+      const senhaNovaVar = senhaNova_input.value;
+      const senhaRepetidaVar = senhaRepetida_input.value;
+
+      if (!senhaAtualVar || !senhaNovaVar || !senhaRepetidaVar) {
+        Swal.fire({
+          icon: "error",
+          title: "Campos vazios!",
+          text: "Por favor, preencha todos os campos de senha.",
+          background: "rgb(0,0,0,0.9)",
+          color: "#f1f1f1",
+        });
+        return;
+      }
+
+      if (senhaNovaVar !== senhaRepetidaVar) {
+        Swal.fire({
+          icon: "error",
+          title: "Senhas não coincidem!",
+          text: "Os campos 'Nova Senha' e 'Repita a nova senha' devem ser iguais.",
+          background: "rgb(0,0,0,0.9)",
+          color: "#f1f1f1",
+        });
+        return;
+      }
 
       fetch("/usuarios/atualizar", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           usuarioServer: usuarioVar,
           emailServer: emailVar,
-          senhaServer: senhaVar,
-          senhaNovaServer: senhaNovarVar,
+          senhaServer: senhaAtualVar,
+          senhaNovaServer: senhaNovaVar,
         }),
       })
         .then(function (resposta) {
-          console.log("resposta: ", resposta);
-
           if (resposta.ok) {
             Swal.fire({
-              position: "center",
               icon: "success",
               title: "Senha atualizada com sucesso!",
-              showConfirmButton: false,
-              timer: 4000,
+              text: "Você será desconectado por segurança. Faça o login novamente.",
               background: "rgb(0,0,0,0.9)",
               color: "#f1f1f1",
               heightAuto: false,
-              customClass: {
-                popup: "alerta-custom", // caixa toda
-                title: "alerta-titulo", // só o título
-                icon: "alerta-icone", // só o ícone
-              },
+              timer: 3000,
+              showConfirmButton: false,
+            }).then(() => {
+              sessionStorage.clear();
+              window.location.href = "../login.html";
             });
-
-            setTimeout(() => {
-              window.location = "../login.html";
-            }, "5000");
-
-            // limparFormulario();
-            // finalizarAguardar();
           } else {
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              title: "Erro ao atualizar senha!",
-              showConfirmButton: false,
-              timer: 4000,
-              background: "rgb(0,0,0,0.9)",
-              color: "#f1f1f1",
-              heightAuto: false,
-              customClass: {
-                popup: "alerta-custom", // caixa toda
-                title: "alerta-titulo", // só o título
-                icon: "alerta-icone", // só o ícone
-              },
+            resposta.text().then((textoErro) => {
+              Swal.fire({
+                icon: "error",
+                title: "Erro ao atualizar!",
+                text: textoErro || "Verifique os dados e tente novamente.",
+                background: "rgb(0,0,0,0.9)",
+                color: "#f1f1f1",
+              });
             });
           }
         })
-        .catch(function (resposta) {
-          console.log(`#ERRO: ${resposta}`);
-          // finalizarAguardar();
+        .catch(function (erro) {
+          console.log(`#ERRO: ${erro}`);
         });
-
-      return false;
     }
+
+    dadosUsuario();
   </script>
 </html>
