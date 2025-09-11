@@ -135,15 +135,15 @@
   }
 }
 
-  #textoCadastroEmpresa {
-    font-size: 1.6vw;
-    text-decoration: none;
-  }
+#textoCadastroEmpresa {
+  font-size: 1.6vw;
+  text-decoration: none;
+}
 
-  #textoCadastroEmpresa:hover {
-    cursor: pointer;
-  }
-  
+#textoCadastroEmpresa:hover {
+  cursor: pointer;
+}
+
 @media (min-width: 481px) and (max-width: 949px) {
   html {
     margin: 0;
