@@ -69,6 +69,14 @@ CREATE TABLE miniComputador (
     FOREIGN KEY (fkLote) REFERENCES lote(id)
 );
 
+CREATE TABLE maquinas (
+    idLote INT,
+    idMiniPC INT,
+    PRIMARY KEY (idLote, idMiniPC),
+    FOREIGN KEY (idLote) REFERENCES lote(id),
+    FOREIGN KEY (idMiniPC) REFERENCES miniComputador(id)
+);
+
 -- agora sim podemos adicionar a FK da empresa para endereço
 ALTER TABLE empresa
     ADD CONSTRAINT fk_empresa_endereco FOREIGN KEY (fkEndereco) REFERENCES endereco(id);
@@ -156,6 +164,12 @@ INSERT INTO componente (nome, unidadeMedida) VALUES
 ('RAM', '%'),
 ('Disco', '%');
 
+-- Relacionando miniPCs aos lotes
+INSERT INTO maquinas (idLote, idMiniPC) VALUES
+(1, 1), -- Lote 1 com MiniPC 1
+(2, 2), -- Lote 2 com MiniPC 2
+(3, 3); -- Lote 3 com MiniPC 3
+
 INSERT INTO parametro (fkMinipc, fkComponente, valorParametro) VALUES
 (1, 1, 85), 
 (1, 2, 85),
@@ -183,11 +197,6 @@ WHERE us.id = 1;
 SELECT id AS IdEmpresa, nome AS NomeEmpresa, codigoAtivacao AS Codigo 
 FROM empresa;
 
-SELECT * FROM empresa;
-SELECT * FROM usuario;
-
-SELECT * FROM miniComputador;
-
 INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) 
 VALUES (
     'Joao', 
@@ -199,15 +208,8 @@ VALUES (
     1
 );
 
-SELECT * FROM parametro;
-
-SELECT * FROM usuario;
-
 SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario 
 FROM usuario as us;
-
-SELECT * FROM usuario;
-SELECT * FROM empresa;
 
 SELECT us.id, us.nome, us.email, empresa.codigoAtivacao, us.fkcargo FROM usuario AS us INNER JOIN empresa ON empresa.id = us.fkEmpresa WHERE email = email AND senha = senha;
 
@@ -230,3 +232,8 @@ INNER JOIN
     cidade AS c ON en.fkCidade = c.id
 INNER JOIN
     estado AS es ON c.fkEstado = es.id;
+
+SELECT *
+FROM lote l
+INNER JOIN maquinas m ON l.id = m.idLote
+INNER JOIN miniComputador mpc ON m.idMiniPC = mpc.id;
