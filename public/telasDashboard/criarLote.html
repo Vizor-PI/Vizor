@@ -4,60 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Lote</title>
+    <title>Criar lote</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 </head>
 
-<body onload="dadosLote()">
-
-    <p id="lotes">Lotes</p>
-    <p id="quantidadeLotes">Quantidade de Lotes:</p>
-
-    <p id="idLote">ID:</p>
-    <p id="dataLote">Data:</p>
-    <p id="qtdMaquinas">Qtd máquinas:</p>
-
-    <input placeholder="Pesquisar por nome" type="text" id="filtroNome" oninput="filtrarUsuarios()" />
+<body>
+    <h1>Criar lote</h1>
+    <p>Id do lote:</p>
+    <input type="text" placeholder="ID..." id="ipt_id">
+    <p>Data do lote</p>
+    <input type="text" placeholder="yyyy-mm-dd" id="ipt_data">
+    <p>Quantidade de máquinas:</p>
+    <input type="number" placeholder="1000..." id="ipt_qtd_maquinas">
+    <br>
+    <select id="select_modelo">
+        <option value="">Selecione o modelo das máquinas</option>
+    </select>
+    <button>Salvar lote</button>
 
 </body>
 
 </html>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-    function dadosLote() {
-        const id = sessionStorage.ID_USUARIO;
-
-        fetch(`/lote/buscar/`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then(async (response) => {
-                if (response.ok) {
-                    const text = await response.text();
-                    return text ? JSON.parse(text) : null;
-                } else {
-                    console.error("Nenhum dado encontrado");
-                    return null;
-                }
-            })
-            .then((resposta) => {
-                if (resposta && resposta.length > 0) {
-                    document.getElementById("quantidadeLotes").textContent = `Quantidade de Lotes: ${resposta.length}`;
-                    document.getElementById("idLote").textContent = `ID: ${resposta[0].id || "ID não encontrado"}`;
-
-                    const dataFabricacao = new Date(resposta[0].dataFabricacao);
-                    const dataFormatada = dataFabricacao.toLocaleDateString('pt-BR');
-                    document.getElementById("dataLote").textContent = `Data: ${dataFormatada || "Data não encontrada"}`;
-
-                    document.getElementById("qtdMaquinas").textContent = `Qtd máquinas: ${resposta[0].idMiniPC || "Quantidade não encontrada"}`;
-                }
-            })
-            .catch((erro) => {
-                console.error("Erro na requisição:", erro);
-            });
-    }
-
+    
 </script>
