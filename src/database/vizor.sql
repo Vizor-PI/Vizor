@@ -1,239 +1,165 @@
--- Cria a database
-DROP DATABASE IF EXISTS vizor;
-CREATE DATABASE IF NOT EXISTS vizor;
-USE vizor;
+create database vizor;
+use vizor;
 
--- =========================
--- TABELAS BASE
--- =========================
-CREATE TABLE pais(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome VARCHAR(200) NOT NULL
+create table pais(
+  id int primary key auto_increment not null,
+  nome varchar(200) not null
 );
 
-CREATE TABLE estado(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome VARCHAR(100) NOT NULL,
-    fkPais INT,
-    FOREIGN KEY (fkPais) REFERENCES pais(id)
+create table estado(
+  id int primary key auto_increment not null,
+  nome varchar(100) not null,
+  fkPais int,
+  foreign key (fkPais) references pais(id)
 );
 
-CREATE TABLE cidade(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome VARCHAR(200) NOT NULL,
-    fkEstado INT,
-    FOREIGN KEY (fkEstado) REFERENCES estado(id)
+create table cidade(
+  id int primary key auto_increment not null,
+  nome varchar(200) not null,
+  fkEstado int,
+  foreign key (fkEstado) references estado(id)
 );
 
-CREATE TABLE zona(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    zona VARCHAR(10) NOT NULL
+create table zona(
+  id int primary key auto_increment not null,
+  zona varchar(10) not null
 );
 
--- =========================
--- EMPRESA E ESTRUTURA
--- =========================
-CREATE TABLE empresa (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome VARCHAR(150) NOT NULL,
-    cnpj VARCHAR(14) NOT NULL,
-    codigoAtivacao VARCHAR(5) NOT NULL,
-    fkEndereco INT NULL
+create table endereco (
+  id int primary key auto_increment not null,
+  rua varchar(300) not null,
+  numero int not null,
+  cep char(8) not null,
+  bairro varchar(100) not null,
+  fkZona int,
+  fkCidade int,
+  foreign key (fkCidade) references cidade(id),
+  foreign key (fkZona) references zona(id)
 );
 
-CREATE TABLE lote (
-	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    dataFabricacao DATE NOT NULL,
-    modelo VARCHAR(40) NOT NULL,
-    fkEmpresa INT,
-    FOREIGN KEY (fkEmpresa) REFERENCES empresa(id)
+create table empresa (
+  id int primary key auto_increment not null,
+  nome varchar(150) not null,
+  cnpj char(14) not null,
+  codigoAtivacao varchar(16) not null,
+  fkEndereco int null,
+  unique (cnpj),
+  unique (codigoAtivacao),
+  foreign key (fkEndereco) references endereco(id)
 );
 
-CREATE TABLE endereco (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    rua VARCHAR(300) NOT NULL,
-    numero INT NOT NULL,
-    cep CHAR(8) NOT NULL,
-    bairro VARCHAR(100) NOT NULL,
-    fkZona INT,
-    fkCidade INT,
-    FOREIGN KEY (fkCidade) REFERENCES cidade(id),
-    FOREIGN KEY (fkZona) REFERENCES zona(id)
+create table lote (
+  id int primary key not null,
+  dataFabricacao date not null,
+  modelo varchar(40) not null,
+  fkEmpresa int,
+  foreign key (fkEmpresa) references empresa(id)
 );
 
-CREATE TABLE miniComputador (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    fkEndereco INT,
-    fkLote INT,
-    FOREIGN KEY (fkEndereco) REFERENCES endereco(id),
-    FOREIGN KEY (fkLote) REFERENCES lote(id)
+create table miniComputador (
+  id int primary key auto_increment not null,
+  fkEndereco int,
+  fkLote int,
+  foreign key (fkEndereco) references endereco(id),
+  foreign key (fkLote) references lote(id)
 );
 
-CREATE TABLE maquinas (
-    idLote INT,
-    idMiniPC INT,
-    PRIMARY KEY (idLote, idMiniPC),
-    FOREIGN KEY (idLote) REFERENCES lote(id),
-    FOREIGN KEY (idMiniPC) REFERENCES miniComputador(id)
+create table cargo(
+  id int primary key auto_increment not null,
+  titulo varchar(100) not null
 );
 
--- agora sim podemos adicionar a FK da empresa para endereço
-ALTER TABLE empresa
-    ADD CONSTRAINT fk_empresa_endereco FOREIGN KEY (fkEndereco) REFERENCES endereco(id);
-
--- =========================
--- USUÁRIOS E CARGOS
--- =========================
-CREATE TABLE cargo(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    titulo VARCHAR(100) NOT NULL
+create table usuario (
+  id int primary key auto_increment not null,
+  nome varchar(150) not null,
+  email varchar(150) not null,
+  senha varchar(150) not null,
+  cpf char(11),
+  telefone char(11),
+  fkEmpresa int,
+  fkCargo int,
+  unique (email),
+  unique (cpf),
+  foreign key (fkEmpresa) references empresa(id),
+  foreign key (fkCargo) references cargo(id)
 );
 
-CREATE TABLE usuario (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome VARCHAR(150) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    senha VARCHAR(150) NOT NULL,
-    cpf CHAR(11),
-    telefone CHAR(11),
-    fkEmpresa INT,
-    fkCargo INT,
-    FOREIGN KEY (fkEmpresa) REFERENCES empresa(id),
-    FOREIGN KEY (fkCargo) REFERENCES cargo(id)
+create table componente(
+  id int primary key auto_increment not null,
+  nome varchar(50) not null,
+  unidadeMedida varchar(10) not null,
+  unique (nome, unidadeMedida)
 );
 
--- =========================
--- COMPONENTES E ALERTAS
--- =========================
-CREATE TABLE componente(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    nome VARCHAR(50) NOT NULL,
-    unidadeMedida VARCHAR(10)
+create table modelo(
+  id int primary key auto_increment not null,
+  nome varchar(200) not null
 );
 
-CREATE TABLE parametro(
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    fkMinipc INT,
-    fkComponente INT,
-    valorParametro INT,
-    FOREIGN KEY (fkMinipc) REFERENCES miniComputador(id),
-    FOREIGN KEY (fkComponente) REFERENCES componente(id)
+create table parametro(
+  id int primary key auto_increment not null,
+  fkModelo int,
+  fkComponente int,
+  valorParametro decimal(5,2) not null,
+  foreign key (fkModelo) references modelo(id),
+  foreign key (fkComponente) references componente(id),
+  unique (fkModelo, fkComponente)
 );
 
-CREATE TABLE alertas (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    fkParametro INT,
-    FOREIGN KEY (fkParametro) REFERENCES parametro(id)
+create table alertas (
+  id int primary key auto_increment not null,
+  fkParametro int,
+  foreign key (fkParametro) references parametro(id)
 );
 
--- =========================
--- INSERTS DE TESTE
--- =========================
-INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
-('Tech Solutions', '12345678000190', 'A1234', NULL),
-('Green Energy', '98765432000155', 'B5678', NULL),
-('Smart Innovations', '11122233000177', 'C9012', NULL);
+insert into pais (nome) values ('Brasil');
+insert into estado (nome, fkPais) values ('São Paulo', 1);
+insert into cidade (nome, fkEstado) values ('São Paulo', 1);
+insert into zona (zona) values ('Sul'), ('Norte'), ('Leste'), ('Oeste');
 
-INSERT INTO endereco (rua, numero, cep, bairro, fkZona, fkCidade) VALUES
-('Rua das Flores', 123, '01001000', 'Centro', NULL, NULL),
-('Avenida Paulista', 456, '01311000', 'Bela Vista', NULL, NULL),
-('Rua Central', 789, '02020202', 'Jardins', NULL, NULL);
+insert into endereco (rua, numero, cep, bairro, fkZona, fkCidade) values
+('Rua das Flores', 123, '01001000', 'Centro', 1, 1),
+('Avenida Paulista', 456, '01311000', 'Bela Vista', 2, 1),
+('Rua Central', 789, '02020202', 'Jardins', 3, 1);
 
-INSERT INTO cargo(titulo) VALUES
+insert into empresa (nome, cnpj, codigoAtivacao, fkEndereco) values
+('Tech Solutions', '12345678000190', 'A1234X9M2Q7K', 1),
+('Green Energy', '98765432000155', 'B5678Y1N4R0P', 2),
+('Smart Innovations', '11122233000177', 'C9012T6L8V3D', 3);
+
+insert into cargo(titulo) values
 ('Administrador'),
 ('Gestor de produtos'),
 ('Engenheiro de qualidade de produtos');
 
-INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) VALUES
+insert into usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) values
 ('Guilherme Leon', 'guilherme@example.com', 'senha123', '12345678901', '11999998888', 1, 1),
 ('Ana Silva', 'ana@example.com', 'senha456', '10987654321', '11988887777', 2, 2),
 ('Carlos Pereira', 'carlos@example.com', 'senha789', '11223344556', '11977776666', 3, 3);
 
-INSERT INTO lote(dataFabricacao, modelo, fkEmpresa) VALUES
-('2025-01-15', 'MiniPC X100', 1),
-('2025-02-20', 'MiniPC G200', 2),
-('2025-03-10', 'MiniPC S300', 3);
+insert into lote(id, dataFabricacao, modelo, fkEmpresa) values
+(1008234, '2025-01-15', 'MiniPC X100', 1),
+(1005134, '2025-02-20', 'MiniPC G200', 2),
+(2204102, '2025-03-10', 'MiniPC S300', 3);
 
-INSERT INTO miniComputador (fklote, fkEndereco) VALUES
-(1, 2),
-(2, 1),
-(3, 3);
+insert into miniComputador (fkLote, fkEndereco) values
+(1008234, 2),
+(1005134, 1),
+(2204102, 3);
 
-INSERT INTO componente (nome, unidadeMedida) VALUES
-('CPU', '%'),
-('RAM', '%'),
-('Disco', '%');
+insert into componente (nome, unidadeMedida) values
+('cpu', '%'),
+('ram', '%'),
+('disco', '%'),
+('disco', 'gb'),
+('ram', 'gb');
 
--- Relacionando miniPCs aos lotes
-INSERT INTO maquinas (idLote, idMiniPC) VALUES
-(1, 1), -- Lote 1 com MiniPC 1
-(2, 2), -- Lote 2 com MiniPC 2
-(3, 3); -- Lote 3 com MiniPC 3
+insert into modelo (nome) values ('IntelI5');
 
-INSERT INTO parametro (fkMinipc, fkComponente, valorParametro) VALUES
-(1, 1, 85), 
-(1, 2, 85),
-(1, 3, 85); 
+insert into parametro (fkModelo, fkComponente, valorParametro) values
+(1, 1, 85.00),
+(1, 2, 85.00),
+(1, 3, 85.00);
 
-INSERT INTO alertas (fkParametro) VALUES
-(1),
-(2),
-(3);
-
--- =========================
--- CONSULTAS
--- =========================
-SELECT 
-    us.nome, 
-    us.email, 
-    us.telefone, 
-    us.cpf AS CPF, 
-    em.nome AS Empresa
-FROM usuario AS us
-INNER JOIN empresa AS em 
-    ON us.fkEmpresa = em.id 
-WHERE us.id = 1;
-
-SELECT id AS IdEmpresa, nome AS NomeEmpresa, codigoAtivacao AS Codigo 
-FROM empresa;
-
-INSERT INTO usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) 
-VALUES (
-    'Joao', 
-    'joao@gmail.com', 
-    '123456', 
-    '45231313111', 
-    '11988886666', 
-    (SELECT id FROM empresa WHERE codigoAtivacao = 'A1234'),
-    1
-);
-
-SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario 
-FROM usuario as us;
-
-SELECT us.id, us.nome, us.email, empresa.codigoAtivacao, us.fkcargo FROM usuario AS us INNER JOIN empresa ON empresa.id = us.fkEmpresa WHERE email = email AND senha = senha;
-
-SELECT
-    e.id AS IdEmpresa,
-    e.nome AS NomeEmpresa,
-    e.cnpj AS CNPJ,
-    e.codigoAtivacao AS CodigoAtivacao,
-    en.rua,
-    en.numero,
-    en.bairro,
-    en.cep,
-    c.nome AS Cidade,
-    es.nome AS Estado
-FROM
-    empresa AS e
-INNER JOIN
-    endereco AS en ON e.fkEndereco = en.id
-INNER JOIN
-    cidade AS c ON en.fkCidade = c.id
-INNER JOIN
-    estado AS es ON c.fkEstado = es.id;
-
-SELECT *
-FROM lote l
-INNER JOIN maquinas m ON l.id = m.idLote
-INNER JOIN miniComputador mpc ON m.idMiniPC = mpc.id;
+insert into alertas (fkParametro) values
+(1),(2),(3);
