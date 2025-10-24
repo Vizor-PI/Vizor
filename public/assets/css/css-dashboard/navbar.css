@@ -74,3 +74,41 @@
   color: rgba(10, 203, 227, 1);
   font-weight: bold;
 }
+/* ====== LINKS DA SIDEBAR (conserto de cor/visited/underline) ====== */
+
+/* estado padrão e visitado: branco, sem sublinhado */
+.navbar a,
+.navbar a:link,
+.navbar a:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* hover: animação + cor ciano, sem sublinhado */
+.navbar a:hover {
+  color: rgba(10, 203, 227, 1);
+  text-decoration: none;
+}
+
+/* foco via teclado: deixa visível mas discreto */
+.navbar a:focus-visible {
+  outline: 2px solid rgba(10, 203, 227, .6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ativo/selecionado (já tinha, mas garantimos o visited também) */
+.nav-item.active a,
+.nav-item.active a:visited {
+  color: rgba(10, 203, 227, 1);
+  font-weight: 700;
+}
+
+/* mantém sua transição/scale, mas aqui centralizamos */
+.nav-item a {
+  transition: transform .2s ease, color .2s ease;
+  display: inline-block;
+}
+.nav-item a:hover {
+  transform: translateX(2px);
+}
