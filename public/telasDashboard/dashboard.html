@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -7,10 +7,9 @@
 
   <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
   <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
-
   <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
-  <!-- CSS do Leaflet (biblioteca do mapa) -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -65,6 +64,79 @@
     .vizor-map-controls{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px }
     .vizor-map-controls .vizor-btn,
     .vizor-map-controls .vizor-select{ padding:6px 10px }
+
+    /* topo de KPIs: 2 cards lado a lado */
+    .kpi-top-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:16px;
+      margin-bottom:16px;
+    }
+
+    /* linha de 4 métricas dentro de cada card KPI */
+    .kpi-row-4{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    @media (max-width: 900px){
+      .kpi-row-4{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    /* lista de severidade final */
+    .risk-card-list{
+      margin-top:12px;
+      margin-bottom:8px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:12px;
+    }
+    .risk-row{
+      background:#111317;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+      padding:12px 16px;
+      font-size:13px;
+      line-height:1.4;
+    }
+    .risk-row-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom:8px;
+    }
+    .risk-row-head strong{
+      font-size:14px;
+      line-height:1.3;
+    }
+    .risk-status{
+      font-size:12px;
+      font-weight:600;
+      border-radius:999px;
+      padding:2px 8px;
+    }
+    .risk-status.risco{
+      background:#ffe6e6;
+      color:#a40000;
+    }
+    .risk-status.alerta{
+      background:#fff8e6;
+      color:#a66300;
+    }
+    .risk-status.ok{
+      background:#e6ffed;
+      color:#0a7f2e;
+    }
+    .risk-metrics{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      font-size:12px;
+      opacity:.8;
+      line-height:1.4;
+    }
   </style>
 </head>
 <body onload="verificarCargo()">
@@ -72,48 +144,98 @@
 
   <div class="container-xl">
 
-    <section class="kpi-grid">
-      <div class="card kpi-card">
-        <h4 class="kpi-label">CPU</h4>
-        <p class="kpi-value">10%</p>
-        <p class="kpi-sub">Média nas últimas 24h</p>
-      </div>
+    <!-- ========= TOPO KPIs (2 cards lado a lado, cada card 4 colunas na mesma linha) ========= -->
+    <section class="kpi-top-grid">
 
-      <div class="card kpi-card">
-        <h4 class="kpi-label">RAM</h4>
-        <p class="kpi-value">49%</p>
-        <p class="kpi-sub">Média nas últimas 24h</p>
-      </div>
+      <!-- Bloco 1: Estado do parque -->
+      <section class="card kpi-card">
+        <header class="card-header" style="margin-bottom:8px;">
+          <h2 class="card-title">Estado do parque agora</h2>
+          <small style="font-size:12px; opacity:.7;">Classificação automática (percentis)</small>
+        </header>
 
-      <div class="card kpi-card">
-        <h4 class="kpi-label">DISCO</h4>
-        <p class="kpi-value">12%</p>
-        <p class="kpi-sub">Média nas últimas 24h</p>
-      </div>
+        <div class="card-content">
+          <div class="kpi-row-4">
+            <div>
+              <h4 class="kpi-label">Total monitorado</h4>
+              <p class="kpi-value" id="kpi-total-devices">—</p>
+              <p class="kpi-sub">Players ativos</p>
+            </div>
 
-      <div class="card kpi-card">
-        <h4 class="kpi-label">Temperatura CPU</h4>
-        <p class="kpi-value">66ºC</p>
-        <p class="kpi-sub">Média nas últimas 24h</p>
-      </div>
+            <div>
+              <h4 class="kpi-label">Crítico</h4>
+              <p class="kpi-value" id="kpi-total-risco">—</p>
+              <p class="kpi-sub">Acima P90</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Alerta</h4>
+              <p class="kpi-value" id="kpi-total-alerta">—</p>
+              <p class="kpi-sub">Acima P75</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">OK</h4>
+              <p class="kpi-value" id="kpi-total-ok">—</p>
+              <p class="kpi-sub">Operando normal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloco 2: Condições médias -->
+      <section class="card kpi-card">
+        <header class="card-header" style="margin-bottom:8px;">
+          <h2 class="card-title">Condições médias (24h)</h2>
+          <small style="font-size:12px; opacity:.7;">Carga térmica e uso</small>
+        </header>
+
+        <div class="card-content">
+          <div class="kpi-row-4">
+            <div>
+              <h4 class="kpi-label">CPU média</h4>
+              <p class="kpi-value" id="kpi-cpu-24h">10%</p>
+              <p class="kpi-sub">Uso de CPU</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">RAM média</h4>
+              <p class="kpi-value" id="kpi-ram-24h">49%</p>
+              <p class="kpi-sub">Uso de memória</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Disco médio</h4>
+              <p class="kpi-value" id="kpi-disco-24h">12%</p>
+              <p class="kpi-sub">Ocupação</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Temp. CPU</h4>
+              <p class="kpi-value" id="kpi-temp-24h">66ºC</p>
+              <p class="kpi-sub">Média térmica</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </section>
 
-    <!-- Card do mapa: botão de relatórios, os controles e mapa -->
-    <section class="card" style="padding:16px; margin-top:16px;">
+    <!-- ========= MAPA + RELATÓRIO ========= -->
+    <section class="card" style="padding:16px; margin-bottom:16px;">
       <header class="card-header" style="margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
         <h2 class="card-title">Mapa de Dispositivos — Vizor</h2>
-        <!-- Botão que mostra o select de relatório -->
-        <button id="btn-open-selector" class="vizor-btn" title="Gerar relatório (na própria página)">Relatórios</button>
+        <button id="btn-open-selector" class="vizor-btn" title="Gerar relatório / laudo">Relatórios</button>
       </header>
 
       <div class="card-content">
-        <!-- Seletor de relatório -->
+        <!-- seletor de relatório -->
         <div id="report-selector" class="report-selector" aria-label="Seletor de relatório">
           <div class="row" style="margin-bottom:8px">
             <span class="vizor-label">Tipo de relatório:</span>
             <label class="vizor-radio"><input type="radio" name="report-type" value="dooh"> DOOH específico</label>
             <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Geral semanal</label>
-            <!-- Este select só aparece quando escolhe um DOOH específico -->
+
             <div id="dooh-select-wrap" style="display:none">
               <select id="select-dooh" class="vizor-select">
                 <option value="">— Selecione o DOOH —</option>
@@ -126,22 +248,23 @@
           </div>
         </div>
 
-        <!-- Controles do mapa: localização, centralizar e filtro -->
+        <!-- controles do mapa -->
         <div class="vizor-map-controls">
           <button id="btn-geolocate" class="vizor-btn" title="Centraliza em você">Minha localização</button>
-          <button id="btn-fit" class="vizor-btn" title="Centraliza e enquadra todos os players visíveis no mapa">Centralizar</button>
+          <button id="btn-fit" class="vizor-btn" title="Enquadrar todos os players">Centralizar</button>
+
           <select id="filtro-status" class="vizor-select" aria-label="Filtro do mapa por status">
             <option value="todos" selected>Filtrar: todos</option>
             <option value="ok">Somente OK</option>
             <option value="alerta">Somente ALERTA</option>
-            <option value="risco">Somente RISCO</option>
+            <option value="risco">Somente CRÍTICO</option>
           </select>
         </div>
 
-        <!-- Aqui o Leaflet renderiza o mapa -->
+        <!-- mapa -->
         <div id="vizor-map"></div>
 
-        <!-- Card do relatório -->
+        <!-- relatório imprimível -->
         <section id="report-card" class="card" style="padding:16px; margin-top:16px;">
           <header class="card-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
             <div>
@@ -149,21 +272,40 @@
               <small id="report-period" style="opacity:.8"></small>
             </div>
             <div style="display:flex;gap:8px;align-items:center">
-              <!-- Abre a janela de impressão -->
               <button id="btn-print-report" class="vizor-btn" title="Imprimir / Salvar PDF">Imprimir</button>
-              <!-- Esconde o card do relatório -->
               <button id="btn-close-report" class="vizor-btn" style="background:#171a20;border:1px solid rgba(255,255,255,.15)">Fechar</button>
             </div>
           </header>
+
           <div class="card-content">
-            <!-- KPIs do relatório -->
+            <!-- KPIs do relatório re-trabalhados -->
             <div class="kpi-mini">
-              <div class="mini"><div class="label">Disponibilidade</div><div id="kpi-up" class="value">—</div><div class="sub">últimos 7 dias</div></div>
-              <div class="mini"><div class="label">Alertas</div><div id="kpi-alert" class="value">—</div><div class="sub">semana</div></div>
-              <div class="mini"><div class="label">Uso médio CPU</div><div id="kpi-cpu" class="value">—</div><div class="sub">semana</div></div>
-              <div class="mini"><div class="label">Tickets</div><div id="kpi-tickets" class="value">—</div><div class="sub">semana</div></div>
+              <div class="mini">
+                <div class="label">CPU média</div>
+                <div id="kpi-cpu" class="value">—</div>
+                <div class="sub">últimos 7 dias</div>
+              </div>
+
+              <div class="mini">
+                <div class="label">Temp. média CPU</div>
+                <div id="kpi-temp" class="value">—</div>
+                <div class="sub">últimos 7 dias</div>
+              </div>
+
+              <div class="mini">
+                <div class="label">Uptime médio</div>
+                <div id="kpi-uptime" class="value">—</div>
+                <div class="sub">horas ligadas contínuas</div>
+              </div>
+
+              <div class="mini">
+                <div class="label">Alertas</div>
+                <div id="kpi-alert" class="value">—</div>
+                <div class="sub">na semana</div>
+              </div>
             </div>
-            <!-- Gráfico do relatório semanal-->
+
+            <!-- Gráfico do relatório -->
             <div style="margin-top:12px">
               <canvas id="reportChart" height="140"></canvas>
             </div>
@@ -172,8 +314,8 @@
       </div>
     </section>
 
-    <!-- Gráficos gerais da dash  -->
-    <section class="grid-2">
+    <!-- ========= GRÁFICOS DO PARQUE ========= -->
+    <section class="grid-2" style="margin-bottom:16px;">
       <div class="card">
         <header class="card-header">
           <h2 class="card-title">Uso de CPU (média por hora)</h2>
@@ -181,6 +323,17 @@
         <div class="card-content">
           <div class="chart-box">
             <canvas id="chartCPU"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Temperatura (média por hora)</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartGPU"></canvas>
           </div>
         </div>
       </div>
@@ -206,100 +359,59 @@
           </div>
         </div>
       </div>
-
-      <div class="card">
-        <header class="card-header">
-          <h2 class="card-title">Temperatura (média por hora)</h2>
-        </header>
-        <div class="card-content">
-          <div class="chart-box">
-            <canvas id="chartGPU"></canvas>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- Tabelas por status -->
-    <section class="card table-card">
-      <header class="card-header">
-        <h2 class="card-title">Equipamentos por status</h2>
-        <div class="card-actions">
-          <label for="seletor-lista" class="ui-label">Tipo de lista:</label>
-          <select id="seletor-lista" class="ui-select">
-            <option value="todos" selected>Todos os DOOH</option>
-            <option value="risco">Crítico</option>
-            <option value="alerta">Alerta</option>
-            <option value="ok">OK</option>
-          </select>
+    <!-- ========= LISTA ÚNICA ORDENADA POR SEVERIDADE ========= -->
+    <section class="card table-card" style="margin-bottom:32px;">
+      <header class="card-header" style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px;">
+        <div>
+          <h2 class="card-title">Severidade dos dispositivos</h2>
+          <small style="opacity:.7; font-size:12px; line-height:1.4;">
+            Lista única dos players mais críticos agora.<br/>
+            Ordenado por risco térmico, CPU alta e uptime contínuo.
+          </small>
+        </div>
+
+        <div class="card-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label for="seletor-lista" class="ui-label">Filtro:</label>
+            <select id="seletor-lista" class="ui-select">
+              <option value="todos" selected>Todos</option>
+              <option value="risco">Crítico</option>
+              <option value="alerta">Alerta</option>
+              <option value="ok">OK</option>
+            </select>
+          </div>
         </div>
       </header>
 
       <div class="card-content">
-        <!-- Todos -->
-        <div id="lista-todos" class="lista-visivel">
-          <table class="ui-table" id="tabela-dooh">
-            <thead>
-              <tr>
-                <th>Hostname</th><th>CPU</th><th>RAM</th><th>Disco</th><th>Último ping</th><th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-todos"></tbody> 
-          </table>
-        </div>
-
-        <!-- Risco -->
-        <div id="lista-risco" class="lista-oculta">
-          <table class="ui-table">
-            <thead>
-              <tr>
-                <th>Hostname</th><th>CPU</th><th>RAM</th><th>Disco</th><th>Último ping</th><th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-risco"></tbody> 
-          </table>
-        </div>
-
-        <!-- Alerta -->
-        <div id="lista-alerta" class="lista-oculta">
-          <table class="ui-table">
-            <thead>
-              <tr>
-                <th>Hostname</th><th>CPU</th><th>RAM</th><th>Disco</th><th>Último ping</th><th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-alerta"></tbody> 
-          </table>
-        </div>
-
-        <!-- OK -->
-        <div id="lista-ok" class="lista-oculta">
-          <table class="ui-table">
-            <thead>
-              <tr>
-                <th>Hostname</th><th>CPU</th><th>RAM</th><th>Disco</th><th>Último ping</th><th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-ok"></tbody> 
-          </table>
+        <!-- ÚNICA LISTA que importaaaa -->
+        <div id="risk-list" class="risk-card-list">
+          <!-- preenchido via JS -->
         </div>
       </div>
     </section>
   </div>
 
-  <!-- Scripts que já existiam -->
+  <!-- Scripts base -->
   <script src="../js/verificadorCargo.js"></script>
   <script src="../js/navbar.js"></script>
 
-  <!-- JS do Leaflet pra criar e controlar o mapa -->
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
           crossorigin=""></script>
 
-  <!-- JS do Chart.js  -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
- 
+  (function(){
+    const USE_API = false;
+    const ENDPOINT = '/api/dispositivos?zona=paulista';
+
+    // Cores e estilo dos gráficos
     const colorText = '#ffffff';
     const colorGrid = 'rgba(255,255,255,0.10)';
     const colorCPU  = 'rgba(10, 203, 227, 1)';
@@ -307,14 +419,26 @@
     const colorDISK = 'rgba(255, 92, 92, 1)';
     const colorGPU  = 'rgba(53, 162, 235, 1)';
 
+    // Eixo X mock
     const horas = ['00h','02h','04h','06h','08h','10h','12h','14h','16h','18h','20h','22h'];
 
+    // Séries mockadas
     const serieCPU   = [22,18,25,30,45,61,68,74,71,63,48,35];
     const serieRAM   = [38,35,41,46,52,55,58,60,57,54,50,49];
     const serieDISCO = [12,13,12,11,13,14,12,13,11,12,12,12];
     const serieGPU   = [50,56,49,62,66,69,72,65,68,62,59,64];
 
-    // Função que cria um gráfico de linha
+    // Cores de status no mapa
+    const STATUS_STYLE = {
+      ok:     { color: '#0a7f2e', fillColor: '#27ae60' },
+      alerta: { color: '#a66300', fillColor: '#f39c12' },
+      risco:  { color: '#a40000', fillColor: '#e74c3c' }
+    };
+
+    let map, markersLayer, allDevices = [], currentFilter = 'todos';
+    let reportChart;
+
+    /* ===================== GRÁFICOS (Chart.js) ===================== */
     function criarLinha(idCanvas, rotulo, dados, cor){
       const ctx = document.getElementById(idCanvas).getContext('2d');
       new Chart(ctx, {
@@ -325,7 +449,7 @@
             label: rotulo,
             data: dados,
             borderColor: cor,
-            backgroundColor: cor.replace('1)', '0.15)'), 
+            backgroundColor: cor.replace('1)', '0.15)'),
             fill: true,
             tension: 0.35,
             pointRadius: 2.5
@@ -347,64 +471,25 @@
       });
     }
 
-    // Crio os 4 gráficos
-    criarLinha('chartCPU',   'CPU (%)',   serieCPU,   colorCPU);
-    criarLinha('chartRAM',   'RAM (%)',   serieRAM,   colorRAM);
-    criarLinha('chartDISCO', 'Disco (%)', serieDISCO, colorDISK);
-    criarLinha('chartGPU',   'Temperatura (ºC)',   serieGPU,   colorGPU);
+    function initCharts(){
+      criarLinha('chartCPU',   'CPU (%)',   serieCPU,   colorCPU);
+      criarLinha('chartRAM',   'RAM (%)',   serieRAM,   colorRAM);
+      criarLinha('chartDISCO', 'Disco (%)', serieDISCO, colorDISK);
+      // Temperatura não é %, mas usamos mesma escala mock
+      criarLinha('chartGPU',   'Temperatura (ºC)',   serieGPU,   colorGPU);
+    }
 
-    // Controle das abas da tabela. Quando troco aqui, também filtro o mapa.
-    const seletor = document.getElementById('seletor-lista');
-    const blocos = {
-      todos : document.getElementById('lista-todos'),
-      risco : document.getElementById('lista-risco'),
-      alerta: document.getElementById('lista-alerta'),
-      ok    : document.getElementById('lista-ok')
-    };
-
-    seletor.addEventListener('change', () => {
-      const chave = seletor.value;
-      // Mostro só a aba correspondente
-      Object.values(blocos).forEach(div => div.classList.add('lista-oculta'));
-      blocos[chave].classList.remove('lista-oculta');
-      // Aplico o mesmo filtro no mapa 
-      if (window.vizorMap && typeof window.vizorMap.filterStatus === 'function') {
-        window.vizorMap.filterStatus(chave);
-      }
-    });
-  </script>
-
-  <script>
-  (function() {
-    const USE_API = false; // quando tiver backend, troco pra true
-    const ENDPOINT = '/api/dispositivos?zona=paulista'; // já traz só Paulista
-
-    // Cores dos marcadores de acordo com o status
-    const STATUS_STYLE = {
-      ok:     { color: '#0a7f2e', fillColor: '#27ae60' },
-      alerta: { color: '#a66300', fillColor: '#f39c12' },
-      risco:  { color: '#a40000', fillColor: '#e74c3c' }
-    };
-
-    // Variáveis de estado
-    let map, markersLayer, allDevices = [], currentFilter = 'todos';
-    let reportChart; // guardo a instância do Chart pra conseguir destruir antes de recriar
-
-    /* ------ Criação do mapa e configuração básica ------ */
+    /* ===================== MAPA ===================== */
     function initMap() {
-      // Inicio a visão no centro da Av. Paulista
       map = L.map('vizor-map', { zoomControl: true, minZoom: 2 })
              .setView([-23.5614, -46.6559], 12);
 
-      // Camada de azulejos (tiles) que mostra as ruas etc.
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap'
       }).addTo(map);
 
-      // Grupo que segura todos os marcadores. Fica fácil limpar e replotar
       markersLayer = L.layerGroup().addTo(map);
 
-      // Ações dos controles do mapa
       document.getElementById('btn-geolocate')?.addEventListener('click', goToMyLocation);
       document.getElementById('btn-fit')?.addEventListener('click', fitToMarkers);
       document.getElementById('filtro-status')?.addEventListener('change', (e) => {
@@ -412,117 +497,7 @@
       });
     }
 
-    /* ------ Carrego os dados (mock por enquanto) ------ */
-    async function loadData() {
-      if (USE_API) {
-        try {
-          const resp = await fetch(ENDPOINT, { cache: 'no-store' });
-          if (!resp.ok) throw new Error('Falha ao buscar dispositivos');
-          const data = await resp.json();
-          allDevices = (Array.isArray(data) ? data : []).map(normalizeDevice);
-        } catch (e) {
-          console.warn('Falha na API, seguindo com mock:', e);
-          allDevices = getMockPaulista();
-        }
-      } else {
-        allDevices = getMockPaulista();
-      }
-
-      // A partir daqui, eu renderizo tudo usando allDevices
-      applyRender();                      // desenha os marcadores com base no filtro
-      fitToMarkers();                     // ajusta o mapa pra enquadrar os pontos
-      renderTablesFromDevices(allDevices);        // preenche as tabelas
-      hydrateDoohSelectFromDevices(allDevices);   // preenche o select do relatório
-    }
-
-
-
-    /* ------ Atualiza o mapa conforme o filtro atual ------ */
-    function applyRender() {
-      const list = currentFilter === 'todos'
-        ? allDevices
-        : allDevices.filter(d => (d.status||'').toLowerCase() === currentFilter);
-      renderMarkers(list);
-    }
-
-    /* ------ Criação e desenho dos marcadores ------ */
-    function renderMarkers(list) {
-      markersLayer.clearLayers();
-      list.forEach(dev => {
-        if (!isFinite(dev.lat) || !isFinite(dev.lng)) return;
-
-        const sKey = (dev.status || 'ok').toLowerCase();
-        const style = STATUS_STYLE[sKey] || STATUS_STYLE.ok;
-
-        L.circleMarker([dev.lat, dev.lng], {
-          radius: 8, weight: 2, color: style.color, fillColor: style.fillColor, fillOpacity: 0.8
-        })
-        .addTo(markersLayer)
-        .bindPopup(buildPopupHTML(dev), { maxWidth: 280 });
-      });
-    }
-
-    /* ------ HTML da popup de cada ponto ------ */
-    function buildPopupHTML(dev) {
-      const st = (dev.status || 'ok').toLowerCase();
-      const badgeClass =
-        st==='risco' ? 'vizor-status-badge vizor-status-risco' :
-        st==='alerta'? 'vizor-status-badge vizor-status-alerta' :
-                       'vizor-status-badge vizor-status-ok';
-      const atualizado = dev.ultimoUpdateISO ? new Date(dev.ultimoUpdateISO).toLocaleString() : '—';
-
-      return `
-        <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-            <strong>${dev.nome || dev.hostname || ('Media Player #' + (dev.id ?? '?'))}</strong>
-            <span class="${badgeClass}">${st.toUpperCase()}</span>
-          </div>
-          <div style="margin-top:6px;font-size:13px;line-height:1.35;">
-            <div><b>ID/Hostname:</b> ${dev.hostname ?? dev.id ?? '-'}</div>
-            <div><b>Último update:</b> ${atualizado}</div>
-            ${dev.endereco ? `<div><b>Endereço:</b> ${dev.endereco}</div>` : ''}
-          </div>
-        </div>`;
-    }
-
-    /* ------ Funções de usabilidade no mapa ------ */
-    function fitToMarkers() {
-      const bounds = L.latLngBounds();
-      markersLayer.eachLayer(layer => { if (layer.getLatLng) bounds.extend(layer.getLatLng()); });
-      if (bounds.isValid()) map.fitBounds(bounds.pad(0.15));
-    }
-
-    function goToMyLocation() {
-      if (!navigator.geolocation) return alert('Geolocalização não suportada.');
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          const { latitude, longitude } = pos.coords;
-          map.setView([latitude, longitude], 14);
-          L.circleMarker([latitude, longitude], {
-            radius: 6, weight: 2, color: '#3b82f6', fillColor: '#60a5fa', fillOpacity: 0.8
-          }).addTo(map).bindPopup('Você está aqui').openPopup();
-        },
-        () => alert('Não foi possível obter sua localização.'),
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
-    }
-
-    function filterStatus(value) {
-      currentFilter = (value || 'todos').toLowerCase();
-
-      // Mantém o select de status do mapa sincronizado com a troca vinda da tabela
-      const mapSelect = document.getElementById('filtro-status');
-      if (mapSelect && mapSelect.value !== currentFilter && ['todos','ok','alerta','risco'].includes(currentFilter)) {
-        mapSelect.value = currentFilter;
-      }
-
-      // Reaplico no mapa e atualizo as tabelas pra bater tudo
-      applyRender();
-      fitToMarkers();
-      renderTablesFromDevices(allDevices);
-    }
-
-    /* ------ Mock com DOOHs ------ */
+    /* ===================== MOCK DE DISPOSITIVOS ===================== */
     function getMockPaulista() {
       const now = new Date().toISOString();
       const base = [
@@ -539,73 +514,221 @@
         [-23.55430,-46.66106,'Paulista - DOOH011'],
         [-23.56210,-46.65551,'Paulista - DOOH012'],
       ];
-      return base.map((p, i) => ({
-        id: 100 + i,
-        hostname: `DOOH-SP-P${String(i+1).padStart(2,'0')}`,
-        nome: `Media Player ${p[2]}`,
-        status: i % 5 === 0 ? 'risco' : (i % 3 === 0 ? 'alerta' : 'ok'),
-        lat: p[0],
-        lng: p[1],
-        ultimoUpdateISO: now,
-        endereco: 'Av. Paulista, São Paulo',
-        // Métricas simples pra tabela (apenas pra exemplo visual)
-        cpu: 55 + (i*3 % 40),
-        ram: 45 + (i*4 % 40),
-        disco: 30 + (i*2 % 50),
-        ultimoPing: (i%3===0?'há 1 min':i%3===1?'há 40 s':'há 5 min')
-      }));
-    }
 
-    /* ------ Preenchimento das tabelas usando allDevices ------ */
-    function renderTablesFromDevices(devices){
-      const tTodos   = document.getElementById('tbody-todos');
-      const tRisco   = document.getElementById('tbody-risco');
-      const tAlerta  = document.getElementById('tbody-alerta');
-      const tOk      = document.getElementById('tbody-ok');
-      if (!tTodos || !tRisco || !tAlerta || !tOk) return;
+      return base.map((p, i) => {
+        const cpu = 55 + (i*3 % 40);          // %
+        const ram = 45 + (i*4 % 40);          // %
+        const disco = 30 + (i*2 % 50);        // %
+        const temp = 60 + (i*5 % 25);         // °C
+        const uptimeHoras = 4 + (i*2 % 30);   // horas ligado contínuo
 
-      [tTodos,tRisco,tAlerta,tOk].forEach(t=> t.innerHTML = '');
+        const status = i % 5 === 0 ? 'risco' : (i % 3 === 0 ? 'alerta' : 'ok');
 
-      const addRow = (tbody, d) => {
-        const badgeClass = d.status==='risco'?'badge badge--crit'
-                         : d.status==='alerta'?'badge badge--warn'
-                         : 'badge badge--ok';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><a class="host-link" href="./dooh-detalhe.html?id=${encodeURIComponent(d.hostname)}">${d.hostname}</a></td>
-          <td>${d.cpu}%</td>
-          <td>${d.ram}%</td>
-          <td>${d.disco}%</td>
-          <td>${d.ultimoPing}</td>
-          <td><span class="${badgeClass}">${d.status === 'risco' ? 'Crítico' : (d.status === 'alerta' ? 'Alerta' : 'OK')}</span></td>
-        `;
-        tbody.appendChild(tr);
-      };
+        return {
+          id: 100 + i,
+          hostname: `DOOH-SP-P${String(i+1).padStart(2,'0')}`,
+          nome: `Media Player ${p[2]}`,
+          status,
+          lat: p[0],
+          lng: p[1],
+          ultimoUpdateISO: now,
+          endereco: 'Av. Paulista, São Paulo',
 
-      // Abas: todos e as separadas por status
-      devices.forEach(d => addRow(tTodos, d));
-      devices.filter(d=>d.status==='risco').forEach(d=> addRow(tRisco, d));
-      devices.filter(d=>d.status==='alerta').forEach(d=> addRow(tAlerta, d));
-      devices.filter(d=>d.status==='ok').forEach(d=> addRow(tOk, d));
-    }
-
-    /* ------ Preencho o <select> do relatório com os mesmos DOOHs do mapa ------ */
-    function hydrateDoohSelectFromDevices(devices){
-      const $selDooh = document.getElementById('select-dooh');
-      if (!$selDooh) return;
-      $selDooh.innerHTML = '<option value="">— Selecione o DOOH —</option>';
-      devices.forEach(d=>{
-        const opt = document.createElement('option');
-        opt.value = d.hostname;
-        opt.textContent = d.hostname;
-        $selDooh.appendChild(opt);
+          cpu,
+          ram,
+          disco,
+          tempCPU: temp,
+          uptime_h: uptimeHoras,
+          ultimoPing: (i%3===0?'há 1 min':i%3===1?'há 40 s':'há 5 min')
+        };
       });
     }
 
-    /* ------ Lógica do relatório inline (mostrar seletor, gerar e montar o gráfico) ------ */
+    /* ===================== CARREGAR DADOS ===================== */
+    async function loadData() {
+      if (USE_API) {
+        try {
+          const resp = await fetch(ENDPOINT, { cache: 'no-store' });
+          if (!resp.ok) throw new Error('Falha ao buscar dispositivos');
+          const data = await resp.json();
+          allDevices = (Array.isArray(data) ? data : []).map(normalizeDevice);
+        } catch (e) {
+          console.warn('Falha na API, usando mock:', e);
+          allDevices = getMockPaulista();
+        }
+      } else {
+        allDevices = getMockPaulista();
+      }
+
+      applyRender(); // desenha marcadores conforme filtro atual
+      fitToMarkers();
+
+      atualizarKPIsGerais(allDevices);
+      renderRiskList(allDevices); // lista única ordenada
+      hydrateDoohSelectFromDevices(allDevices);
+    }
+
+    /* ===================== MAPA: MARKERS E POPUP ===================== */
+    function applyRender() {
+      const list = (currentFilter === 'todos')
+        ? allDevices
+        : allDevices.filter(d => (d.status||'').toLowerCase() === currentFilter);
+      renderMarkers(list);
+    }
+
+    function renderMarkers(list) {
+      markersLayer.clearLayers();
+      list.forEach(dev => {
+        if (!isFinite(dev.lat) || !isFinite(dev.lng)) return;
+        const sKey = (dev.status || 'ok').toLowerCase();
+        const style = STATUS_STYLE[sKey] || STATUS_STYLE.ok;
+
+        L.circleMarker([dev.lat, dev.lng], {
+          radius: 8, weight: 2, color: style.color, fillColor: style.fillColor, fillOpacity: 0.8
+        })
+        .addTo(markersLayer)
+        .bindPopup(buildPopupHTML(dev), { maxWidth: 300 });
+      });
+    }
+
+    function buildPopupHTML(dev) {
+      const st = (dev.status || 'ok').toLowerCase();
+      const badgeClass =
+        st==='risco' ? 'vizor-status-badge vizor-status-risco' :
+        st==='alerta'? 'vizor-status-badge vizor-status-alerta' :
+                       'vizor-status-badge vizor-status-ok';
+
+      const atualizado = dev.ultimoUpdateISO ? new Date(dev.ultimoUpdateISO).toLocaleString() : '—';
+
+      return `
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <strong>${dev.nome || dev.hostname || ('Media Player #' + (dev.id ?? '?'))}</strong>
+            <span class="${badgeClass}">${st.toUpperCase()}</span>
+          </div>
+
+          <div style="margin-top:6px;font-size:13px;line-height:1.4;">
+            <div><b>Hostname:</b> ${dev.hostname ?? '-'}</div>
+            <div><b>Último update:</b> ${atualizado}</div>
+            ${dev.endereco ? `<div><b>Endereço:</b> ${dev.endereco}</div>` : ''}
+
+            <hr style="border:none;border-top:1px solid rgba(255,255,255,.1);margin:8px 0;" />
+
+            <div style="font-size:12px;line-height:1.4;opacity:.9;">
+              <div><b>CPU:</b> ${dev.cpu}%</div>
+              <div><b>Temp CPU:</b> ${dev.tempCPU}°C</div>
+              <div><b>RAM:</b> ${dev.ram}%</div>
+              <div><b>Disco:</b> ${dev.disco}%</div>
+              <div><b>Uptime:</b> ${dev.uptime_h}h lig.</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* ===================== MAPA: UX ===================== */
+    function fitToMarkers() {
+      const bounds = L.latLngBounds();
+      markersLayer.eachLayer(layer => { if (layer.getLatLng) bounds.extend(layer.getLatLng()); });
+      if (bounds.isValid()) map.fitBounds(bounds.pad(0.15));
+    }
+
+    function goToMyLocation() {
+      if (!navigator.geolocation) return alert('Geolocalização não suportada.');
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const { latitude, longitude } = pos.coords;
+          map.setView([latitude, longitude], 14);
+          L.circleMarker([latitude, longitude], {
+            radius: 6, weight: 2, color: '#3b82f6', fillColor: '#60a5fa', fillOpacity: 0.8
+          }).addTo(markersLayer).bindPopup('Você está aqui').openPopup();
+        },
+        () => alert('Não foi possível obter sua localização.'),
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+
+    function filterStatus(value) {
+      currentFilter = (value || 'todos').toLowerCase();
+
+      // sincroniza dropdown do mapa, se necessário
+      const mapSelect = document.getElementById('filtro-status');
+      if (mapSelect && mapSelect.value !== currentFilter && ['todos','ok','alerta','risco'].includes(currentFilter)) {
+        mapSelect.value = currentFilter;
+      }
+
+      applyRender();        // atualiza mapa
+      fitToMarkers();
+      atualizarKPIsGerais(allDevices); // topo continua mostrando totais globais (não filtrado)
+      renderRiskList(allDevices);      // atualiza lista única ordenada com filtro
+    }
+
+    /* ===================== KPIs DO TOPO ===================== */
+    function atualizarKPIsGerais(devices){
+      const total = devices.length;
+      const totalRisco = devices.filter(d=>d.status==='risco').length;
+      const totalAlerta = devices.filter(d=>d.status==='alerta').length;
+      const totalOk = devices.filter(d=>d.status==='ok').length;
+
+      document.getElementById('kpi-total-devices').textContent = total;
+      document.getElementById('kpi-total-risco').textContent = totalRisco;
+      document.getElementById('kpi-total-alerta').textContent = totalAlerta;
+      document.getElementById('kpi-total-ok').textContent = totalOk;
+    }
+
+    /* ===================== LISTA ÚNICA ORDENADA POR SEVERIDADE ===================== */
+    function renderRiskList(devices){
+      const box = document.getElementById('risk-list');
+      if (!box) return;
+      box.innerHTML = '';
+
+      // aplica o filtro atual
+      let baseList = [...devices];
+      if (currentFilter !== 'todos') {
+        baseList = baseList.filter(d => (d.status || '').toLowerCase() === currentFilter);
+      }
+
+      // score de severidade: status pesa muito; depois temp e uptime
+      const score = (d)=>{
+        const base = d.status==='risco' ? 100 : d.status==='alerta' ? 50 : 10;
+        return base + (d.tempCPU||0) + (d.uptime_h||0)*2;
+      };
+
+      const ordenado = baseList.sort((a,b)=> score(b) - score(a));
+
+      // render de todos do conjunto filtrado (não só top 6, agora mostramos todos os relevantes)
+      if (ordenado.length === 0){
+        const empty = document.createElement('div');
+        empty.style.fontSize = '13px';
+        empty.style.opacity = '0.7';
+        empty.textContent = 'Nenhum dispositivo neste filtro.';
+        box.appendChild(empty);
+        return;
+      }
+
+      ordenado.forEach(d=>{
+        const div = document.createElement('div');
+        div.className = 'risk-row';
+
+        div.innerHTML = `
+          <div class="risk-row-head">
+            <strong>${d.hostname}</strong>
+            <span class="risk-status ${d.status}">${d.status.toUpperCase()}</span>
+          </div>
+          <div class="risk-metrics">
+            <span>CPU ${d.cpu}%</span>
+            <span>Temp ${d.tempCPU}°C</span>
+            <span>Uptime ${d.uptime_h}h</span>
+            <span>RAM ${d.ram}%</span>
+            <span>Ping ${d.ultimoPing}</span>
+          </div>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    /* ===================== RELATÓRIO / EXPORT ===================== */
     const $selector = document.getElementById('report-selector');
-    const $openSel1 = document.getElementById('btn-open-selector');   // botão do card do mapa
-    const $openSel2 = document.getElementById('btn-open-selector-2'); // deixei o id reservado caso eu use 
+    const $openSel1 = document.getElementById('btn-open-selector');
     const $cancelSel = document.getElementById('btn-cancel-selector');
     const $btnGen = document.getElementById('btn-generate-inline');
     const $wrapDooh = document.getElementById('dooh-select-wrap');
@@ -616,69 +739,55 @@
     const $btnCloseReport = document.getElementById('btn-close-report');
     const $btnPrintReport = document.getElementById('btn-print-report');
 
-    // Mostrar/ocultar a área do seletor
     function toggleSelector(show){ $selector.style.display = show?'block':'none'; }
-
-    // Qual tipo de relatório está marcado
     function selectedType(){
       const r = document.querySelector('input[name="report-type"]:checked');
       return r ? r.value : 'semanal';
     }
 
-    // Quando eu mudo entre dooh e semanal, eu exibo ou escondo o select de DOOH
     document.addEventListener('change', (e)=>{
       if (e.target && e.target.name === 'report-type'){
         $wrapDooh.style.display = e.target.value === 'dooh' ? 'inline-block' : 'none';
       }
     });
 
-    // Abre o seletor
     $openSel1?.addEventListener('click', ()=>{ toggleSelector(true); });
-    $openSel2?.addEventListener('click', ()=>{ toggleSelector(true); });
-
-    // Cancela o seletor
     $cancelSel?.addEventListener('click', ()=> toggleSelector(false));
 
-    // Gera o relatório: valida entradas, preenche KPIs e gráfico, e rola até o card
     $btnGen?.addEventListener('click', ()=>{
       const type = selectedType();
-      if (type === 'dooh' && !$selDooh.value){ alert('Selecione um DOOH.'); return; }
+      if (type === 'dooh' && !$selDooh.value){
+        alert('Selecione um DOOH.');
+        return;
+      }
       renderReport(type, $selDooh.value);
       toggleSelector(false);
       $reportCard.style.display = 'block';
       $reportCard.scrollIntoView({behavior:'smooth', block:'start'});
     });
 
-    // Fecha o card do relatório
     $btnCloseReport?.addEventListener('click', ()=>{ $reportCard.style.display='none'; });
-
-    // Abre a impressão
     $btnPrintReport?.addEventListener('click', ()=>{ window.print(); });
 
-    // Monta os dados do relatório e desenha o gráfico
     function renderReport(type, id){
-      // Período: últimos 7 dias incluindo hoje
       const end = new Date();
       const start = new Date(); start.setDate(end.getDate()-6);
       const fmt = (d)=> d.toLocaleDateString('pt-BR');
-      $reportPeriod.textContent = `Período: ${fmt(start)} a ${fmt(end)}`;
 
-      // Título depende se é geral ou de um DOOH específico
+      $reportPeriod.textContent = `Período: ${fmt(start)} a ${fmt(end)}`;
       $reportTitle.textContent = (type==='dooh') ? `Relatório — ${id}` : 'Relatório — Geral (Semanal)';
 
-      // KPIs de exemplo
       const kpi = computeKPIs(type, id);
-      document.getElementById('kpi-up').textContent = kpi.up+'%';
+      document.getElementById('kpi-cpu').textContent = kpi.cpu + '%';
+      document.getElementById('kpi-temp').textContent = kpi.temp + '°C';
+      document.getElementById('kpi-uptime').textContent = kpi.uptime + 'h';
       document.getElementById('kpi-alert').textContent = kpi.alertas;
-      document.getElementById('kpi-cpu').textContent = kpi.cpu+'%';
-      document.getElementById('kpi-tickets').textContent = kpi.tickets;
 
-      // Labels e séries pro gráfico semanal
       const labels = ['Hoje','D-1','D-2','D-3','D-4','D-5','D-6'];
       const series = buildSeries(type, id);
 
       const ctx = document.getElementById('reportChart').getContext('2d');
-      if (reportChart){ reportChart.destroy(); } // limpo antes de replotar
+      if (reportChart){ reportChart.destroy(); }
       reportChart = new Chart(ctx,{
         type:'line',
         data:{
@@ -701,16 +810,26 @@
       });
     }
 
-    // KPIs de exemplo com variação por id (só pra parecer dados diferentes)
+    // mock de KPIs semanais pro relatório
     function computeKPIs(type, id){
       if (type==='dooh'){
         const seed = Array.from(id).reduce((a,c)=>a+c.charCodeAt(0),0)%10;
-        return { up: 98-seed, alertas: 2+seed%2, cpu: 54+seed, tickets: 1+seed%3 };
+        return {
+          cpu: 54+seed,          // %
+          temp: 65+(seed%5),     // °C
+          uptime: 12+(seed%6),   // horas ligadas
+          alertas: 2+seed%2      // qtd alertas
+        };
       }
-      return { up: 96, alertas: 12, cpu: 58, tickets: 7 };
+      return {
+        cpu: 58,
+        temp: 67,
+        uptime: 14,
+        alertas: 12
+      };
     }
 
-    // Séries do gráfico depois eu troco por dados reais da API.
+    // mock pra série do gráfico do relatório
     function buildSeries(type, id){
       const base = [40,45,50,55,60,58,57];
       if (type==='dooh'){
@@ -729,31 +848,35 @@
     }
     function limit01(v){ return Math.max(0, Math.min(100, Math.round(v))); }
 
-    /* ------ Quando mudo a aba das tabelas, aplico o mesmo filtro no mapa ------ */
+    /* ===================== SINCRONIZAÇÃO DO FILTRO GLOBAL ===================== */
     const seletorLista = document.getElementById('seletor-lista');
-    const blocosList = {
-      todos : document.getElementById('lista-todos'),
-      risco : document.getElementById('lista-risco'),
-      alerta: document.getElementById('lista-alerta'),
-      ok    : document.getElementById('lista-ok')
-    };
     seletorLista.addEventListener('change', () => {
       const chave = seletorLista.value;
-      Object.values(blocosList).forEach(div => div.classList.add('lista-oculta'));
-      blocosList[chave].classList.remove('lista-oculta');
-      filterStatus(chave);
+      filterStatus(chave); // isso já rerenderiza mapa + lista de severidade
     });
 
-    /* ------ Inicialização: crio o mapa e carrego os dados ------ */
+    /* ===================== POPULAR SELECT DOOH NO RELATÓRIO ===================== */
+    function hydrateDoohSelectFromDevices(devices){
+      const $selDooh = document.getElementById('select-dooh');
+      if (!$selDooh) return;
+      $selDooh.innerHTML = '<option value="">— Selecione o DOOH —</option>';
+      devices.forEach(d=>{
+        const opt = document.createElement('option');
+        opt.value = d.hostname;
+        opt.textContent = d.hostname;
+        $selDooh.appendChild(opt);
+      });
+    }
+
+    /* ===================== INIT ===================== */
     document.addEventListener('DOMContentLoaded', function() {
       initMap();
+      initCharts();
       loadData();
     });
 
-    /* ------ Disponibilizo o filtro do mapa pra usar de fora se precisar ------ */
-    window.vizorMap = {
-      filterStatus
-    };
+    // expõe pro console se precisar debugar
+    window.vizorMap = { filterStatus };
   })();
   </script>
 </body>
