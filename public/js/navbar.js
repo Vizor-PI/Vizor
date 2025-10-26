@@ -9,19 +9,20 @@ navbarConstructor.innerHTML += `
       </a>
 
       <!-- Menu -->
+      <ul id="textosNavbar">
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
         <a href="dashboard.html"> Dashboard </a>
       </li>
-      <ul id="textosNavbar">
-      <li class="nav-item" id="adm-only">
-        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
-        <a href="gestaoUsuarios.html"> Contas </a>
       </li>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
         <a href="avisoDash.html"> Avisos </a>
       </li>
+      
+      <li class="nav-item" id="adm-only">
+        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
+        <a href="gestaoUsuarios.html"> Contas </a>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash" />
         <a href="alterarDados.html"> Alterar dados </a>

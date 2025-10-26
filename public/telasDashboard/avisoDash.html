@@ -1,30 +1,605 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
-    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alertas e Incidentes — Vizor</title>
 
-    <link
-      rel="icon"
-      href="../assets/imgs/logosDash/home.png"
-      type="image/x-icon"
-    />
-  </head>
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
-  <body onload="verificarCargo()">
-    <nav class="navbar" id="navbarConstructor"></nav>
+  <style>
+    /* IMPORTANTE:
+       vamos assumir que .card no seu dashboard usa:
+       - fundo azul escuro (ex: #0f1f2b / #0f2533 vibe)
+       - borda sutil clara/azulada tipo rgba(255,255,255,.08)
+       - texto branco padrão
+       então aqui vamos imitar isso nos blocos internos customizados.
+    */
 
-    <!-- Conteúdo principal -->
-    <div class="container-xl" id="imgEmBreve"></div>
-  </body>
+    /* grid de KPIs superiores */
+    .alert-top-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:16px;
+      margin-bottom:16px;
+    }
+
+    .alert-kpi{
+      background:#0f1f2b; /* alinhado ao card geral escuro/azulado */
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      padding:12px 16px;
+      min-height:110px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      color:#fff;
+    }
+
+    .alert-kpi .head{
+      font-size:14px;
+      line-height:1.3;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#fff;
+    }
+
+    .alert-kpi .sev-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+    }
+    .sev-dot.critico{
+      background:#e74c3c;
+      box-shadow:0 0 10px #e74c3c55;
+    }
+    .sev-dot.alerta{
+      background:#f39c12;
+      box-shadow:0 0 10px #f39c1255;
+    }
+    .sev-dot.info{
+      background:#3498db;
+      box-shadow:0 0 10px #3498db55;
+    }
+
+    .alert-kpi .value{
+      font-size:28px;
+      font-weight:700;
+      line-height:1.2;
+      color:#fff;
+    }
+
+    .alert-kpi .desc{
+      font-size:12px;
+      line-height:1.4;
+      opacity:.75;
+      color:#fff;
+    }
+
+    /* header e filtro */
+    .alerts-header{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:16px;
+      color:#fff;
+    }
+    .alerts-header-left h2{
+      margin:0;
+      color:#00c8d2; /* título teal/azul claro como os títulos da dash */
+      font-weight:600;
+    }
+    .alerts-header-left small{
+      font-size:12px;
+      opacity:.7;
+      line-height:1.4;
+      display:block;
+      margin-top:4px;
+      color:#fff;
+    }
+
+    .alerts-header-right{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+
+    .filter-group{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:#fff;
+    }
+    .filter-group label{
+      font-size:12px;
+      opacity:.8;
+      color:#fff;
+    }
+
+    /* sobrescrevendo ui-select dentro desse contexto
+       só pra garantir contraste azul escuro + borda leve,
+       imitando selects da outra tela  */
+    .alerts-header-right .ui-select{
+      background:#0f1f2b;
+      border:1px solid rgba(255,255,255,.15);
+      color:#fff;
+      border-radius:8px;
+      padding:8px 10px;
+      min-width:140px;
+    }
+
+    /* lista de alertas (feed) */
+    .alert-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      color:#fff;
+    }
+
+    /* cada alerta vira um "mini-card" com mesma vibe de card da dash */
+    .alert-card{
+      background:#0f1f2b;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      padding:12px 16px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      color:#fff;
+    }
+
+    .alert-main{
+      font-size:13px;
+      line-height:1.4;
+      color:#fff;
+    }
+
+    .alert-headline{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+      margin-bottom:6px;
+      color:#fff;
+    }
+
+    .alert-title{
+      font-size:14px;
+      font-weight:600;
+      line-height:1.4;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      color:#fff;
+    }
+
+    .alert-status-badge{
+      font-size:11px;
+      font-weight:600;
+      border-radius:999px;
+      padding:2px 8px;
+      line-height:1.3;
+      display:inline-block;
+      white-space:nowrap;
+    }
+    .alert-status-badge.critico{
+      background:#ffe6e6;
+      color:#a40000;
+    }
+    .alert-status-badge.alerta{
+      background:#fff8e6;
+      color:#a66300;
+    }
+    .alert-status-badge.info{
+      background:#e6f1ff;
+      color:#004a99;
+    }
+
+    .alert-time{
+      opacity:.7;
+      font-size:12px;
+      color:#fff;
+    }
+
+    .alert-subinfo{
+      font-size:12px;
+      opacity:.9;
+      line-height:1.4;
+      color:#fff;
+    }
+
+    .alert-meta-grid{
+      margin-top:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      font-size:12px;
+      opacity:.8;
+      line-height:1.4;
+      color:#fff;
+    }
+
+    .alert-aside{
+      min-width:150px;
+      font-size:12px;
+      line-height:1.4;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      text-align:right;
+      color:#fff;
+    }
+
+    .alert-action{
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.4;
+      text-align:right;
+      opacity:.9;
+      color:#fff;
+    }
+    .alert-action strong{
+      display:block;
+      font-size:12px;
+      font-weight:600;
+      margin-bottom:2px;
+      color:#fff;
+    }
+
+    @media(max-width:700px){
+      .alert-card{
+        grid-template-columns:1fr;
+        text-align:left;
+      }
+      .alert-aside{
+        text-align:left;
+      }
+      .alert-action{
+        text-align:left;
+      }
+    }
+  </style>
+</head>
+
+<body onload="verificarCargo()">
+  <nav class="navbar" id="navbarConstructor"></nav>
+
+  <div class="container-xl">
+
+    <!-- KPIs de alerta rápido -->
+    <section class="alert-top-grid">
+      <div class="alert-kpi" id="kpi-criticos-card">
+        <div class="head">
+          <span class="sev-dot critico"></span>
+          <span>Alertas críticos</span>
+        </div>
+        <div class="value" id="kpi-criticos">—</div>
+        <div class="desc">Picos de temperatura / CPU / sem ping.</div>
+      </div>
+
+      <div class="alert-kpi" id="kpi-alertas-card">
+        <div class="head">
+          <span class="sev-dot alerta"></span>
+          <span>Alertas em atenção</span>
+        </div>
+        <div class="value" id="kpi-alertas">—</div>
+        <div class="desc">Acima de 75% de CPU ou uptime muito alto.</div>
+      </div>
+
+      <div class="alert-kpi" id="kpi-info-card">
+        <div class="head">
+          <span class="sev-dot info"></span>
+          <span>Infos / manutenção</span>
+        </div>
+        <div class="value" id="kpi-info">—</div>
+        <div class="desc">Eventos não críticos (reboot, atualização).</div>
+      </div>
+    </section>
+
+    <!-- bloco principal: filtros + lista -->
+    <section class="card" style="padding:16px; margin-bottom:16px;">
+      <div class="alerts-header">
+        <div class="alerts-header-left">
+          <h2 class="card-title">Alertas e Incidentes</h2>
+          <small>
+            Histórico de ações Vizor<br />
+            Itens mais recentes primeiro.
+          </small>
+        </div>
+
+        <div class="alerts-header-right">
+          <div class="filter-group">
+            <label for="filtro-severidade">Severidade</label>
+            <select id="filtro-severidade" class="ui-select">
+              <option value="todos" selected>Todos</option>
+              <option value="critico">Crítico</option>
+              <option value="alerta">Alerta</option>
+              <option value="info">Info</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filtro-horario">Ocorrência</label>
+            <select id="filtro-horario" class="ui-select">
+              <option value="todas" selected>Últimas 24h</option>
+              <option value="1h">Última hora</option>
+              <option value="7d">Últimos 7 dias</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- lista dinâmica de alertas -->
+      <div class="alert-list" id="alert-list">
+        <!-- preenchido via JS -->
+      </div>
+    </section>
+  </div>
+
+  <script src="../js/verificadorCargo.js"></script>
+  <script src="../js/navbar.js"></script>
+
+  <script>
+  (function(){
+    // mock de alertas recentes
+    const mockAlerts = [
+      {
+        hostname: "DOOH-SP-P03",
+        severidade: "info",
+        titulo: "Player reiniciado com sucesso",
+        detalhe: "Reboot remoto concluído.",
+        cpu: 18,
+        temp: 50,
+        ram: 41,
+        uptime_h: 0.4,
+        ping: "agora mesmo",
+        abertoHa: "3 min",
+        acao_recomendada: "Monitorar estabilidade pós reboot.",
+        tipo_acao: "Monitoramento"
+      },
+      {
+        hostname: "DOOH-SP-P11",
+        severidade: "critico",
+        titulo: "Sem ping há 5 min",
+        detalhe: "Possível queda de rede ou travamento hard.",
+        cpu: 0,
+        temp: 64,
+        ram: 40,
+        uptime_h: 8,
+        ping: "sem resposta",
+        abertoHa: "5 min",
+        acao_recomendada: "Checar alimentação / link 4G.",
+        tipo_acao: "Visita técnica"
+      },
+      {
+        hostname: "DOOH-SP-P01",
+        severidade: "critico",
+        titulo: "Temperatura acima de 85ºC",
+        detalhe: "CPU em 92% + 87ºC há 14 minutos",
+        cpu: 92,
+        temp: 87,
+        ram: 78,
+        uptime_h: 26,
+        ping: "há 40 s",
+        abertoHa: "14 min",
+        acao_recomendada: "Verificar ventilação / bloqueio de airflow.",
+        tipo_acao: "Intervenção física"
+      },
+      {
+        hostname: "DOOH-SP-P05",
+        severidade: "info",
+        titulo: "Atualização de software aplicada",
+        detalhe: "Build 1.0.37 instalada.",
+        cpu: 29,
+        temp: 59,
+        ram: 47,
+        uptime_h: 3,
+        ping: "há 30 s",
+        abertoHa: "28 min",
+        acao_recomendada: "Verificar se exibidor voltou a rodar playlist.",
+        tipo_acao: "Verificação visual"
+      },
+      {
+        hostname: "DOOH-SP-P04",
+        severidade: "alerta",
+        titulo: "Cpu acima de 75%",
+        detalhe: "Processos acumulando RAM.",
+        cpu: 79,
+        temp: 72,
+        ram: 83,
+        uptime_h: 30,
+        ping: "há 1 min",
+        abertoHa: "2 h",
+        acao_recomendada: "Reinicialização remota sugerida.",
+        tipo_acao: "Ação remota"
+      },
+      {
+        hostname: "DOOH-SP-P07",
+        severidade: "alerta",
+        titulo: "Uptime contínuo acima de 48h",
+        detalhe: "Processos acumulando RAM.",
+        cpu: 64,
+        temp: 75,
+        ram: 86,
+        uptime_h: 53,
+        ping: "há 1 min",
+        abertoHa: "2 h",
+        acao_recomendada: "Reinicialização remota sugerida.",
+        tipo_acao: "Ação remota"
+      },
+      {
+        hostname: "DOOH-SP-P10",
+        severidade: "alerta",
+        titulo: "CPU acima de 75%",
+        detalhe: "Processos acumulando RAM.",
+        cpu: 77,
+        temp: 72,
+        ram: 83,
+        uptime_h: 42,
+        ping: "há 1 min",
+        abertoHa: "2 h",
+        acao_recomendada: "Acompanhamento.",
+        tipo_acao: "Ação remota"
+      },
+      {
+        hostname: "DOOH-SP-P06",
+        severidade: "critico",
+        titulo: "Uptime contínuo acima de 72h",
+        detalhe: "Processos acumulando RAM.",
+        cpu: 68,
+        temp: 75,
+        ram: 84,
+        uptime_h: 72,
+        ping: "há 1 min",
+        abertoHa: "2 h",
+        acao_recomendada: "Reinicialização remota sugerida.",
+        tipo_acao: "Ação remota"
+      }
+    ];
+
+    /* ========= KPIs superiores ========= */
+    function atualizarKPIs(alerts){
+      const crit = alerts.filter(a=>a.severidade==="critico").length;
+      const alrt = alerts.filter(a=>a.severidade==="alerta").length;
+      const info = alerts.filter(a=>a.severidade==="info").length;
+
+      document.getElementById("kpi-criticos").textContent = crit;
+      document.getElementById("kpi-alertas").textContent = alrt;
+      document.getElementById("kpi-info").textContent = info;
+    }
+
+    /* ========= Filtros ========= */
+    const filtroSev = document.getElementById("filtro-severidade");
+    const filtroHorario = document.getElementById("filtro-horario");
+
+    filtroSev.addEventListener("change", renderLista);
+    filtroHorario.addEventListener("change", renderLista);
+
+    function passaFiltroTempo(alert, janela){
+      if (janela === "todas") return true; // "Últimas 24h" -> tudo do mock
+
+      const txt = alert.abertoHa; // "14 min", "2 h", ...
+      if (!txt) return true;
+
+      if (janela === "1h"){
+        // só eventos abaixo de 60 min
+        if (txt.includes("min")){
+          const n = parseInt(txt);
+          return !Number.isNaN(n) && n < 60;
+        }
+        if (txt.includes("h")){
+          const n = parseInt(txt);
+          return !Number.isNaN(n) && n < 1;
+        }
+        return false;
+      }
+
+      if (janela === "7d"){
+        // mock não tem dias, então tudo que é hora ou min passa
+        return true;
+      }
+
+      return true;
+    }
+
+    /* ========= Render da lista ========= */
+    function renderLista(){
+      const alvo = document.getElementById("alert-list");
+      alvo.innerHTML = "";
+
+      const sevSelecionada = filtroSev.value;        
+      const tempoSelecionado = filtroHorario.value;  
+
+      const parseMin = (txt)=>{
+        if (!txt) return Infinity;
+        if (txt.includes("min")){
+          const n = parseInt(txt);
+          return Number.isNaN(n)?Infinity:n;
+        }
+        if (txt.includes("h")){
+          const n = parseInt(txt);
+          return Number.isNaN(n)?Infinity:n*60;
+        }
+        return Infinity;
+      };
+
+      const finalList = mockAlerts
+        .filter(a=>{
+          return (sevSelecionada==="todos" || a.severidade===sevSelecionada)
+              && passaFiltroTempo(a, tempoSelecionado);
+        })
+        .sort((a,b)=> parseMin(a.abertoHa) - parseMin(b.abertoHa)); 
+
+      finalList.forEach(a=>{
+        const card = document.createElement("div");
+        card.className = "alert-card";
+
+        card.innerHTML = `
+          <div class="alert-main">
+            <div class="alert-headline">
+              <div class="alert-title">
+                <span>${a.hostname}</span>
+                <span class="alert-status-badge ${a.severidade}">${a.severidade.toUpperCase()}</span>
+              </div>
+              <div class="alert-time">Aberto há ${a.abertoHa}</div>
+            </div>
+
+            <div class="alert-subinfo">
+              <strong>${a.titulo}</strong><br/>
+              ${a.detalhe}
+            </div>
+
+            <div class="alert-meta-grid">
+              <span>CPU ${a.cpu}%</span>
+              <span>Temp ${a.temp}ºC</span>
+              <span>RAM ${a.ram}%</span>
+              <span>Uptime ${a.uptime_h}h</span>
+              <span>Ping ${a.ping}</span>
+            </div>
+          </div>
+
+          <aside class="alert-aside">
+            <div class="alert-action">
+              <strong>${a.tipo_acao}</strong>
+              ${a.acao_recomendada}
+            </div>
+          </aside>
+        `;
+
+        alvo.appendChild(card);
+      });
+
+      if (finalList.length === 0){
+        const empty = document.createElement("div");
+        empty.style.fontSize = "13px";
+        empty.style.opacity = "0.7";
+        empty.style.color = "#fff";
+        empty.textContent = "Nenhum aviso neste filtro.";
+        alvo.appendChild(empty);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+      verificarCargo();
+      atualizarKPIs(mockAlerts);
+      renderLista();
+    });
+  })();
+  </script>
+
+  <script>
+    function limparSessao() {
+      sessionStorage.clear();
+    }
+  </script>
+</body>
 </html>
-<script src="../js/verificadorCargo.js"></script>
-<script src="../js/navbar.js"></script>
-<script>
-  function limparSessao() {
-    sessionStorage.clear();
-  }
-</script>

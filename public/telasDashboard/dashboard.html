@@ -150,14 +150,14 @@
       <!-- Bloco 1: Estado do parque -->
       <section class="card kpi-card">
         <header class="card-header" style="margin-bottom:8px;">
-          <h2 class="card-title">Estado do parque agora</h2>
-          <small style="font-size:12px; opacity:.7;">Classificação automática (percentis)</small>
+          <h2 class="card-title">Condição dos DOOHs</h2>
+          <small style="font-size:12px; opacity:.7;">Informações administrativas</small>
         </header>
 
         <div class="card-content">
           <div class="kpi-row-4">
             <div>
-              <h4 class="kpi-label">Total monitorado</h4>
+              <h4 class="kpi-label">Players</h4>
               <p class="kpi-value" id="kpi-total-devices">—</p>
               <p class="kpi-sub">Players ativos</p>
             </div>
@@ -165,13 +165,13 @@
             <div>
               <h4 class="kpi-label">Crítico</h4>
               <p class="kpi-value" id="kpi-total-risco">—</p>
-              <p class="kpi-sub">Acima P90</p>
+              <p class="kpi-sub">Uso alto de CPU</p>
             </div>
 
             <div>
               <h4 class="kpi-label">Alerta</h4>
               <p class="kpi-value" id="kpi-total-alerta">—</p>
-              <p class="kpi-sub">Acima P75</p>
+              <p class="kpi-sub">Acompanhamento de CPU</p>
             </div>
 
             <div>
@@ -186,8 +186,8 @@
       <!-- Bloco 2: Condições médias -->
       <section class="card kpi-card">
         <header class="card-header" style="margin-bottom:8px;">
-          <h2 class="card-title">Condições médias (24h)</h2>
-          <small style="font-size:12px; opacity:.7;">Carga térmica e uso</small>
+          <h2 class="card-title">Monitoramento Hardware (24h)</h2>
+          <small style="font-size:12px; opacity:.7;">Informações técnicas</small>
         </header>
 
         <div class="card-content">
@@ -365,7 +365,7 @@
     <section class="card table-card" style="margin-bottom:32px;">
       <header class="card-header" style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px;">
         <div>
-          <h2 class="card-title">Severidade dos dispositivos</h2>
+          <h2 class="card-title">Lista de dispositivos</h2>
           <small style="opacity:.7; font-size:12px; line-height:1.4;">
             Lista única dos players mais críticos agora.<br/>
             Ordenado por risco térmico, CPU alta e uptime contínuo.
@@ -475,7 +475,6 @@
       criarLinha('chartCPU',   'CPU (%)',   serieCPU,   colorCPU);
       criarLinha('chartRAM',   'RAM (%)',   serieRAM,   colorRAM);
       criarLinha('chartDISCO', 'Disco (%)', serieDISCO, colorDISK);
-      // Temperatura não é %, mas usamos mesma escala mock
       criarLinha('chartGPU',   'Temperatura (ºC)',   serieGPU,   colorGPU);
     }
 
