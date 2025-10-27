@@ -1,3 +1,4 @@
+drop database if exists vizor;
 create database vizor;
 use vizor;
 
@@ -48,16 +49,24 @@ create table empresa (
   foreign key (fkEndereco) references endereco(id)
 );
 
+create table modelo(
+  id int primary key auto_increment not null,
+  nome varchar(200) not null
+);
+
 create table lote (
   id int primary key not null,
   dataFabricacao date not null,
   modelo varchar(40) not null,
   fkEmpresa int,
+  fkModelo int,
+  foreign key (fkModelo) references modelo(id),
   foreign key (fkEmpresa) references empresa(id)
 );
 
 create table miniComputador (
   id int primary key auto_increment not null,
+  codigo VARCHAR(40),
   fkEndereco int,
   fkLote int,
   foreign key (fkEndereco) references endereco(id),
@@ -91,18 +100,17 @@ create table componente(
   unique (nome, unidadeMedida)
 );
 
-create table modelo(
-  id int primary key auto_increment not null,
-  nome varchar(200) not null
-);
+
 
 create table parametro(
   id int primary key auto_increment not null,
   fkModelo int,
   fkComponente int,
+  fkMiniComputador int,
   valorParametro decimal(5,2) not null,
   foreign key (fkModelo) references modelo(id),
   foreign key (fkComponente) references componente(id),
+  foreign key (fkMiniComputador) references miniComputador(id),
   unique (fkModelo, fkComponente)
 );
 
@@ -122,44 +130,33 @@ insert into endereco (rua, numero, cep, bairro, fkZona, fkCidade) values
 ('Avenida Paulista', 456, '01311000', 'Bela Vista', 2, 1),
 ('Rua Central', 789, '02020202', 'Jardins', 3, 1);
 
-insert into empresa (nome, cnpj, codigoAtivacao, fkEndereco) values
-('Tech Solutions', '12345678000190', 'A1234X9M2Q7K', 1),
-('Green Energy', '98765432000155', 'B5678Y1N4R0P', 2),
-('Smart Innovations', '11122233000177', 'C9012T6L8V3D', 3);
+INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
+('Tech Solutions', '12345678000190', 'A1234', NULL),
+('Smart Innovations', '11122233000177', 'C9012', NULL);
 
-insert into cargo(titulo) values
-('Administrador'),
-('Gestor de produtos'),
-('Engenheiro de qualidade de produtos');
-
-insert into usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) values
-('Guilherme Leon', 'guilherme@example.com', 'senha123', '12345678901', '11999998888', 1, 1),
-('Ana Silva', 'ana@example.com', 'senha456', '10987654321', '11988887777', 2, 2),
-('Carlos Pereira', 'carlos@example.com', 'senha789', '11223344556', '11977776666', 3, 3);
-
-insert into lote(id, dataFabricacao, modelo, fkEmpresa) values
+INSERT INTO lote(id, dataFabricacao, modelo, fkEmpresa) VALUES
 (1008234, '2025-01-15', 'MiniPC X100', 1),
-(1005134, '2025-02-20', 'MiniPC G200', 2),
-(2204102, '2025-03-10', 'MiniPC S300', 3);
+(2204102, '2025-03-10', 'MiniPC S300', 2);
 
-insert into miniComputador (fkLote, fkEndereco) values
-(1008234, 2),
-(1005134, 1),
-(2204102, 3);
+INSERT INTO miniComputador (codigo, fkLote, fkEndereco) VALUES
+('COD001', 1008234, 1), 
+('COD002', 1008234, 1), 
+('COD003', 1008234, 1), 
+('COD004', 2204102, 2), 
+('COD005', 2204102, 3);
 
-insert into componente (nome, unidadeMedida) values
-('cpu', '%'),
-('ram', '%'),
-('disco', '%'),
-('disco', 'gb'),
-('ram', 'gb');
+INSERT INTO componente (nome, unidadeMedida) VALUES
+('CPU', '%'),
+('RAM', '%'),
+('Disco', '%');
 
-insert into modelo (nome) values ('IntelI5');
+INSERT INTO modelo(nome) VALUES
+('IntelI5');
+/*
+INSERT INTO parametro (fkModelo, fkComponente, valorParametro) VALUES
+(1, 1, 85),
+(1, 2, 85),
+(1, 3, 85);
+*/
 
-insert into parametro (fkModelo, fkComponente, valorParametro) values
-(1, 1, 85.00),
-(1, 2, 85.00),
-(1, 3, 85.00);
 
-insert into alertas (fkParametro) values
-(1),(2),(3);
