@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vizor | Dashboard de Incidentes ITIL</title>
+
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ======== ESTILO BASE ======== */
+    body {
+      background-color: #061722;
+      color: white;
+      font-family: 'Akatab', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: aqua;
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .container-xl {
+      width: 100%;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    /* ======== KPIs ======== */
+    .kpi-card {
+      background: #072135;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .kpi-row-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-label { color: aqua; font-weight: 600; margin-bottom: 4px; }
+    .kpi-value { font-size: 32px; font-weight: 800; }
+    .kpi-sub { opacity: 0.8; font-size: 13px; }
+
+    /* ======== CARDS ======== */
+    .card {
+      background-color: #072135;
+      border-radius: 16px;
+      color: white;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .card-header { margin-bottom: 12px; }
+    .card-title { color: aqua; font-weight: 700; font-size: 1.4rem; }
+
+    /* ======== GRID ======== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* ======== GRÁFICOS ======== */
+    .chart-box {
+      height: 350px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* ======== MAPA ======== */
+    #vizor-map {
+      width: 100%;
+      height: 420px;
+      border-radius: 12px;
+    }
+
+  </style>
+</head>
+
+<body>
+    <nav class="navbar">
+      <!-- Logo -->
+      <a href="#">
+        <img src="../assets/imgs/logosDash/logoDashboard.png" alt="" class="imagemLogoDashboard">
+      </a>
+
+      <!-- Menu -->
+      <ul id="textosNavbar">
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
+        <a href="dashboard.html"> Dashboard </a>
+      </li>
+      <li class="nav-item active">
+        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
+        <a href="dashboardIncidentes.html"> Incidentes </a>
+      </li>
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash">
+        <a href="avisoDash.html"> Avisos </a>
+      </li>
+    
+      <li class="nav-item" id="adm-only" style="display: none;">
+        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash">
+        <a href="gestaoUsuarios.html"> Contas </a>
+      </li><li class="nav-item">
+        <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash">
+        <a href="alterarDados.html"> Alterar dados </a>
+      </li>
+      <li class="nav-item" id="adm-only2" style="display: none;">
+        <img src="../assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash">
+        <a href="infoConta.html"> Info. da conta </a>
+      </li>
+    </ul>
+
+      <!-- Botão Sair -->
+      <div id="divSair">
+        <img src="../assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash">
+        <a href="../index.html" onclick="limparSessao()"> Sair </a>
+      </div>
+ </nav>
+
+ <!-- ___________________________________________________________________________________________ -->
+
+ <main class="container-xl">
+    <h1>Dashboard de Incidentes - ITIL</h1>
+
+    <!-- ========== KPIs DE INCIDENTES ========== -->
+    <section class="card kpi-card">
+      <header class="card-header">
+        <h2 class="card-title">Status dos Incidentes</h2>
+        <small style="opacity:.7;">Monitoramento em tempo real (integração Jira API)</small>
+      </header>
+
+      <div class="card-content">
+        <div class="kpi-row-4">
+          <div>
+            <h4 class="kpi-label">Abertos</h4>
+            <p class="kpi-value" id="kpi-incidentes-abertos">37</p>
+            <p class="kpi-sub">Incidentes em andamento</p>
+          </div>
+          <div>
+            <h4 class="kpi-label">Fechados</h4>
+            <p class="kpi-value" id="kpi-incidentes-fechados">142</p>
+            <p class="kpi-sub">Últimas 24h</p>
+          </div>
+          <div>
+            <h4 class="kpi-label">Tempo médio</h4>
+            <p class="kpi-value" id="kpi-tempo-resolucao">3.6h</p>
+            <p class="kpi-sub">para resolução</p>
+          </div>
+          <div>
+            <h4 class="kpi-label">SLA Cumprido</h4>
+            <p class="kpi-value" id="kpi-sla">92%</p>
+            <p class="kpi-sub">Atendimentos no prazo</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== GRÁFICOS PRINCIPAIS ========== -->
+    <section class="grid-2">
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Incidentes por Área</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartIncidentesArea"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Tendência Semanal</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartTendenciaIncidentes"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== MAPA ========== -->
+    <section class="card" style="padding:16px; margin-bottom:16px;">
+      <header class="card-header" style="margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
+        <h2 class="card-title">Mapa de Calor — Áreas com Mais Incidentes</h2>
+        <small style="opacity:.7;">Distribuição geográfica de chamados críticos</small>
+      </header>
+      <div id="vizor-map"></div>
+    </section>
+
+    <!-- ========= RELATÓRIO DE INCIDENTES ========= -->
+<section class="card" style="padding:16px; margin-bottom:16px;">
+  <header class="card-header" style="margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+    <h2 class="card-title">Relatórios de Incidentes — ITIL</h2>
+    <button id="btn-open-report" class="vizor-btn" title="Gerar relatório de incidentes">Relatórios</button>
+  </header>
+
+  <div class="card-content">
+    <!-- Seletor de relatório -->
+    <div id="report-selector" class="report-selector" style="display:none;">
+      <div class="row" style="margin-bottom:8px;">
+        <span class="vizor-label">Tipo de relatório:</span>
+        <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Semanal</label>
+        <label class="vizor-radio"><input type="radio" name="report-type" value="mensal"> Mensal</label>
+        <label class="vizor-radio"><input type="radio" name="report-type" value="trimestral"> Trimestral</label>
+      </div>
+
+      <div class="report-actions">
+        <button id="btn-cancel-report" class="vizor-btn" style="background:#171a20;border:1px solid rgba(255,255,255,.15)">Cancelar</button>
+        <button id="btn-generate-report" class="vizor-btn">Gerar relatório</button>
+      </div>
+    </div>
+
+    <!-- Card de relatório -->
+    <section id="report-card" class="card" style="padding:16px; margin-top:16px; display:none;">
+      <header class="card-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div>
+          <h3 id="report-title" class="card-title" style="margin:0;">Relatório</h3>
+          <small id="report-period" style="opacity:.8;">Período selecionado</small>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="btn-print-report" class="vizor-btn" title="Imprimir / Salvar PDF">Imprimir</button>
+          <button id="btn-close-report" class="vizor-btn" style="background:#171a20;border:1px solid rgba(255,255,255,.15)">Fechar</button>
+        </div>
+      </header>
+
+      <div class="card-content">
+        <!-- KPIs -->
+        <div class="kpi-mini">
+          <div class="mini">
+            <div class="label">Incidentes abertos</div>
+            <div id="kpi-incidentes-abertos-rel" class="value">—</div>
+            <div class="sub">no período</div>
+          </div>
+
+          <div class="mini">
+            <div class="label">Incidentes resolvidos</div>
+            <div id="kpi-incidentes-fechados-rel" class="value">—</div>
+            <div class="sub">no período</div>
+          </div>
+
+          <div class="mini">
+            <div class="label">Tempo médio</div>
+            <div id="kpi-tempo-rel" class="value">—</div>
+            <div class="sub">para resolução</div>
+          </div>
+
+          <div class="mini">
+            <div class="label">SLA Cumprido</div>
+            <div id="kpi-sla-rel" class="value">—</div>
+            <div class="sub">atendimentos no prazo</div>
+          </div>
+        </div>
+
+        <!-- Gráfico do relatório -->
+        <div style="margin-top:12px">
+          <canvas id="reportChartIncidentes" height="140"></canvas>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // ---------- GRÁFICO DE INCIDENTES POR ÁREA ----------
+    const ctxArea = document.getElementById('chartIncidentesArea').getContext('2d');
+    new Chart(ctxArea, {
+      type: 'bar',
+      data: {
+        labels: ['Infraestrutura', 'Aplicações', 'Rede', 'Segurança', 'Banco de Dados'],
+        datasets: [{
+          label: 'Quantidade de Incidentes',
+          data: [18, 25, 10, 14, 20],
+          backgroundColor: 'rgba(10,203,227,0.6)',
+          borderColor: 'rgba(10,203,227,1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } },
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // ---------- GRÁFICO DE TENDÊNCIA SEMANAL ----------
+    const ctxTrend = document.getElementById('chartTendenciaIncidentes').getContext('2d');
+    new Chart(ctxTrend, {
+      type: 'line',
+      data: {
+        labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+        datasets: [
+          {
+            label: 'Abertos',
+            data: [5, 8, 6, 10, 7, 3, 4],
+            borderColor: 'rgba(255, 92, 92, 1)',
+            backgroundColor: 'rgba(255, 92, 92, 0.15)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Resolvidos',
+            data: [2, 5, 7, 8, 9, 6, 5],
+            borderColor: 'rgba(79, 209, 197, 1)',
+            backgroundColor: 'rgba(79, 209, 197, 0.15)',
+            fill: true,
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } },
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } }
+        },
+        plugins: { legend: { position: 'top', labels: { color: '#fff' } } }
+      }
+    });
+
+    // ---------- MAPA DE CALOR ----------
+    const map = L.map('vizor-map').setView([-23.5614, -46.6559], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const regioes = [
+      { nome: 'Centro', coords: [-23.5505, -46.6333], qtdIncidentes: 25, criticos: 6, tempoMedio: 4.2 },
+      { nome: 'Zona Sul', coords: [-23.6445, -46.7043], qtdIncidentes: 18, criticos: 3, tempoMedio: 3.8 },
+      { nome: 'Zona Norte', coords: [-23.4750, -46.6200], qtdIncidentes: 10, criticos: 1, tempoMedio: 2.5 },
+      { nome: 'Zona Leste', coords: [-23.5450, -46.4800], qtdIncidentes: 21, criticos: 4, tempoMedio: 3.9 },
+      { nome: 'Zona Oeste', coords: [-23.5612, -46.7050], qtdIncidentes: 12, criticos: 2, tempoMedio: 3.1 },
+    ];
+
+    regioes.forEach(r => {
+      const color = r.qtdIncidentes > 20 ? '#ff5c5c' :
+                    r.qtdIncidentes > 15 ? '#f0b429' : '#2fbf71';
+      L.circleMarker(r.coords, {
+        radius: 10,
+        fillColor: color,
+        color: color,
+        fillOpacity: 0.7
+      })
+      .addTo(map)
+      .bindPopup(`<b>${r.nome}</b><br>Incidentes: ${r.qtdIncidentes}<br>Críticos: ${r.criticos}<br>Tempo médio: ${r.tempoMedio}h`);
+    });
+
+    
+  </script>
+  <!-- jsPDF e html2canvas para exportar -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+  // Exibe o seletor
+  document.getElementById("btn-open-report").onclick = () => {
+    document.getElementById("report-selector").style.display = "block";
+  };
+
+  // Cancela o seletor
+  document.getElementById("btn-cancel-report").onclick = () => {
+    document.getElementById("report-selector").style.display = "none";
+  };
+
+  // Gera relatório (mock)
+  document.getElementById("btn-generate-report").onclick = () => {
+    document.getElementById("report-card").style.display = "block";
+    document.getElementById("report-selector").style.display = "none";
+
+    const tipo = document.querySelector("input[name='report-type']:checked").value;
+    document.getElementById("report-title").textContent = `Relatório ${tipo}`;
+    document.getElementById("report-period").textContent = `Período: ${tipo} - gerado em ${new Date().toLocaleString("pt-BR")}`;
+
+    // Mock de dados
+    document.getElementById("kpi-incidentes-abertos-rel").textContent = 32;
+    document.getElementById("kpi-incidentes-fechados-rel").textContent = 145;
+    document.getElementById("kpi-tempo-rel").textContent = "3.4h";
+    document.getElementById("kpi-sla-rel").textContent = "93%";
+
+    // Gráfico de relatório
+    const ctxRel = document.getElementById("reportChartIncidentes").getContext("2d");
+    new Chart(ctxRel, {
+      type: "bar",
+      data: {
+        labels: ["Infra", "Apps", "Rede", "Segurança", "BD"],
+        datasets: [{
+          label: "Incidentes resolvidos",
+          data: [12, 22, 8, 14, 10],
+          backgroundColor: "rgba(10,203,227,0.6)",
+          borderColor: "rgba(10,203,227,1)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } }
+        },
+        plugins: { legend: { labels: { color: "#fff" } } }
+      }
+    });
+  };
+
+  // Fechar relatório
+  document.getElementById("btn-close-report").onclick = () => {
+    document.getElementById("report-card").style.display = "none";
+  };
+
+  // Imprimir / Salvar PDF com nome da empresa
+  document.getElementById("btn-print-report").onclick = async () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "pt", "a4");
+    const reportElement = document.getElementById("report-card");
+
+    // Renderiza a área do relatório
+    const canvas = await html2canvas(reportElement, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    // Cabeçalho do PDF
+    const empresa = "Vizor Digital Solutions";
+    const dataGeracao = new Date().toLocaleDateString("pt-BR");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(18);
+    pdf.text(empresa, 40, 40);
+    pdf.setFontSize(12);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(`Relatório de Incidentes — Gerado em ${dataGeracao}`, 40, 60);
+
+    // Insere o conteúdo capturado
+    const imgWidth = 520;
+    const marginX = 40;
+    pdf.addImage(imgData, "PNG", marginX, 90, imgWidth, 0);
+
+    pdf.save(`Relatorio_Incidentes_${empresa.replace(/\s+/g, "_")}.pdf`);
+  };
+</script>
+
+
+</body>
+</html>
