@@ -159,4 +159,9 @@ INSERT INTO parametro (fkModelo, fkComponente, valorParametro) VALUES
 (1, 3, 85);
 */
 
+insert into cargo (titulo) values 
+('Administrador'),
+('Gestor de produtos'),
+('Engenheiro de qualidade');
+
 
