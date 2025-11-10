@@ -1,16 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar modelo</title>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão de Usuários</title>
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/gestao.css" />
+  <style>
+    /* SweetAlert custom */
+    .alerta-custom {
+      width: 40vw;
+      max-width: 90%;
+      padding: 2rem;
+      border-radius: 1vw;
+      background-color: rgb(0, 0, 0, 0.9);
+    }
+
+    .alerta-titulo {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .alerta-icone {
+      width: 8vw;
+      height: auto;
+      display: block;
+      margin: 0 auto 1rem auto;
+    }
+  </style>
 </head>
-<body>
-    <button onclick="adicionar()">Adicionar componentes</button>
+<body> 
+    <nav class="navbar" id="navbarConstructor"></nav>
+    <div class="container">
+        <div class="container-xl">
+            <div class="cabecalho">
+                <h1>Gestão de Modelos</h1>
+                <button onclick="adicionar()">Adicionar componentes</button>
+            </div>
+            <div class="tex">
+                <p class="nomee">Nome:</p>
+                <p class="componentes">Componentes:</p>
+                <p class="data">Data de Criação:</p>
+                <input placeholder="Pesquisa por nome" type="text" id="filtroNome" oninput="filtrarUsuarios()" />
+            </div>
+            <div class="listaDeUsuarios" id="listaDeUsuarios"></div>
+        </div>
+    </div>
 </body>
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script> 
 <script>
     var cpu = null;
     var ram = null;
