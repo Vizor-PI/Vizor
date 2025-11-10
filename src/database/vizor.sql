@@ -164,4 +164,9 @@ insert into cargo (titulo) values
 ('Gestor de produtos'),
 ('Engenheiro de qualidade');
 
+insert into usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) VALUES
+('admin', 'admin@vizor', 'Admin1!', '12345678901', '11923456789', 1, 1)
+('Jorge', 'jorge@vizor.com', 'Jorge1!','10130216840', '11945028101', 1, 2),
+('Gerson', 'gerson@vizor.com', 'Gerson1!', '28101304169', '11930616958', 2, 3)
+
 
