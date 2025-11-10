@@ -87,7 +87,6 @@ create table modelo(
 create table lote (
   id int primary key not null,
   dataFabricacao date not null,
-  modelo varchar(40) not null,
   fkEmpresa int,
   fkModelo int,
   foreign key (fkModelo) references modelo(id),
