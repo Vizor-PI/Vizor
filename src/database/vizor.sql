@@ -49,30 +49,6 @@ create table empresa (
   foreign key (fkEndereco) references endereco(id)
 );
 
-create table modelo(
-  id int primary key auto_increment not null,
-  nome varchar(200) not null
-);
-
-create table lote (
-  id int primary key not null,
-  dataFabricacao date not null,
-  modelo varchar(40) not null,
-  fkEmpresa int,
-  fkModelo int,
-  foreign key (fkModelo) references modelo(id),
-  foreign key (fkEmpresa) references empresa(id)
-);
-
-create table miniComputador (
-  id int primary key auto_increment not null,
-  codigo VARCHAR(40),
-  fkEndereco int,
-  fkLote int,
-  foreign key (fkEndereco) references endereco(id),
-  foreign key (fkLote) references lote(id)
-);
-
 create table cargo(
   id int primary key auto_increment not null,
   titulo varchar(100) not null
@@ -98,6 +74,33 @@ create table componente(
   nome varchar(50) not null,
   unidadeMedida varchar(10) not null,
   unique (nome, unidadeMedida)
+);
+
+create table modelo(
+  id int primary key auto_increment not null,
+  nome varchar(200) not null,
+  especificacao varchar(50), #especificacões sobre os componentes ou o modelo mesmo
+  fkComponente int,
+  foreign key (fkComponente) references componente(id)
+);
+
+create table lote (
+  id int primary key not null,
+  dataFabricacao date not null,
+  modelo varchar(40) not null,
+  fkEmpresa int,
+  fkModelo int,
+  foreign key (fkModelo) references modelo(id),
+  foreign key (fkEmpresa) references empresa(id)
+);
+
+create table miniComputador (
+  id int primary key auto_increment not null,
+  codigo VARCHAR(40),
+  fkEndereco int,
+  fkLote int,
+  foreign key (fkEndereco) references endereco(id),
+  foreign key (fkLote) references lote(id)
 );
 
 
@@ -165,8 +168,8 @@ insert into cargo (titulo) values
 ('Engenheiro de qualidade');
 
 insert into usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) VALUES
-('admin', 'admin@vizor', 'Admin1!', '12345678901', '11923456789', 1, 1)
+('admin', 'admin@vizor.com', 'Admin1!', '12345678901', '11923456789', 1, 1),
 ('Jorge', 'jorge@vizor.com', 'Jorge1!','10130216840', '11945028101', 1, 2),
-('Gerson', 'gerson@vizor.com', 'Gerson1!', '28101304169', '11930616958', 2, 3)
+('Gerson', 'gerson@vizor.com', 'Gerson1!', '28101304169', '11930616958', 2, 3);
 
 
