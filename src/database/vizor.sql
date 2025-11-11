@@ -78,9 +78,15 @@ create table componente(
 
 create table modelo(
   id int primary key auto_increment not null,
-  nome varchar(200) not null,
-  especificacao varchar(50), #especificacões sobre os componentes ou o modelo mesmo
+  nome varchar(200) not null
+);
+
+create table modelo_componente(
+  fkModelo int,
   fkComponente int,
+  especificacao varchar(50), #especificacões sobre os componentes
+  primary key (fkModelo, fkComponente),
+  foreign key (fkModelo) references modelo(id),
   foreign key (fkComponente) references componente(id)
 );
 
@@ -136,9 +142,13 @@ INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
 ('Tech Solutions', '12345678000190', 'A1234', NULL),
 ('Smart Innovations', '11122233000177', 'C9012', NULL);
 
-INSERT INTO lote(id, dataFabricacao, modelo, fkEmpresa) VALUES
-(1008234, '2025-01-15', 'MiniPC X100', 1),
-(2204102, '2025-03-10', 'MiniPC S300', 2);
+INSERT INTO modelo(nome) VALUES
+('MiniPC X100'),
+('MiniPC s300');
+
+INSERT INTO lote(id, dataFabricacao, fkEmpresa, fkmodelo) VALUES
+(1008234, '2025-01-15', 1, 2),
+(2204102, '2025-03-10', 2, 1);
 
 INSERT INTO miniComputador (codigo, fkLote, fkEndereco) VALUES
 ('COD001', 1008234, 1), 
@@ -152,8 +162,7 @@ INSERT INTO componente (nome, unidadeMedida) VALUES
 ('RAM', '%'),
 ('Disco', '%');
 
-INSERT INTO modelo(nome) VALUES
-('IntelI5');
+
 /*
 INSERT INTO parametro (fkModelo, fkComponente, valorParametro) VALUES
 (1, 1, 85),
