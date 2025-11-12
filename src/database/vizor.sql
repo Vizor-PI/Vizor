@@ -180,4 +180,11 @@ insert into usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) VALU
 ('Jorge', 'jorge@vizor.com', 'Jorge1!','10130216840', '11945028101', 1, 2),
 ('Gerson', 'gerson@vizor.com', 'Gerson1!', '28101304169', '11930616958', 2, 3);
 
+INSERT INTO modelo_componente (fkModelo, fkComponente, especificacao) VALUES
+(1, 1, 'Intel Core i7-12700H'),
+(1, 2, '16GB DDR4 3200MHz'),
+(1, 3, 'SSD NVMe 1TB'),
+(2, 1, 'AMD Ryzen 5 5600U'),
+(2, 2, '8GB DDR4 2666MHz'),
+(2, 3, 'SSD SATA 512GB');
 

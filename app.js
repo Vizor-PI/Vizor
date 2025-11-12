@@ -31,6 +31,7 @@ app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresa", empresaRouter);
 app.use("/dadosUsuario", dadosUsuarioRouter);
+app.use("/dadosModelos", dadosModeloRouter);
 app.use("/lote", loteRouter);
 
 app.listen(PORTA_APP, function () {
