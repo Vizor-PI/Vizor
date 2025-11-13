@@ -93,6 +93,7 @@ create table modelo_componente(
 create table lote (
   id int primary key not null,
   dataFabricacao date not null,
+  qntMaquinas int,
   fkEmpresa int,
   fkModelo int,
   foreign key (fkModelo) references modelo(id),
@@ -146,9 +147,9 @@ INSERT INTO modelo(nome) VALUES
 ('MiniPC X100'),
 ('MiniPC s300');
 
-INSERT INTO lote(id, dataFabricacao, fkEmpresa, fkmodelo) VALUES
-(1008234, '2025-01-15', 1, 2),
-(2204102, '2025-03-10', 2, 1);
+INSERT INTO lote(id, dataFabricacao, qntMaquinas, fkEmpresa, fkmodelo) VALUES
+(1008234, '2025-01-15', 10, 1, 2),
+(2204102, '2025-03-10', 15, 2, 1);
 
 INSERT INTO miniComputador (codigo, fkLote, fkEndereco) VALUES
 ('COD001', 1008234, 1), 
