@@ -21,6 +21,9 @@ var empresaRouter = require("./src/routes/empresa");
 var dadosUsuarioRouter = require("./src/routes/dadosUsuario");
 var loteRouter = require("./src/routes/lote");
 
+// Jira:
+var jiraRouter = require("./src/routes/jiraRoutes");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -31,7 +34,12 @@ app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresa", empresaRouter);
 app.use("/dadosUsuario", dadosUsuarioRouter);
+app.use("/dadosModelos", dadosModeloRouter);
+app.use("/dadosModelos", dadosModeloRouter);
 app.use("/lote", loteRouter);
+
+// Jira:
+app.use("/api/jira", jiraRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
@@ -49,3 +57,10 @@ app.listen(PORTA_APP, function () {
     \tSe .:producao:. você está se conectando ao banco remoto. \n\n
     \t\tPara alterar o ambiente, comente ou descomente as linhas 1 ou 2 no arquivo 'app.js'\n\n`);
 });
+
+
+
+
+
+
+
