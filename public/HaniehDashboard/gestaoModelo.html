@@ -62,14 +62,15 @@
     function construirLista() {
       let codigo = sessionStorage.CODIGO;
 
-      fetch("/dadosUsuario/listar", {
+      fetch("/dadosModelo/listar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ codigoEmpresa: codigo }),
-      }).then((resultado) => {
+        body: JSON.stringify({ id: idUsuario }),
+      }).then((res) => res.json())
+      .then((modelos) => {
         resultado.json().then((json) => {
           usuarios = json;
-          const lista = document.getElementById("listaDeUsuarios");
+          const lista = document.getElementById("listaDeModelos");
           lista.innerHTML = "";
           json.forEach((user) => {
             lista.innerHTML += `
