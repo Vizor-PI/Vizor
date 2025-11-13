@@ -60,7 +60,7 @@
     let usuarios = [];
 
     function construirLista() {
-      let codigo = sessionStorage.CODIGO;
+      let idUsuario = sessionStorage.ID_USUARIO;
 
       fetch("/dadosModelo/listar", {
         method: "POST",
@@ -68,15 +68,13 @@
         body: JSON.stringify({ id: idUsuario }),
       }).then((res) => res.json())
       .then((modelos) => {
-        resultado.json().then((json) => {
-          usuarios = json;
           const lista = document.getElementById("listaDeModelos");
           lista.innerHTML = "";
           json.forEach((user) => {
             lista.innerHTML += `
               <div class="linha">
                 <div class="informacoes">
-                  <div class="cabecalho-Infos">${user.NomeUsuario}</div>
+                  <div class="cabecalho-Infos">${modelo.modelo}</div>
                   <div class="dadosPessoais">
                     <div>${user.Telefone}</div>
                     <div>${user.EmailUsuario}</div>
