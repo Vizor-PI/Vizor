@@ -16,7 +16,7 @@ function listarDados(req, res) {
 }
 
 function listarModelos(req,res){
-    let id = req.params.id;
+    let id = req.body.id;
 
     dadosModeloModel.listarModelos(id).then(function (resultado){
         if(resultado.length > 0){

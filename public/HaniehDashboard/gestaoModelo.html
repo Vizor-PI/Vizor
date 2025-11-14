@@ -43,12 +43,11 @@
             </div>
             <div class="tex">
                 <p class="nomee">Nome:</p>
-                <p class="componentes">Componentes:</p>
-                <p class="especificacoes">Especificações:</p>
-                <p class="data">Data de Criação:</p>
+                <p class="especificacoes">Componentes e Especificações:</p>
+                <p class="data">Data de Fabricacao:</p>
                 <input placeholder="Pesquisa por nome" type="text" id="filtroNome" oninput="filtrarUsuarios()" />
             </div>
-            <div class="listaDeUsuarios" id="listaDeUsuarios"></div>
+            <div class="listaDeUsuarios" id="listaDeModelos"></div>
         </div>
     </div>
 </body>
@@ -62,7 +61,7 @@
     function construirLista() {
       let idUsuario = sessionStorage.ID_USUARIO;
 
-      fetch("/dadosModelo/listar", {
+      fetch("/dadosModelos/listar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: idUsuario }),
@@ -70,30 +69,31 @@
       .then((modelos) => {
           const lista = document.getElementById("listaDeModelos");
           lista.innerHTML = "";
-          json.forEach((user) => {
+          modelos.forEach((modelo)=> {
             lista.innerHTML += `
               <div class="linha">
                 <div class="informacoes">
                   <div class="cabecalho-Infos">${modelo.modelo}</div>
-                  <div class="dadosPessoais">
-                    <div>${user.Telefone}</div>
-                    <div>${user.EmailUsuario}</div>
-                    <div>${user.titulo}</div>
+                  <div class="dadosmodelos">
+                    <div style="width: 50%">${modelo.componentes}</div>
+                    <div style="width: 43%">${modelo.dataFabricacao}</div>
                   </div>
                 </div>
                 <div class="botoes-users">
-                  <button class="excluir" onclick="excluirUser(${user.id}, '${user.NomeUsuario}')">
+                  <button class="excluir" onclick="excluirUser(${modelo.id}, '${modelo.NomeModelo}')">
                     <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
                   </button>
-                  <button class="editar" onclick="abrirEditarUsuario(${user.id})">
+                  <button class="editar" onclick="abrirEditarUsuario(${modelo.id})">
                     <img src="../assets/imgs/logosDash/edit.png" alt="">
                   </button>
                 </div>
               </div>`;
           });
         });
-      });
-    }
+      };
+
+      window.onload = construirLista();
+    
     
     function abrirEditarUsuario(id) {
       const user = usuarios.find((u) => u.id === id);
