@@ -27,6 +27,54 @@ function buscarLote(id) {
     return database.executar(instrucaoSql);
 }
 
+function deletarLote(idLote) {
+
+   console.log("Executando instrução para deletar miniComputadores do lote...");
+    
+    const instrucaoDeletarAlertas = `
+        DELETE a FROM alertas a
+        JOIN parametro p ON a.fkParametro = p.id
+        JOIN miniComputador mc ON p.fkMiniComputador = mc.id
+        WHERE mc.fkLote = ${idLote};
+    `;
+    
+    const instrucaoDeletarParametros = `
+        DELETE p FROM parametro p
+        JOIN miniComputador mc ON p.fkMiniComputador = mc.id
+        WHERE mc.fkLote = ${idLote};
+    `;
+
+    const instrucaoDeletarMiniComputadores = `
+        DELETE FROM miniComputador WHERE fkLote = ${idLote};
+    `;
+
+    const instrucaoDeletarLote = `
+        DELETE FROM lote WHERE id = ${idLote};
+    `;
+    
+    return database.executar(instrucaoDeletarAlertas)
+        .then(resAlertas => {
+            console.log(`Deletados ${resAlertas.affectedRows} alertas.`);
+            return database.executar(instrucaoDeletarParametros);
+        })
+        .then(resParametros => {
+            console.log(`Deletados ${resParametros.affectedRows} parâmetros.`);
+            return database.executar(instrucaoDeletarMiniComputadores);
+        })
+        .then(resMiniComputadores => {
+            console.log(`Deletados ${resMiniComputadores.affectedRows} miniComputadores.`);
+            return database.executar(instrucaoDeletarLote);
+        })
+        .then(resLote => {
+            console.log(`Lote (ID ${idLote}) e todos os dependentes foram deletados com sucesso.`);
+            return resLote;
+        })
+        .catch(erro => {
+            return Promise.reject(erro);
+        });
+}
+
 module.exports = {
-    buscarLote
+    buscarLote,
+    deletarLote
 };

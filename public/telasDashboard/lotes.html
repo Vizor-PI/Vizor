@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
                                 <div class="botoes-users">
-                                    <button class="excluir" onclick="">
+                                    <button class="excluir" onclick="excluirLote(${lote.idLote})">
                                         <img src="../assets/imgs/logosDash/recycle-bin.png" alt="Excluir">
                                     </button>
                                     <button class="editar" onclick="">
@@ -124,5 +124,54 @@
         document.getElementById("listaDeLotes").innerHTML = `<div style="color: red; padding: 20px;">Ocorreu um erro ao carregar os lotes. Verifique o console.</div>`;
       });
   }
+
+  function excluirLote(idLote) {
+
+      Swal.fire({
+        title: `Excluir o Lote ID ${idLote}?`,
+        text: "Digite o ID do lote para confirmar:",
+        input: "text",
+        inputPlaceholder: idLote,
+        showCancelButton: true,
+        confirmButtonText: "Excluir",
+        cancelButtonText: "Cancelar",
+        background: "rgb(0,0,0,0.9)",
+        color: "#f1f1f1",
+        heightAuto: false,
+        preConfirm: (valorDigitado) => {
+          if (valorDigitado !== String(idLote)) {
+            Swal.showValidationMessage(
+              "ID incorreto! Digite exatamente como aparece."
+            );
+            return false;
+          }
+          return true;
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/lote/deletarLote/${idLote}`, { method: "DELETE" }).then(
+            (res) => {
+              if (res.ok) {
+                Swal.fire({
+                  title: `Lote ID ${idLote} deletado com sucesso! ✅`,
+                  showConfirmButton: false,
+                  timer: 3000,
+                  background: "rgb(0,0,0,0.9)",
+                  color: "#f1f1f1",
+                  heightAuto: true,
+                  customClass: {
+                    popup: "alerta-custom",
+                    title: "alerta-titulo",
+                  },
+                });
+                dadosLote();
+              } else {
+                Swal.fire("Erro", `Não foi possível excluir o lote ID ${idLote}❌`);
+              }
+            }
+          );
+        }
+      });
+    }
 
 </script>
