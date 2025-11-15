@@ -56,12 +56,37 @@ async function pegarEventosExtremos() {
     };
 }
 
+
+
+async function pegarPrevisaoSemanal() {
+    const resp = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?key=8e71021053ed4cb0b006ce4560638438&city=Sao%20Paulo&country=BR&days=7&lang=pt");
+    const json = await resp.json();
+
+    const previsoes = [];
+
+    for (let i = 0; i < json.data.length; i++) {
+        const dia = json.data[i];
+        
+        previsoes.push({
+            datetime: dia.datetime,
+            temp_max: dia.max_temp,
+            temp_min: dia.min_temp,
+            descricao: dia.weather.description,
+            icone: dia.weather.icon
+        });
+    }
+
+    return previsoes;
+}
+
 async function main() {
     const climaAtual = await pegarClimaAtual();
     const eventosExtremos = await pegarEventosExtremos();
+    const previsaoSemanal = await pegarPrevisaoSemanal();
 
     console.log("Clima Atual:", climaAtual);
     console.log("Eventos Extremos:", eventosExtremos);
+    console.log("Previsão Semanal: ", previsaoSemanal)
 }
 
 main();
