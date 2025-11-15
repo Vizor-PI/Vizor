@@ -41,11 +41,24 @@ GROUP BY m.id, l.dataFabricacao;
   return database.executar(instrucaoSql);
 }
 
+function listarTodosModelos() {
+  console.log("Acessei o model listarTodosModelos (para Criar Lote)");
 
+  var instrucaoSql =
+    `
+   SELECT 
+    id, 
+    nome AS modelo
+   FROM modelo;
+  `;
+  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+  return database.executar(instrucaoSql);
+}
 
 
 module.exports = {
   listarDados,
-  listarModelos
+  listarModelos,
+  listarTodosModelos
 }
 

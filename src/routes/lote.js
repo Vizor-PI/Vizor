@@ -11,4 +11,8 @@ router.delete("/deletarLote/:idLote", function (req, res) {
     loteController.deletarLote(req, res);
 })
 
+router.post("/cadastrar", function (req, res){
+    loteController.cadastrar(req, res)
+})
+
 module.exports = router;

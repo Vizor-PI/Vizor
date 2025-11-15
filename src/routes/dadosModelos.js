@@ -11,4 +11,8 @@ router.post("/listar", function (req,res){
     dadosModeloController.listarModelos(req,res);
 });
 
+router.get("/listarTodos", function (req,res){
+    dadosModeloController.listarTodosModelos(req,res);
+});
+
 module.exports = router;

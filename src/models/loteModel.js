@@ -29,7 +29,7 @@ function buscarLote(id) {
 
 function deletarLote(idLote) {
 
-   console.log("Executando instrução para deletar miniComputadores do lote...");
+   console.log("Executando instrução para deletar lote...");
     
     const instrucaoDeletarAlertas = `
         DELETE a FROM alertas a
@@ -74,7 +74,25 @@ function deletarLote(idLote) {
         });
 }
 
+function cadastrar(idLote, data, qtd, modelo, codigoEmpresa) {
+    console.log("ACESSEI O LOTE MODEL - Iniciando cadastro...");
+
+    var instrucaoSql = `
+        INSERT INTO lote (id, dataFabricacao, qntMaquinas, fkEmpresa, fkModelo) 
+        VALUES (
+            ${idLote}, 
+            '${data}', 
+            ${qtd}, 
+            (SELECT id FROM empresa WHERE codigoAtivacao = '${codigoEmpresa}'), 
+            ${modelo}
+        );
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     buscarLote,
-    deletarLote
+    deletarLote,
+    cadastrar
 };
