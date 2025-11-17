@@ -45,9 +45,9 @@
                 <p class="nomee">Nome:</p>
                 <p class="especificacoes">Componentes e Especificações:</p>
                 <p class="data">Data de Fabricacao:</p>
-                <input placeholder="Pesquisa por nome" type="text" id="filtroNome" oninput="filtrarModelos()" />
+                <input placeholder="Pesquisa por nome" type="text" id="filtroNome" oninput="filtrarUsuarios()" />
             </div>
-            <div class="listaDeModelos" id="listaDeModelos"></div>
+            <div class="listaDeUsuarios" id="listaDeModelos"></div>
         </div>
     </div>
 </body>
@@ -56,15 +56,15 @@
 <script src="../js/verificadorCargo.js"></script>
 <script src="../js/navbar.js"></script> 
 <script>
-    let Modelos = [];
+    let usuarios = [];
 
     function construirLista() {
-      let idModelo = sessionStorage.ID_Modelo;
+      let idUsuario = sessionStorage.ID_USUARIO;
 
       fetch("/dadosModelos/listar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: idModelo }),
+        body: JSON.stringify({ id: idUsuario }),
       }).then((res) => res.json())
       .then((modelos) => {
           const lista = document.getElementById("listaDeModelos");
@@ -80,10 +80,10 @@
                   </div>
                 </div>
                 <div class="botoes-users">
-                  <button class="excluir" onclick="excluirUser(${modelo.id}, '${modelo.NomeModelo}')">
+                  <button class="excluir" onclick="excluirModelo(${modelo.id}, '${modelo.modelo}')">
                     <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
                   </button>
-                  <button class="editar" onclick="abrirEditarModelo(${modelo.id})">
+                  <button class="editar" onclick="abrirEditarUsuario(${modelo.id})">
                     <img src="../assets/imgs/logosDash/edit.png" alt="">
                   </button>
                 </div>
@@ -95,16 +95,16 @@
       window.onload = construirLista();
     
     
-    function abrirEditarModelo(id) {
-      const user = Modelos.find((u) => u.id === id);
+    function abrirEditarUsuario(id) {
+      const user = usuarios.find((u) => u.id === id);
       Swal.fire({
-        title: `Editar: ${user.NomeModelo}`,
+        title: `Editar: ${user.NomeUsuario}`,
         html: `
           <p>CPF: ${user.CPF}</p>
           <p>Telefone:</p>
           <input id="swal_telefone" class="swal2-input" value="${user.Telefone}">
           <p>Email:</p>
-          <input id="swal_email" class="swal2-input" value="${user.EmailModelo}">
+          <input id="swal_email" class="swal2-input" value="${user.EmailUsuario}">
           <p>Cargo:</p>
           <select id="swal_cargo" class="swal2-select"></select>
         `,
@@ -116,7 +116,7 @@
         heightAuto: false,
         didOpen: () => {
           // Popular select com cargos
-          fetch("/dadosModelo/listarCargos")
+          fetch("/dadosUsuario/listarCargos")
             .then((res) => res.json())
             .then((cargos) => {
               const select = document.getElementById("swal_cargo");
@@ -147,7 +147,7 @@
     }
     
     function salvarEdicao(id, telefone, email, cargo) {
-      fetch(`/Modelos/atualizarModelo/${id}`, {
+      fetch(`/usuarios/atualizarUsuario/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -174,8 +174,8 @@
 
     function excluirModelo(id, nomeModelo) {
       Swal.fire({
-        title: `Excluir o Modelo ${nomeModelo}?`,
-        text: "Digite o nome do Modelo para confirmar:",
+        title: `Excluir o modelo ${nomeModelo}?`,
+        text: "Digite o nome do modelo para confirmar:",
         input: "text",
         inputPlaceholder: nomeModelo,
         showCancelButton: true,
@@ -199,7 +199,7 @@
             (res) => {
               if (res.ok) {
                 Swal.fire({
-                  title: "Usuário deletado com sucesso! ✅",
+                  title: "Modelo deletado com sucesso! ✅",
                   showConfirmButton: false,
                   timer: 3000,
                   background: "rgb(0,0,0,0.9)",
@@ -212,7 +212,7 @@
                 });
                 construirLista();
               } else {
-                Swal.fire("Erro", "Não foi possível excluir o usuário ❌");
+                Swal.fire("Erro", "Não foi possível excluir o modelo ❌");
               }
             }
           );
@@ -220,27 +220,27 @@
       });
     }
 
-    function filtrarModelos() {
+    function filtrarUsuarios() {
       const termo = document.getElementById("filtroNome").value.toLowerCase();
-      const lista = document.getElementById("listaDeModelos");
+      const lista = document.getElementById("listaDeUsuarios");
       lista.innerHTML = "";
-      Modelos.forEach((user) => {
-        if (user.NomeModelo.toLowerCase().includes(termo)) {
+      usuarios.forEach((user) => {
+        if (user.NomeUsuario.toLowerCase().includes(termo)) {
           lista.innerHTML += `
             <div class="linha">
               <div class="informacoes">
-                <div class="cabecalho-Infos">${user.NomeModelo}</div>
+                <div class="cabecalho-Infos">${user.NomeUsuario}</div>
                 <div class="dadosPessoais">
                   <div>${user.Telefone}</div>
-                  <div>${user.EmailModelo}</div>
+                  <div>${user.EmailUsuario}</div>
                   <div>${user.titulo}</div>
                 </div>
               </div>
               <div class="botoes-users">
-                <button class="excluir" onclick="excluirUser(${user.id}, '${user.NomeModelo}')">
+                <button class="excluir" onclick="excluirUser(${user.id}, '${user.NomeUsuario}')">
                   <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
                 </button>
-                <button class="editar" onclick="abrirEditarModelo(${user.id})">
+                <button class="editar" onclick="abrirEditarUsuario(${user.id})">
                   <img src="../assets/imgs/logosDash/edit.png" alt="">
                 </button>
               </div>

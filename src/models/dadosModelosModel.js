@@ -25,6 +25,7 @@ function listarModelos(id) {
   var instrucaoSql =
     `
    SELECT 
+    m.id AS id,
     m.nome AS modelo,
     GROUP_CONCAT(CONCAT(c.nome, ': ', mc.especificacao) SEPARATOR ', ') AS componentes,
     l.dataFabricacao
