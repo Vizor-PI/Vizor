@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão de Modelos</title>
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/gestao.css" />
+  <style>
+    /* SweetAlert custom */
+    .alerta-custom {
+      width: 40vw;
+      max-width: 90%;
+      padding: 2rem;
+      border-radius: 1vw;
+      background-color: rgb(0, 0, 0, 0.9);
+    }
+
+    .alerta-titulo {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .alerta-icone {
+      width: 8vw;
+      height: auto;
+      display: block;
+      margin: 0 auto 1rem auto;
+    }
+  </style>
+</head>
+<body> 
+    <nav class="navbar" id="navbarConstructor"></nav>
+    <div class="container">
+        <div class="container-xl">
+            <div class="cabecalho">
+                <h1>Gestão de Modelos</h1>
+                <!--<button onclick="adicionar()">Adicionar componentes</button> -->
+                <a href="cadastroModelo.html">Cadastrar Modelo</a>
+            </div>
+            <div class="tex">
+                <p class="nomee">Nome:</p>
+                <p class="especificacoes">Componentes e Especificações:</p>
+                <p class="data">Data de Fabricacao:</p>
+                <input placeholder="Pesquisa por nome" type="text" id="filtroNome" oninput="filtrarUsuarios()" />
+            </div>
+            <div class="listaDeUsuarios" id="listaDeModelos"></div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script> 
+<script>
+    let usuarios = [];
+
+    function construirLista() {
+      let idUsuario = sessionStorage.ID_USUARIO;
+
+      fetch("/dadosModelos/listar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: idUsuario }),
+      }).then((res) => res.json())
+      .then((modelos) => {
+          const lista = document.getElementById("listaDeModelos");
+          lista.innerHTML = "";
+          modelos.forEach((modelo)=> {
+            lista.innerHTML += `
+              <div class="linha">
+                <div class="informacoes">
+                  <div class="cabecalho-Infos">${modelo.modelo}</div>
+                  <div class="dadosmodelos">
+                    <div style="width: 50%">${modelo.componentes}</div>
+                    <div style="width: 43%">${modelo.dataFabricacao}</div>
+                  </div>
+                </div>
+                <div class="botoes-users">
+                  <button class="excluir" onclick="excluirUser(${modelo.id}, '${modelo.NomeModelo}')">
+                    <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
+                  </button>
+                  <button class="editar" onclick="abrirEditarUsuario(${modelo.id})">
+                    <img src="../assets/imgs/logosDash/edit.png" alt="">
+                  </button>
+                </div>
+              </div>`;
+          });
+        });
+      };
+
+      window.onload = construirLista();
+    
+    
+    function abrirEditarUsuario(id) {
+      const user = usuarios.find((u) => u.id === id);
+      Swal.fire({
+        title: `Editar: ${user.NomeUsuario}`,
+        html: `
+          <p>CPF: ${user.CPF}</p>
+          <p>Telefone:</p>
+          <input id="swal_telefone" class="swal2-input" value="${user.Telefone}">
+          <p>Email:</p>
+          <input id="swal_email" class="swal2-input" value="${user.EmailUsuario}">
+          <p>Cargo:</p>
+          <select id="swal_cargo" class="swal2-select"></select>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "Salvar",
+        cancelButtonText: "Cancelar",
+        background: "rgb(0,0,0,0.9)",
+        color: "#f1f1f1",
+        heightAuto: false,
+        didOpen: () => {
+          // Popular select com cargos
+          fetch("/dadosUsuario/listarCargos")
+            .then((res) => res.json())
+            .then((cargos) => {
+              const select = document.getElementById("swal_cargo");
+              cargos.forEach((cargo) => {
+                const opt = document.createElement("option");
+                opt.value = cargo.idCargo;
+                opt.textContent = cargo.titulo;
+                if (cargo.titulo === user.titulo) opt.selected = true;
+                select.appendChild(opt);
+              });
+            });
+        },
+        preConfirm: () => ({
+          telefone: document.getElementById("swal_telefone").value,
+          email: document.getElementById("swal_email").value,
+          cargo: document.getElementById("swal_cargo").value,
+        }),
+      }).then((result) => {
+        if (result.isConfirmed) {
+          salvarEdicao(
+            user.id,
+            result.value.telefone,
+            result.value.email,
+            result.value.cargo
+          );
+        }
+      });
+    }
+    
+    function salvarEdicao(id, telefone, email, cargo) {
+      fetch(`/usuarios/atualizarUsuario/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          telefoneServer: telefone,
+          emailServer: email,
+          cargoServer: cargo,
+        }),
+      }).then((res) => {
+        if (res.ok) {
+          Swal.fire({
+            title: "Usuário atualizado com sucesso! ✅",
+            showConfirmButton: false,
+            timer: 3000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+          });
+          construirLista();
+        } else {
+          Swal.fire("Erro", "Não foi possível atualizar o usuário ❌");
+        }
+      });
+    }
+
+    function excluirUser(id, nomeUsuario) {
+      Swal.fire({
+        title: `Excluir o usuário ${nomeUsuario}?`,
+        text: "Digite o nome do usuário para confirmar:",
+        input: "text",
+        inputPlaceholder: nomeUsuario,
+        showCancelButton: true,
+        confirmButtonText: "Excluir",
+        cancelButtonText: "Cancelar",
+        background: "rgb(0,0,0,0.9)",
+        color: "#f1f1f1",
+        heightAuto: false,
+        preConfirm: (valorDigitado) => {
+          if (valorDigitado !== nomeUsuario) {
+            Swal.showValidationMessage(
+              "Nome incorreto! Digite exatamente como aparece."
+            );
+            return false;
+          }
+          return true;
+        },
+        }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/usuarios/deletarUsuario/${id}`, { method: "DELETE" }).then(
+            (res) => {
+              if (res.ok) {
+                Swal.fire({
+                  title: "Usuário deletado com sucesso! ✅",
+                  showConfirmButton: false,
+                  timer: 3000,
+                  background: "rgb(0,0,0,0.9)",
+                  color: "#f1f1f1",
+                  heightAuto: true,
+                  customClass: {
+                    popup: "alerta-custom",
+                    title: "alerta-titulo",
+                  },
+                });
+                construirLista();
+              } else {
+                Swal.fire("Erro", "Não foi possível excluir o usuário ❌");
+              }
+            }
+          );
+        }
+      });
+    }
+
+    function filtrarUsuarios() {
+      const termo = document.getElementById("filtroNome").value.toLowerCase();
+      const lista = document.getElementById("listaDeUsuarios");
+      lista.innerHTML = "";
+      usuarios.forEach((user) => {
+        if (user.NomeUsuario.toLowerCase().includes(termo)) {
+          lista.innerHTML += `
+            <div class="linha">
+              <div class="informacoes">
+                <div class="cabecalho-Infos">${user.NomeUsuario}</div>
+                <div class="dadosPessoais">
+                  <div>${user.Telefone}</div>
+                  <div>${user.EmailUsuario}</div>
+                  <div>${user.titulo}</div>
+                </div>
+              </div>
+              <div class="botoes-users">
+                <button class="excluir" onclick="excluirUser(${user.id}, '${user.NomeUsuario}')">
+                  <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
+                </button>
+                <button class="editar" onclick="abrirEditarUsuario(${user.id})">
+                  <img src="../assets/imgs/logosDash/edit.png" alt="">
+                </button>
+              </div>
+            </div>`;
+        }
+      });
+    }
+
+    function limparSessao() {
+      sessionStorage.clear();
+    }
+
+    /*var cpu = null;
+    var ram = null;
+    var disco = null;
+
+
+    function adicionar() {
+        Swal.fire({
+            title: `Adicionar componente`,
+            html: `
+            <select name="" id="swal_componente">
+                <option value="#">COMPONENTE</option>
+                <option value="CPU">CPU</option>
+                <option value="RAM">RAM</option>
+                <option value="DISCO">DISCO</option>
+            </select>
+            <select name="" id="swal_medida">
+                <option value="#">UNIDADE MEDIDA</option>
+                <option value="GB">GB</option>
+                <option value="%">%</option>
+            </select>
+            <p>Valor para alerta</p>
+            <input id="swal_valorAlerta" class="swal2-input" type="number">
+            <p>Especificações</p>
+            <input id="swal_especificacoes" class="swal2-input">
+        `,
+            showCancelButton: true,
+            confirmButtonText: "Adicionar",
+            cancelButtonText: "Cancelar",
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+
+            preConfirm: () => {
+                const componente = document.getElementById("swal_componente").value;
+                const medida = document.getElementById("swal_medida").value;
+                const alerta = document.getElementById("swal_valorAlerta").value;
+                const especificacao = document.getElementById("swal_especificacoes").value;
+
+                if (!componente || !medida || !alerta || !especificacao || componente == "#" || medida == "#") {
+                    Swal.showValidationMessage("Preencha todos os campos!");
+                    return false;
+                }
+
+                return { componente, medida, alerta, especificacao };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { componente, medida, alerta, especificacao } = result.value;
+
+                if (componente === "CPU") {
+                    cpu = { medida, alerta, especificacao };
+                } else if (componente === "RAM") {
+                    ram = { medida, alerta, especificacao };
+                } else if (componente === "DISCO") {
+                    disco = { medida, alerta, especificacao };
+                }
+
+                console.log("CPU:", cpu);
+                console.log("RAM:", ram);
+                console.log("DISCO:", disco);
+
+                Swal.fire("Adicionado!", "", "success");
+            }
+        });
+    }*/
+</script>

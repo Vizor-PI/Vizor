@@ -49,30 +49,6 @@ create table empresa (
   foreign key (fkEndereco) references endereco(id)
 );
 
-create table modelo(
-  id int primary key auto_increment not null,
-  nome varchar(200) not null
-);
-
-create table lote (
-  id int primary key not null,
-  dataFabricacao date not null,
-  modelo varchar(40) not null,
-  fkEmpresa int,
-  fkModelo int,
-  foreign key (fkModelo) references modelo(id),
-  foreign key (fkEmpresa) references empresa(id)
-);
-
-create table miniComputador (
-  id int primary key auto_increment not null,
-  codigo VARCHAR(40),
-  fkEndereco int,
-  fkLote int,
-  foreign key (fkEndereco) references endereco(id),
-  foreign key (fkLote) references lote(id)
-);
-
 create table cargo(
   id int primary key auto_increment not null,
   titulo varchar(100) not null
@@ -98,6 +74,39 @@ create table componente(
   nome varchar(50) not null,
   unidadeMedida varchar(10) not null,
   unique (nome, unidadeMedida)
+);
+
+create table modelo(
+  id int primary key auto_increment not null,
+  nome varchar(200) not null
+);
+
+create table modelo_componente(
+  fkModelo int,
+  fkComponente int,
+  especificacao varchar(50), #especificacões sobre os componentes
+  primary key (fkModelo, fkComponente),
+  foreign key (fkModelo) references modelo(id),
+  foreign key (fkComponente) references componente(id)
+);
+
+create table lote (
+  id int primary key not null,
+  dataFabricacao date not null,
+  qntMaquinas int,
+  fkEmpresa int,
+  fkModelo int,
+  foreign key (fkModelo) references modelo(id),
+  foreign key (fkEmpresa) references empresa(id)
+);
+
+create table miniComputador (
+  id int primary key auto_increment not null,
+  codigo VARCHAR(40),
+  fkEndereco int,
+  fkLote int,
+  foreign key (fkEndereco) references endereco(id),
+  foreign key (fkLote) references lote(id)
 );
 
 
@@ -134,9 +143,13 @@ INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
 ('Tech Solutions', '12345678000190', 'A1234', NULL),
 ('Smart Innovations', '11122233000177', 'C9012', NULL);
 
-INSERT INTO lote(id, dataFabricacao, modelo, fkEmpresa) VALUES
-(1008234, '2025-01-15', 'MiniPC X100', 1),
-(2204102, '2025-03-10', 'MiniPC S300', 2);
+INSERT INTO modelo(nome) VALUES
+('MiniPC X100'),
+('MiniPC s300');
+
+INSERT INTO lote(id, dataFabricacao, qntMaquinas, fkEmpresa, fkmodelo) VALUES
+(1008234, '2025-01-15', 10, 1, 2),
+(2204102, '2025-03-10', 15, 2, 1);
 
 INSERT INTO miniComputador (codigo, fkLote, fkEndereco) VALUES
 ('COD001', 1008234, 1), 
@@ -150,8 +163,7 @@ INSERT INTO componente (nome, unidadeMedida) VALUES
 ('RAM', '%'),
 ('Disco', '%');
 
-INSERT INTO modelo(nome) VALUES
-('IntelI5');
+
 /*
 INSERT INTO parametro (fkModelo, fkComponente, valorParametro) VALUES
 (1, 1, 85),
@@ -165,8 +177,14 @@ insert into cargo (titulo) values
 ('Engenheiro de qualidade');
 
 insert into usuario (nome, email, senha, cpf, telefone, fkEmpresa, fkCargo) VALUES
-('admin', 'admin@vizor', 'Admin1!', '12345678901', '11923456789', 1, 1),
 ('Jorge', 'jorge@vizor.com', 'Jorge1!','10130216840', '11945028101', 1, 2),
-('Gerson', 'gerson@vizor.com', 'Gerson1!', '28101304169', '11930616958', 2, 3)
+('Gerson', 'gerson@vizor.com', 'Gerson1!', '28101304169', '11930616958', 2, 3);
 
+INSERT INTO modelo_componente (fkModelo, fkComponente, especificacao) VALUES
+(1, 1, 'Intel Core i7-12700H'),
+(1, 2, '16GB DDR4 3200MHz'),
+(1, 3, 'SSD NVMe 1TB'),
+(2, 1, 'AMD Ryzen 5 5600U'),
+(2, 2, '8GB DDR4 2666MHz'),
+(2, 3, 'SSD SATA 512GB');
 

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Monitoramento de Hardware</title>
+
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+  <style>
+    .vizor-btn{
+      padding:8px 12px; border-radius:10px; border:1px solid transparent;
+      cursor:pointer; background:#2b8fff; color:#fff
+    }
+    .vizor-btn:hover{ filter:brightness(1.05) }
+
+    .vizor-select{
+      padding:6px 10px; border-radius:10px; background:#0f1216; color:#fff;
+      border:1px solid rgba(255,255,255,.15)
+    }
+
+    .vizor-radio{
+      display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px;
+      background:#0f1216; border:1px solid rgba(255,255,255,.1)
+    }
+    .vizor-label{ font-size:14px; opacity:.9 }
+
+    .report-selector{
+      display:none; margin-top:8px; padding:12px; border-radius:12px;
+      background:#111317; color:#fff; border:1px solid rgba(255,255,255,.08)
+    }
+    .report-selector .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center }
+    .report-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:8px }
+
+    #report-card{ display:none; margin-top:16px }
+    .kpi-mini{
+      display:grid; grid-template-columns:repeat(4,minmax(120px,1fr));
+      gap:12px; margin-top:8px
+    }
+    .kpi-mini .mini{
+      background:#111317; border:1px solid rgba(255,255,255,.08);
+      border-radius:12px; padding:10px
+    }
+    .mini .label{ opacity:.8; font-size:12px }
+    .mini .value{ font-size:20px; font-weight:700 }
+    .mini .sub{ opacity:.7; font-size:12px }
+
+    .vizor-status-badge{ display:inline-block; padding:2px 8px; font-size:12px; border-radius:999px; font-weight:600 }
+    .vizor-status-ok{ background:#e6ffed; color:#0a7f2e }
+    .vizor-status-alerta{ background:#fff8e6; color:#a66300 }
+    .vizor-status-risco{ background:#ffe6e6; color:#a40000 }
+
+    #vizor-map{
+      width:100%; height:420px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); overflow:hidden
+    }
+    .vizor-map-controls{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px }
+    .vizor-map-controls .vizor-btn,
+    .vizor-map-controls .vizor-select{ padding:6px 10px }
+
+    /* topo de KPIs: 2 cards lado a lado */
+    .kpi-top-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:16px;
+      margin-bottom:16px;
+    }
+
+    /* linha de 4 métricas dentro de cada card KPI */
+    .kpi-row-4{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    @media (max-width: 900px){
+      .kpi-row-4{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    /* lista de severidade final */
+    .risk-card-list{
+      margin-top:12px;
+      margin-bottom:8px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:12px;
+    }
+    .risk-row{
+      background:#111317;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+      padding:12px 16px;
+      font-size:13px;
+      line-height:1.4;
+    }
+    .risk-row-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom:8px;
+    }
+    .risk-row-head strong{
+      font-size:14px;
+      line-height:1.3;
+    }
+    .risk-status{
+      font-size:12px;
+      font-weight:600;
+      border-radius:999px;
+      padding:2px 8px;
+    }
+    .risk-status.risco{
+      background:#ffe6e6;
+      color:#a40000;
+    }
+    .risk-status.alerta{
+      background:#fff8e6;
+      color:#a66300;
+    }
+    .risk-status.ok{
+      background:#e6ffed;
+      color:#0a7f2e;
+    }
+    .risk-metrics{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      font-size:12px;
+      opacity:.8;
+      line-height:1.4;
+    }
+  </style>
+</head>
+<body onload="verificarCargo()">
+  <nav class="navbar">
+      <!-- Logo -->
+      <a href="#">
+        <img src="../assets/imgs/logosDash/logoDashboard.png" alt="" class="imagemLogoDashboard">
+      </a>
+
+      <!-- Menu -->
+      <ul id="textosNavbar">
+      <li class="nav-item active">
+        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
+        <a href="dashboard.html"> Dashboard </a>
+      </li>
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
+        <a href="dashboardIncidentes.html"> Incidentes </a>
+      </li>
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash">
+        <a href="avisoDash.html"> Avisos </a>
+      </li>
+    
+      <li class="nav-item" id="adm-only" style="display: none;">
+        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash">
+        <a href="gestaoUsuarios.html"> Contas </a>
+      </li><li class="nav-item">
+        <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash">
+        <a href="alterarDados.html"> Alterar dados </a>
+      </li>
+      <li class="nav-item" id="adm-only2" style="display: none;">
+        <img src="../assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash">
+        <a href="infoConta.html"> Info. da conta </a>
+      </li>
+    </ul>
+
+      <!-- Botão Sair -->
+      <div id="divSair">
+        <img src="../assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash">
+        <a href="../index.html" onclick="limparSessao()"> Sair </a>
+      </div>
+ </nav>
+
+  <div class="container-xl">
+
+    <!-- ========= TOPO KPIs (2 cards lado a lado, cada card 4 colunas na mesma linha) ========= -->
+    <section class="kpi-top-grid">
+
+      <!-- Bloco 1: Estado do parque -->
+      <section class="card kpi-card">
+        <header class="card-header" style="margin-bottom:8px;">
+          <h2 class="card-title">Condição dos DOOHs</h2>
+          <small style="font-size:12px; opacity:.7;">Informações administrativas</small>
+        </header>
+
+        <div class="card-content">
+          <div class="kpi-row-4">
+            <div>
+              <h4 class="kpi-label">Players</h4>
+              <p class="kpi-value" id="kpi-total-devices">—</p>
+              <p class="kpi-sub">Players ativos</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Crítico</h4>
+              <p class="kpi-value" id="kpi-total-risco">—</p>
+              <p class="kpi-sub">Uso alto de CPU</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Alerta</h4>
+              <p class="kpi-value" id="kpi-total-alerta">—</p>
+              <p class="kpi-sub">Acompanhamento de CPU</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">OK</h4>
+              <p class="kpi-value" id="kpi-total-ok">—</p>
+              <p class="kpi-sub">Operando normal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloco 2: Condições médias -->
+      <section class="card kpi-card">
+        <header class="card-header" style="margin-bottom:8px;">
+          <h2 class="card-title">Monitoramento Hardware (24h)</h2>
+          <small style="font-size:12px; opacity:.7;">Informações técnicas</small>
+        </header>
+
+        <div class="card-content">
+          <div class="kpi-row-4">
+            <div>
+              <h4 class="kpi-label">CPU média</h4>
+              <p class="kpi-value" id="kpi-cpu-24h">10%</p>
+              <p class="kpi-sub">Uso de CPU</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">RAM média</h4>
+              <p class="kpi-value" id="kpi-ram-24h">49%</p>
+              <p class="kpi-sub">Uso de memória</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Disco médio</h4>
+              <p class="kpi-value" id="kpi-disco-24h">12%</p>
+              <p class="kpi-sub">Ocupação</p>
+            </div>
+
+            <div>
+              <h4 class="kpi-label">Temp. CPU</h4>
+              <p class="kpi-value" id="kpi-temp-24h">66ºC</p>
+              <p class="kpi-sub">Média térmica</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- ========= MAPA + RELATÓRIO ========= -->
+    <section class="card" style="padding:16px; margin-bottom:16px;">
+      <header class="card-header" style="margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <h2 class="card-title">Mapa de Dispositivos — Vizor</h2>
+        <button id="btn-open-selector" class="vizor-btn" title="Gerar relatório / laudo">Relatórios</button>
+      </header>
+
+      <div class="card-content">
+        <!-- seletor de relatório -->
+        <div id="report-selector" class="report-selector" aria-label="Seletor de relatório">
+          <div class="row" style="margin-bottom:8px">
+            <span class="vizor-label">Tipo de relatório:</span>
+            <label class="vizor-radio"><input type="radio" name="report-type" value="dooh"> DOOH específico</label>
+            <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Geral semanal</label>
+
+            <div id="dooh-select-wrap" style="display:none">
+              <select id="select-dooh" class="vizor-select">
+                <option value="">— Selecione o DOOH —</option>
+              </select>
+            </div>
+          </div>
+          <div class="report-actions">
+            <button id="btn-cancel-selector" class="vizor-btn" style="background:#171a20;border:1px solid rgba(255,255,255,.15)">Cancelar</button>
+            <button id="btn-generate-inline" class="vizor-btn">Gerar relatório</button>
+          </div>
+        </div>
+
+        <!-- controles do mapa -->
+        <div class="vizor-map-controls">
+          <button id="btn-geolocate" class="vizor-btn" title="Centraliza em você">Minha localização</button>
+          <button id="btn-fit" class="vizor-btn" title="Enquadrar todos os players">Centralizar</button>
+
+          <select id="filtro-status" class="vizor-select" aria-label="Filtro do mapa por status">
+            <option value="todos" selected>Filtrar: todos</option>
+            <option value="ok">Somente OK</option>
+            <option value="alerta">Somente ALERTA</option>
+            <option value="risco">Somente CRÍTICO</option>
+          </select>
+        </div>
+
+        <!-- mapa -->
+        <div id="vizor-map"></div>
+
+        <!-- relatório imprimível -->
+        <section id="report-card" class="card" style="padding:16px; margin-top:16px;">
+          <header class="card-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div>
+              <h3 id="report-title" class="card-title" style="margin:0;">Relatório</h3>
+              <small id="report-period" style="opacity:.8"></small>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="btn-print-report" class="vizor-btn" title="Imprimir / Salvar PDF">Imprimir</button>
+              <button id="btn-close-report" class="vizor-btn" style="background:#171a20;border:1px solid rgba(255,255,255,.15)">Fechar</button>
+            </div>
+          </header>
+
+          <div class="card-content">
+            <!-- KPIs do relatório re-trabalhados -->
+            <div class="kpi-mini">
+              <div class="mini">
+                <div class="label">CPU média</div>
+                <div id="kpi-cpu" class="value">—</div>
+                <div class="sub">últimos 7 dias</div>
+              </div>
+
+              <div class="mini">
+                <div class="label">Temp. média CPU</div>
+                <div id="kpi-temp" class="value">—</div>
+                <div class="sub">últimos 7 dias</div>
+              </div>
+
+              <div class="mini">
+                <div class="label">Uptime médio</div>
+                <div id="kpi-uptime" class="value">—</div>
+                <div class="sub">horas ligadas contínuas</div>
+              </div>
+
+              <div class="mini">
+                <div class="label">Alertas</div>
+                <div id="kpi-alert" class="value">—</div>
+                <div class="sub">na semana</div>
+              </div>
+            </div>
+
+            <!-- Gráfico do relatório -->
+            <div style="margin-top:12px">
+              <canvas id="reportChart" height="140"></canvas>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ========= GRÁFICOS DO PARQUE ========= -->
+    <section class="grid-2" style="margin-bottom:16px;">
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Uso de CPU (média por hora)</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartCPU"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Temperatura (média por hora)</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartGPU"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Uso de RAM (média por hora)</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartRAM"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <header class="card-header">
+          <h2 class="card-title">Uso de Disco (média por hora)</h2>
+        </header>
+        <div class="card-content">
+          <div class="chart-box">
+            <canvas id="chartDISCO"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========= LISTA ÚNICA ORDENADA POR SEVERIDADE ========= -->
+    <section class="card table-card" style="margin-bottom:32px;">
+      <header class="card-header" style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px;">
+        <div>
+          <h2 class="card-title">Lista de dispositivos</h2>
+          <small style="opacity:.7; font-size:12px; line-height:1.4;">
+            Lista única dos players mais críticos agora.<br/>
+            Ordenado por risco térmico, CPU alta e uptime contínuo.
+          </small>
+        </div>
+
+        <div class="card-actions" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label for="seletor-lista" class="ui-label">Filtro:</label>
+            <select id="seletor-lista" class="ui-select">
+              <option value="todos" selected>Todos</option>
+              <option value="risco">Crítico</option>
+              <option value="alerta">Alerta</option>
+              <option value="ok">OK</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <div class="card-content">
+        <!-- ÚNICA LISTA que importaaaa -->
+        <div id="risk-list" class="risk-card-list">
+          <!-- preenchido via JS -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts base -->
+  <script src="../js/verificadorCargo.js"></script>
+  <script src="../js/navbar.js"></script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  (function(){
+    const USE_API = false;
+    const ENDPOINT = '/api/dispositivos?zona=paulista';
+
+    // Cores e estilo dos gráficos
+    const colorText = '#ffffff';
+    const colorGrid = 'rgba(255,255,255,0.10)';
+    const colorCPU  = 'rgba(10, 203, 227, 1)';
+    const colorRAM  = 'rgba(79, 209, 197, 1)';
+    const colorDISK = 'rgba(255, 92, 92, 1)';
+    const colorGPU  = 'rgba(53, 162, 235, 1)';
+
+    // Eixo X mock
+    const horas = ['00h','02h','04h','06h','08h','10h','12h','14h','16h','18h','20h','22h'];
+
+    // Séries mockadas
+    const serieCPU   = [22,18,25,30,45,61,68,74,71,63,48,35];
+    const serieRAM   = [38,35,41,46,52,55,58,60,57,54,50,49];
+    const serieDISCO = [12,13,12,11,13,14,12,13,11,12,12,12];
+    const serieGPU   = [50,56,49,62,66,69,72,65,68,62,59,64];
+
+    // Cores de status no mapa
+    const STATUS_STYLE = {
+      ok:     { color: '#0a7f2e', fillColor: '#27ae60' },
+      alerta: { color: '#a66300', fillColor: '#f39c12' },
+      risco:  { color: '#a40000', fillColor: '#e74c3c' }
+    };
+
+    let map, markersLayer, allDevices = [], currentFilter = 'todos';
+    let reportChart;
+
+    /* ===================== GRÁFICOS (Chart.js) ===================== */
+    function criarLinha(idCanvas, rotulo, dados, cor){
+      const ctx = document.getElementById(idCanvas).getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: horas,
+          datasets: [{
+            label: rotulo,
+            data: dados,
+            borderColor: cor,
+            backgroundColor: cor.replace('1)', '0.15)'),
+            fill: true,
+            tension: 0.35,
+            pointRadius: 2.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            x: { grid: { color: colorGrid }, ticks: { color: colorText } },
+            y: { beginAtZero: true, max: 100, grid: { color: colorGrid }, ticks: { stepSize: 20, color: colorText } }
+          },
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}%` } }
+          }
+        }
+      });
+    }
+
+    function initCharts(){
+      criarLinha('chartCPU',   'CPU (%)',   serieCPU,   colorCPU);
+      criarLinha('chartRAM',   'RAM (%)',   serieRAM,   colorRAM);
+      criarLinha('chartDISCO', 'Disco (%)', serieDISCO, colorDISK);
+      criarLinha('chartGPU',   'Temperatura (ºC)',   serieGPU,   colorGPU);
+    }
+
+    /* ===================== MAPA ===================== */
+    function initMap() {
+      map = L.map('vizor-map', { zoomControl: true, minZoom: 2 })
+             .setView([-23.5614, -46.6559], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+      }).addTo(map);
+
+      markersLayer = L.layerGroup().addTo(map);
+
+      document.getElementById('btn-geolocate')?.addEventListener('click', goToMyLocation);
+      document.getElementById('btn-fit')?.addEventListener('click', fitToMarkers);
+      document.getElementById('filtro-status')?.addEventListener('change', (e) => {
+        filterStatus(e.target.value || 'todos');
+      });
+    }
+
+    /* ===================== MOCK DE DISPOSITIVOS ===================== */
+    function getMockPaulista() {
+      const now = new Date().toISOString();
+      const base = [
+        [-23.56192,-46.65544,'Paulista - DOOH001'],
+        [-23.56349,-46.65380,'Paulista - DOOH002'],
+        [-23.55580,-46.66304,'Paulista - DOOH003'],
+        [-23.56917,-46.64730,'Paulista - DOOH004'],
+        [-23.56527,-46.65136,'Paulista - DOOH005'],
+        [-23.57502,-46.64149,'Paulista - DOOH006'],
+        [-23.55783,-46.66001,'Paulista - DOOH007'],
+        [-23.56467,-46.65697,'Paulista - DOOH008'],
+        [-23.57085,-46.64515,'Paulista - DOOH009'],
+        [-23.57099,-46.64430,'Paulista - DOOH010'],
+        [-23.55430,-46.66106,'Paulista - DOOH011'],
+        [-23.56210,-46.65551,'Paulista - DOOH012'],
+      ];
+
+      return base.map((p, i) => {
+        const cpu = 55 + (i*3 % 40);          // %
+        const ram = 45 + (i*4 % 40);          // %
+        const disco = 30 + (i*2 % 50);        // %
+        const temp = 60 + (i*5 % 25);         // °C
+        const uptimeHoras = 4 + (i*2 % 30);   // horas ligado contínuo
+
+        const status = i % 5 === 0 ? 'risco' : (i % 3 === 0 ? 'alerta' : 'ok');
+
+        return {
+          id: 100 + i,
+          hostname: `DOOH-SP-P${String(i+1).padStart(2,'0')}`,
+          nome: `Media Player ${p[2]}`,
+          status,
+          lat: p[0],
+          lng: p[1],
+          ultimoUpdateISO: now,
+          endereco: 'Av. Paulista, São Paulo',
+
+          cpu,
+          ram,
+          disco,
+          tempCPU: temp,
+          uptime_h: uptimeHoras,
+          ultimoPing: (i%3===0?'há 1 min':i%3===1?'há 40 s':'há 5 min')
+        };
+      });
+    }
+
+    /* ===================== CARREGAR DADOS ===================== */
+    async function loadData() {
+      if (USE_API) {
+        try {
+          const resp = await fetch(ENDPOINT, { cache: 'no-store' });
+          if (!resp.ok) throw new Error('Falha ao buscar dispositivos');
+          const data = await resp.json();
+          allDevices = (Array.isArray(data) ? data : []).map(normalizeDevice);
+        } catch (e) {
+          console.warn('Falha na API, usando mock:', e);
+          allDevices = getMockPaulista();
+        }
+      } else {
+        allDevices = getMockPaulista();
+      }
+
+      applyRender(); // desenha marcadores conforme filtro atual
+      fitToMarkers();
+
+      atualizarKPIsGerais(allDevices);
+      renderRiskList(allDevices); // lista única ordenada
+      hydrateDoohSelectFromDevices(allDevices);
+    }
+
+    /* ===================== MAPA: MARKERS E POPUP ===================== */
+    function applyRender() {
+      const list = (currentFilter === 'todos')
+        ? allDevices
+        : allDevices.filter(d => (d.status||'').toLowerCase() === currentFilter);
+      renderMarkers(list);
+    }
+
+    function renderMarkers(list) {
+      markersLayer.clearLayers();
+      list.forEach(dev => {
+        if (!isFinite(dev.lat) || !isFinite(dev.lng)) return;
+        const sKey = (dev.status || 'ok').toLowerCase();
+        const style = STATUS_STYLE[sKey] || STATUS_STYLE.ok;
+
+        L.circleMarker([dev.lat, dev.lng], {
+          radius: 8, weight: 2, color: style.color, fillColor: style.fillColor, fillOpacity: 0.8
+        })
+        .addTo(markersLayer)
+        .bindPopup(buildPopupHTML(dev), { maxWidth: 300 });
+      });
+    }
+
+    function buildPopupHTML(dev) {
+      const st = (dev.status || 'ok').toLowerCase();
+      const badgeClass =
+        st==='risco' ? 'vizor-status-badge vizor-status-risco' :
+        st==='alerta'? 'vizor-status-badge vizor-status-alerta' :
+                       'vizor-status-badge vizor-status-ok';
+
+      const atualizado = dev.ultimoUpdateISO ? new Date(dev.ultimoUpdateISO).toLocaleString() : '—';
+
+      return `
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <strong>${dev.nome || dev.hostname || ('Media Player #' + (dev.id ?? '?'))}</strong>
+            <span class="${badgeClass}">${st.toUpperCase()}</span>
+          </div>
+
+          <div style="margin-top:6px;font-size:13px;line-height:1.4;">
+            <div><b>Hostname:</b> ${dev.hostname ?? '-'}</div>
+            <div><b>Último update:</b> ${atualizado}</div>
+            ${dev.endereco ? `<div><b>Endereço:</b> ${dev.endereco}</div>` : ''}
+
+            <hr style="border:none;border-top:1px solid rgba(255,255,255,.1);margin:8px 0;" />
+
+            <div style="font-size:12px;line-height:1.4;opacity:.9;">
+              <div><b>CPU:</b> ${dev.cpu}%</div>
+              <div><b>Temp CPU:</b> ${dev.tempCPU}°C</div>
+              <div><b>RAM:</b> ${dev.ram}%</div>
+              <div><b>Disco:</b> ${dev.disco}%</div>
+              <div><b>Uptime:</b> ${dev.uptime_h}h lig.</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* ===================== MAPA: UX ===================== */
+    function fitToMarkers() {
+      const bounds = L.latLngBounds();
+      markersLayer.eachLayer(layer => { if (layer.getLatLng) bounds.extend(layer.getLatLng()); });
+      if (bounds.isValid()) map.fitBounds(bounds.pad(0.15));
+    }
+
+    function goToMyLocation() {
+      if (!navigator.geolocation) return alert('Geolocalização não suportada.');
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const { latitude, longitude } = pos.coords;
+          map.setView([latitude, longitude], 14);
+          L.circleMarker([latitude, longitude], {
+            radius: 6, weight: 2, color: '#3b82f6', fillColor: '#60a5fa', fillOpacity: 0.8
+          }).addTo(markersLayer).bindPopup('Você está aqui').openPopup();
+        },
+        () => alert('Não foi possível obter sua localização.'),
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+
+    function filterStatus(value) {
+      currentFilter = (value || 'todos').toLowerCase();
+
+      // sincroniza dropdown do mapa, se necessário
+      const mapSelect = document.getElementById('filtro-status');
+      if (mapSelect && mapSelect.value !== currentFilter && ['todos','ok','alerta','risco'].includes(currentFilter)) {
+        mapSelect.value = currentFilter;
+      }
+
+      applyRender();        // atualiza mapa
+      fitToMarkers();
+      atualizarKPIsGerais(allDevices); // topo continua mostrando totais globais (não filtrado)
+      renderRiskList(allDevices);      // atualiza lista única ordenada com filtro
+    }
+
+    /* ===================== KPIs DO TOPO ===================== */
+    function atualizarKPIsGerais(devices){
+      const total = devices.length;
+      const totalRisco = devices.filter(d=>d.status==='risco').length;
+      const totalAlerta = devices.filter(d=>d.status==='alerta').length;
+      const totalOk = devices.filter(d=>d.status==='ok').length;
+
+      document.getElementById('kpi-total-devices').textContent = total;
+      document.getElementById('kpi-total-risco').textContent = totalRisco;
+      document.getElementById('kpi-total-alerta').textContent = totalAlerta;
+      document.getElementById('kpi-total-ok').textContent = totalOk;
+    }
+
+    /* ===================== LISTA ÚNICA ORDENADA POR SEVERIDADE ===================== */
+    function renderRiskList(devices){
+      const box = document.getElementById('risk-list');
+      if (!box) return;
+      box.innerHTML = '';
+
+      // aplica o filtro atual
+      let baseList = [...devices];
+      if (currentFilter !== 'todos') {
+        baseList = baseList.filter(d => (d.status || '').toLowerCase() === currentFilter);
+      }
+
+      // score de severidade: status pesa muito; depois temp e uptime
+      const score = (d)=>{
+        const base = d.status==='risco' ? 100 : d.status==='alerta' ? 50 : 10;
+        return base + (d.tempCPU||0) + (d.uptime_h||0)*2;
+      };
+
+      const ordenado = baseList.sort((a,b)=> score(b) - score(a));
+
+      // render de todos do conjunto filtrado (não só top 6, agora mostramos todos os relevantes)
+      if (ordenado.length === 0){
+        const empty = document.createElement('div');
+        empty.style.fontSize = '13px';
+        empty.style.opacity = '0.7';
+        empty.textContent = 'Nenhum dispositivo neste filtro.';
+        box.appendChild(empty);
+        return;
+      }
+
+      ordenado.forEach(d=>{
+        const div = document.createElement('div');
+        div.className = 'risk-row';
+
+        div.innerHTML = `
+          <div class="risk-row-head">
+            <strong>${d.hostname}</strong>
+            <span class="risk-status ${d.status}">${d.status.toUpperCase()}</span>
+          </div>
+          <div class="risk-metrics">
+            <span>CPU ${d.cpu}%</span>
+            <span>Temp ${d.tempCPU}°C</span>
+            <span>Uptime ${d.uptime_h}h</span>
+            <span>RAM ${d.ram}%</span>
+            <span>Ping ${d.ultimoPing}</span>
+          </div>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    /* ===================== RELATÓRIO / EXPORT ===================== */
+    const $selector = document.getElementById('report-selector');
+    const $openSel1 = document.getElementById('btn-open-selector');
+    const $cancelSel = document.getElementById('btn-cancel-selector');
+    const $btnGen = document.getElementById('btn-generate-inline');
+    const $wrapDooh = document.getElementById('dooh-select-wrap');
+    const $selDooh = document.getElementById('select-dooh');
+    const $reportCard = document.getElementById('report-card');
+    const $reportTitle = document.getElementById('report-title');
+    const $reportPeriod = document.getElementById('report-period');
+    const $btnCloseReport = document.getElementById('btn-close-report');
+    const $btnPrintReport = document.getElementById('btn-print-report');
+
+    function toggleSelector(show){ $selector.style.display = show?'block':'none'; }
+    function selectedType(){
+      const r = document.querySelector('input[name="report-type"]:checked');
+      return r ? r.value : 'semanal';
+    }
+
+    document.addEventListener('change', (e)=>{
+      if (e.target && e.target.name === 'report-type'){
+        $wrapDooh.style.display = e.target.value === 'dooh' ? 'inline-block' : 'none';
+      }
+    });
+
+    $openSel1?.addEventListener('click', ()=>{ toggleSelector(true); });
+    $cancelSel?.addEventListener('click', ()=> toggleSelector(false));
+
+    $btnGen?.addEventListener('click', ()=>{
+      const type = selectedType();
+      if (type === 'dooh' && !$selDooh.value){
+        alert('Selecione um DOOH.');
+        return;
+      }
+      renderReport(type, $selDooh.value);
+      toggleSelector(false);
+      $reportCard.style.display = 'block';
+      $reportCard.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    $btnCloseReport?.addEventListener('click', ()=>{ $reportCard.style.display='none'; });
+    $btnPrintReport?.addEventListener('click', ()=>{ window.print(); });
+
+    function renderReport(type, id){
+      const end = new Date();
+      const start = new Date(); start.setDate(end.getDate()-6);
+      const fmt = (d)=> d.toLocaleDateString('pt-BR');
+
+      $reportPeriod.textContent = `Período: ${fmt(start)} a ${fmt(end)}`;
+      $reportTitle.textContent = (type==='dooh') ? `Relatório — ${id}` : 'Relatório — Geral (Semanal)';
+
+      const kpi = computeKPIs(type, id);
+      document.getElementById('kpi-cpu').textContent = kpi.cpu + '%';
+      document.getElementById('kpi-temp').textContent = kpi.temp + '°C';
+      document.getElementById('kpi-uptime').textContent = kpi.uptime + 'h';
+      document.getElementById('kpi-alert').textContent = kpi.alertas;
+
+      const labels = ['Hoje','D-1','D-2','D-3','D-4','D-5','D-6'];
+      const series = buildSeries(type, id);
+
+      const ctx = document.getElementById('reportChart').getContext('2d');
+      if (reportChart){ reportChart.destroy(); }
+      reportChart = new Chart(ctx,{
+        type:'line',
+        data:{
+          labels,
+          datasets:[
+            {label:'CPU (%)',   data:series.cpu,   borderColor:'rgba(10, 203, 227, 1)', backgroundColor:'rgba(10, 203, 227, 0.15)', fill:true, tension:.35, pointRadius:2.5},
+            {label:'RAM (%)',   data:series.ram,   borderColor:'rgba(79, 209, 197, 1)', backgroundColor:'rgba(79, 209, 197, 0.15)', fill:true, tension:.35, pointRadius:2.5},
+            {label:'Disco (%)', data:series.disco, borderColor:'rgba(255, 92, 92, 1)',  backgroundColor:'rgba(255, 92, 92, 0.12)', fill:true, tension:.35, pointRadius:2.5}
+          ]
+        },
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          interaction:{mode:'index', intersect:false},
+          scales:{
+            x:{ grid:{color:'rgba(255,255,255,0.10)'}, ticks:{color:'#fff'} },
+            y:{ beginAtZero:true, max:100, grid:{color:'rgba(255,255,255,0.10)'}, ticks:{color:'#fff'} }
+          },
+          plugins:{ legend:{position:'top'} }
+        }
+      });
+    }
+
+    // mock de KPIs semanais pro relatório
+    function computeKPIs(type, id){
+      if (type==='dooh'){
+        const seed = Array.from(id).reduce((a,c)=>a+c.charCodeAt(0),0)%10;
+        return {
+          cpu: 54+seed,          // %
+          temp: 65+(seed%5),     // °C
+          uptime: 12+(seed%6),   // horas ligadas
+          alertas: 2+seed%2      // qtd alertas
+        };
+      }
+      return {
+        cpu: 58,
+        temp: 67,
+        uptime: 14,
+        alertas: 12
+      };
+    }
+
+    // mock pra série do gráfico do relatório
+    function buildSeries(type, id){
+      const base = [40,45,50,55,60,58,57];
+      if (type==='dooh'){
+        const offset = (Array.from(id).reduce((a,c)=>a+c.charCodeAt(0),0)%7)-3;
+        return {
+          cpu:   base.map((v,i)=>limit01(v+offset+(i%3?2:0))),
+          ram:   base.map((v,i)=>limit01(v-5+offset+(i%2?3:0))),
+          disco: base.map((v,i)=>limit01(20+offset+i))
+        };
+      }
+      return {
+        cpu:   [48,52,51,57,60,59,58],
+        ram:   [50,51,53,55,56,54,53],
+        disco: [15,16,17,18,17,16,15]
+      };
+    }
+    function limit01(v){ return Math.max(0, Math.min(100, Math.round(v))); }
+
+    /* ===================== SINCRONIZAÇÃO DO FILTRO GLOBAL ===================== */
+    const seletorLista = document.getElementById('seletor-lista');
+    seletorLista.addEventListener('change', () => {
+      const chave = seletorLista.value;
+      filterStatus(chave); // isso já rerenderiza mapa + lista de severidade
+    });
+
+    /* ===================== POPULAR SELECT DOOH NO RELATÓRIO ===================== */
+    function hydrateDoohSelectFromDevices(devices){
+      const $selDooh = document.getElementById('select-dooh');
+      if (!$selDooh) return;
+      $selDooh.innerHTML = '<option value="">— Selecione o DOOH —</option>';
+      devices.forEach(d=>{
+        const opt = document.createElement('option');
+        opt.value = d.hostname;
+        opt.textContent = d.hostname;
+        $selDooh.appendChild(opt);
+      });
+    }
+
+    /* ===================== INIT ===================== */
+    document.addEventListener('DOMContentLoaded', function() {
+      initMap();
+      initCharts();
+      loadData();
+    });
+
+    // expõe pro console se precisar debugar
+    window.vizorMap = { filterStatus };
+  })();
+  </script>
+</body>
+</html>

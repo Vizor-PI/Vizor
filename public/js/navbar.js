@@ -19,7 +19,10 @@ navbarConstructor.innerHTML += `
         <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
         <a href="avisoDash.html"> Avisos </a>
       </li>
-      
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
+        <a href="Lotes.html">Lotes</a>
+      </li>
       <li class="nav-item" id="adm-only">
         <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
         <a href="gestaoUsuarios.html"> Contas </a>

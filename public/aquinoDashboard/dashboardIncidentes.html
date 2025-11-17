@@ -151,6 +151,17 @@
         <small style="opacity:.7;">Monitoramento em tempo real (integração Jira API)</small>
       </header>
 
+      <!-- Filtro de período -->
+    <div class="vizor-filter" style="padding-left: 22px; padding-top: 10px;">
+      <label for="periodo" style="font-size: 0.9rem; color: #ccc;">Período:</label>
+      <select id="periodo" class="vizor-select" style="background:#0e1117; color:white; border:1px solid #00bcd4; border-radius:6px; padding:4px 8px;">
+        <option value="24h">Últimas 24h</option>
+        <option value="7d" selected>Última semana</option>
+        <option value="30d">Último mês</option>
+        <option value="all">Todos</option>
+      </select>
+    </div>
+
       <div class="card-content">
         <div class="kpi-row-4">
           <div>

@@ -248,3 +248,17 @@ body {
     #vizor-map{width:100%;height:420px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.08);overflow:hidden}
     .vizor-map-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
     .vizor-map-controls .vizor-btn,.vizor-map-controls .vizor-select{padding:6px 10px}
+
+    .tex .especificacoes {
+      margin: 2.5vw;
+    }
+    
+    .tex .data {
+      margin: 2.5vw;
+    }
+
+    .container .container-xl .informacoes .dadosmodelos {
+      display: flex;
+      justify-content: space-between;
+      width: 75%;
+    }
