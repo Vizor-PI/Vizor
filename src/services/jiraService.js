@@ -2,7 +2,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const jira = axios.create({
-  baseURL: process.env.JIRA_BASE_URL + '/rest/api/3',
+  baseURL: process.env.JIRA_BASE_URL + '/rest/servicedeskapi',
   auth: {
     username: process.env.JIRA_EMAIL,
     password: process.env.JIRA_API_TOKEN
@@ -12,40 +12,52 @@ const jira = axios.create({
   }
 });
 
-// Buscar chamados recentes (por exemplo, últimos 10)
-async function getRecentIssues() {
+// ============================================
+// 1. FUNÇÃO PRINCIPAL — LISTAR CHAMADOS (JSM)
+// ============================================
+async function getRequests() {
   try {
-    const jql = 'ORDER BY created DESC';
-    const response = await jira.get('/search', {
-      params: { jql, maxResults: 10 }
-    });
-    return response.data.issues;
-  } catch (error) {
-    console.error('Erro ao buscar issues do Jira:', error.message);
-    throw error;
+    const response = await jira.get('/request', { params: { limit: 50 } });
+    return response.data.values; // lista de chamados
+    
+  } catch (err) {
+    console.error("Erro ao buscar chamados do Jira:", err.response?.data || err.message);
+    throw err;
   }
 }
 
-// Buscar métricas gerais (exemplo: total por status)
+// ============================================
+// 2. MÉTRICAS — TOTAL ABERTOS / FECHADOS / ETC
+// ============================================
 async function getIssueStats() {
   try {
-    const jql = 'ORDER BY created DESC';
-    const response = await jira.get('/search', { params: { jql, maxResults: 100 } });
-    const issues = response.data.issues;
+    const requests = await getRequests();
 
-    const stats = { aberto: 0, fechado: 0, andamento: 0 };
-    issues.forEach(issue => {
-      const status = issue.fields.status.name.toLowerCase();
-      if (status.includes('open') || status.includes('to do')) stats.aberto++;
-      else if (status.includes('done') || status.includes('closed')) stats.fechado++;
-      else stats.andamento++;
+    let stats = {
+      aberto: 0,
+      fechado: 0,
+      andamento: 0
+    };
+
+    requests.forEach((req) => {
+      const status = req.currentStatus.status.toLowerCase();
+
+      if (status.includes("pendente") || status.includes("new") || status.includes("to do")) {
+        stats.aberto++;
+      } 
+      else if (status.includes("done") || status.includes("closed") || status.includes("resolvido")) {
+        stats.fechado++;
+      }
+      else {
+        stats.andamento++;
+      }
     });
 
     return stats;
-  } catch (error) {
-    console.error('Erro ao calcular métricas do Jira:', error.message);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao gerar métricas do Jira:", err.response?.data || err.message);
+    throw err;
   }
 }
 
-module.exports = { getRecentIssues, getIssueStats };
+module.exports = { getRequests, getIssueStats };
