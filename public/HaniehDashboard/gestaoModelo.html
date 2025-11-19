@@ -83,9 +83,6 @@
                   <button class="excluir" onclick="excluirModelo(${modelo.id}, '${modelo.modelo}')">
                     <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
                   </button>
-                  <button class="editar" onclick="abrirEditarUsuario(${modelo.id})">
-                    <img src="../assets/imgs/logosDash/edit.png" alt="">
-                  </button>
                 </div>
               </div>`;
           });
@@ -221,34 +218,30 @@
       });
     }
 
-    /*function filtrarUsuarios() {
-      const termo = document.getElementById("filtroNome").value.toLowerCase();
-      const lista = document.getElementById("listaDeUsuarios");
+    function filtrarModelos() {
+      const termo = document.getElementById("filtroModelo").value.toLowerCase();
+      const lista = document.getElementById("listaDeModelos");
       lista.innerHTML = "";
-      usuarios.forEach((user) => {
-        if (user.NomeUsuario.toLowerCase().includes(termo)) {
+      modelos.forEach((modelo) => {
+        if (model.NomeModelo.toLowerCase().includes(termo)) {
           lista.innerHTML += `
             <div class="linha">
               <div class="informacoes">
-                <div class="cabecalho-Infos">${user.NomeUsuario}</div>
-                <div class="dadosPessoais">
-                  <div>${user.Telefone}</div>
-                  <div>${user.EmailUsuario}</div>
-                  <div>${user.titulo}</div>
-                </div>
+                 <div class="cabecalho-Infos">${modelo.modelo}</div>
+                  <div class="dadosmodelos">
+                    <div style="width: 50%">${modelo.componentes}</div>
+                    <div style="width: 43%">${modelo.dataFabricacao}</div>
+                  </div>
               </div>
               <div class="botoes-users">
-                <button class="excluir" onclick="excluirUser(${user.id}, '${user.NomeUsuario}')">
+                <button class="excluir" onclick="excluirModelo(${modelo.id}, '${modelo.modelo}')">
                   <img src="../assets/imgs/logosDash/recycle-bin.png" alt="">
-                </button>
-                <button class="editar" onclick="abrirEditarUsuario(${user.id})">
-                  <img src="../assets/imgs/logosDash/edit.png" alt="">
                 </button>
               </div>
             </div>`;
         }
       });
-    }*/
+    }
 
     function limparSessao() {
       sessionStorage.clear();
