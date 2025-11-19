@@ -92,10 +92,10 @@
         });
       };
 
-      window.onload = construirLista();
+      window.onload = construirLista;
     
     
-    function abrirEditarUsuario(id) {
+    /*function abrirEditarUsuario(id) {
       const user = usuarios.find((u) => u.id === id);
       Swal.fire({
         title: `Editar: ${user.NomeUsuario}`,
@@ -170,7 +170,7 @@
           Swal.fire("Erro", "Não foi possível atualizar o usuário ❌");
         }
       });
-    }
+    }*/
 
     function excluirModelo(id, nomeModelo) {
       Swal.fire({
@@ -209,8 +209,9 @@
                     popup: "alerta-custom",
                     title: "alerta-titulo",
                   },
+                }).then(() => {
+                  window.location.reload();
                 });
-                construirLista();
               } else {
                 Swal.fire("Erro", "Não foi possível excluir o modelo ❌");
               }
@@ -220,7 +221,7 @@
       });
     }
 
-    function filtrarUsuarios() {
+    /*function filtrarUsuarios() {
       const termo = document.getElementById("filtroNome").value.toLowerCase();
       const lista = document.getElementById("listaDeUsuarios");
       lista.innerHTML = "";
@@ -247,7 +248,7 @@
             </div>`;
         }
       });
-    }
+    }*/
 
     function limparSessao() {
       sessionStorage.clear();

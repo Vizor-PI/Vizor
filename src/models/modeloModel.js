@@ -71,20 +71,43 @@ function atualizarModelos(email, telefone, cargo, id) {
   return database.executar(instrucaoSql);
 }
 
-function deletarModelo(id, ) {
+function deletarModelo(id) {
   console.log("Executando a instrução deletar Modelos");
   var instrucaoSql1 = `
-DELETE FROM lote 
-innerjoin modeloWHERE id = ${id};
+DELETE FROM modelo_componente 
+WHERE fkmodelo = ${id};
 `;
 var instrucaoSql2 = `
-DELETE FROM modelo WHERE id = ${id};
+DELETE FROM miniComputador
+WHERE fkLote IN (
+    SELECT id FROM lote WHERE fkModelo = ${id}
+);
+
 `;
-  var instrucaoSql = `
-DELETE FROM modelo WHERE id = ${id};
+  var instrucaoSql3 = `
+delete from lote where fkmodelo = ${id};
 `;
-  console.log(instrucaoSql);
-  return database.executar(instrucaoSql);
+
+var instrucaoSql4 = `
+delete from modelo where id = ${id};
+`;
+  
+  return database.executar(instrucaoSql1)
+        .then(resAlertas => {
+            console.log(`Deletados ${resAlertas.affectedRows} alertas.`);
+            return database.executar(instrucaoSql2);
+        })
+        .then(resParametros => {
+            console.log(`Deletados ${resParametros.affectedRows} parâmetros.`);
+            return database.executar(instrucaoSql3);
+        })
+        .then(resMiniComputadores => {
+            console.log(`Deletados ${resMiniComputadores.affectedRows} miniComputadores.`);
+            return database.executar(instrucaoSql4);
+        })
+        .catch(erro => {
+            return Promise.reject(erro);
+        });
 }
 module.exports = {
   autenticar,

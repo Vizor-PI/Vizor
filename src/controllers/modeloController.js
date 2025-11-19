@@ -139,12 +139,12 @@ function deletarModelo(req, res) {
   modeloModel
     .deletarModelo(id)
     .then(function (resultado) {
-      res.json(resultado);
+      res.json({ success: true });
     })
     .catch(function (erro) {
       console.log(erro);
       console.log("Houve um erro ao deletar o modelo");
-      res.status(500).json(erro.sqlMessage);
+      res.status(500).json({ success: false, error: erro.sqlMessage });
     });
 }
 
