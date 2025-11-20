@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vizor — Suporte à Manutenção</title>
+
+  <!-- Links Originais do seu Projeto -->
+  <link rel="stylesheet" href="../assets/css/css-dashboard/pedroDash.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+
+  <!-- Fonte Akatab -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  
+</head>
+<body onload="verificarCargo()"> <!-- Mantendo onload original -->
+
+  <!-- Navbar Original (Injetada via JS ou HTML puro se existir em navbar.js) -->
+  <nav class="navbar" id="navbarConstructor"></nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">Dashboard de Manutenção</h1>
+      <span class="page-sub">Visão geral do parque de dispositivos DOOH</span>
+    </div>
+
+    <!-- KPIs -->
+    <section class="kpi-grid">
+      <!-- Administrativo -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><i data-lucide="shield-check" size="18" style="color:aqua"></i> Condição dos DOOHs</h2>
+        </div>
+        <div class="card-content">
+          <div class="kpi-row">
+            <div class="kpi-item">
+              <div class="kpi-label">Players</div>
+              <div class="kpi-value" id="kpi-total">0</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-label" style="color:#e74c3c">Crítico</div>
+              <div class="kpi-value" id="kpi-critico" style="color:#e74c3c">0</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-label" style="color:#f1c40f">Alerta</div>
+              <div class="kpi-value" id="kpi-alerta" style="color:#f1c40f">0</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-label" style="color:#2ecc71">OK</div>
+              <div class="kpi-value" id="kpi-ok" style="color:#2ecc71">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hardware -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><i data-lucide="cpu" size="18" style="color:aqua"></i> Hardware (Mediana 24h)</h2>
+        </div>
+        <div class="card-content">
+          <div class="kpi-row">
+            <div class="kpi-item">
+              <div class="kpi-label">CPU</div>
+              <div class="kpi-value" style="color:aqua" id="kpi-cpu-med">0%</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-label">RAM</div>
+              <div class="kpi-value" style="color:#a29bfe" id="kpi-ram-med">0%</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-label">Disco</div>
+              <div class="kpi-value" style="color:#ff7675" id="kpi-disk-med">0%</div>
+            </div>
+            <div class="kpi-item">
+              <div class="kpi-label">Temp</div>
+              <div class="kpi-value" style="color:#fdcb6e" id="kpi-temp-med">0°C</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mapa -->
+    <section class="card map-container">
+      <div class="map-controls">
+        <i data-lucide="search" size="16" style="color:rgba(255,255,255,0.5); margin-top:10px;"></i>
+        <input type="text" id="search-dooh" class="vizor-input" placeholder="Buscar DOOH..." style="width:160px; background:transparent; border:none; padding-left:0;">
+        
+        <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:8px 0;"></div>
+
+        <!-- Filtro de Status da Máquina -->
+        <select id="filter-status" class="vizor-select" style="background:transparent; border:none;">
+          <option value="todos">Status: Todos</option>
+          <option value="critico">Crítico (Falha)</option>
+          <option value="alerta">Alerta (Atenção)</option>
+          <option value="ok">OK (Normal)</option>
+        </select>
+
+        <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:8px 0;"></div>
+
+      </div>
+
+      <div id="vizor-map"></div>
+    </section>
+
+    <!-- Lista -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title"><i data-lucide="list" size="18" style="color:aqua"></i> Lista de Dispositivos</h2>
+        <div class="card-subtitle" style="margin:0; font-size:12px; color:rgba(255,255,255,0.5);">Total visível: <span id="list-count">0</span></div>
+      </div>
+      <div class="card-content">
+        <div class="device-grid" id="device-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL (Overlay) -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="vizor-modal">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 id="modal-title">...</h3>
+          <div class="modal-subtitle"><i data-lucide="map-pin" size="12"></i> <span id="modal-loc">...</span></div>
+        </div>
+        <button class="btn-close" onclick="closeModal()"><i data-lucide="x" size="20"></i></button>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="pred-title"><i data-lucide="activity" size="14" style="color:aqua"></i> Análise Preditiva (Regressão Linear)</div>
+        
+        <div class="prediction-section">
+          <!-- Esquerda: Probabilidade -->
+          <div class="pred-left">
+            <div class="risk-label">Probabilidade de Falha (24h)</div>
+            <div class="risk-percent" id="modal-prob" style="color:#fff">0%</div>
+            <div class="risk-label" style="margin-top:-4px;">risco calculado</div>
+            <div class="progress-bg"><div class="progress-fill" id="modal-prog"></div></div>
+          </div>
+          <!-- Direita: Causa e Ação -->
+          <div class="pred-right">
+            <div class="cause-box">
+              <div class="cause-label">Principal Causa Provável</div>
+              <div class="cause-text"><i data-lucide="alert-triangle" size="14"></i> <span id="modal-cause">...</span></div>
+            </div>
+            <div class="cause-box">
+              <div class="cause-label">Recomendação Sugerida</div>
+              <div class="rec-text"><i data-lucide="wrench" size="14"></i> <span id="modal-rec">...</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="m-label" style="margin-bottom:10px; font-weight:700; color:#fff;">MÉTRICAS ATUAIS (MEDIANAS)</div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="m-label">CPU</div>
+            <div class="m-value" style="color:aqua" id="modal-cpu">0%</div>
+          </div>
+          <div class="metric-card">
+            <div class="m-label">Memória</div>
+            <div class="m-value" style="color:#a29bfe" id="modal-ram">0%</div>
+          </div>
+          <div class="metric-card">
+            <div class="m-label">Temperatura</div>
+            <div class="m-value" style="color:#fdcb6e" id="modal-temp">0°C</div>
+          </div>
+          <div class="metric-card">
+            <div class="m-label">Disco</div>
+            <div class="m-value" style="color:#ff7675" id="modal-disk">0%</div>
+          </div>
+        </div>
+
+        <div class="footer-row">
+          <div class="info-pill">
+            <span>Uptime</span> <strong id="modal-uptime">0h</strong>
+          </div>
+          <div class="info-pill">
+            <span>Latência (Ping)</span> <strong id="modal-ping">0ms</strong>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-vizor btn-ghost">Ver Logs</button>
+          <button class="btn-vizor btn-primary" onclick="closeModal()">Fechar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/verificadorCargo.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <script>
+    // Renderiza Ícones
+    lucide.createIcons();
+
+    // Estado Global da Aplicação
+    let allDevices = [];
+    let mapInstance = null;
+    let markersLayer = null;
+
+    // =========================================================
+    //  INTEGRAÇÃO BACKEND / S3
+    // =========================================================
+    // A URL abaixo deve apontar para sua API ou Arquivo JSON no S3
+    const API_URL = '/api/dashboard/devices'; 
+
+    /**
+     * Função responsável por buscar dados reais.
+     * Deve retornar um array de objetos com a estrutura abaixo:
+     * [
+     * {
+     * "id": "DOOH-SP-P001",
+     * "location": "Av. Paulista, 1000",
+     * "lat": -23.55,
+     * "lng": -46.63,
+     * "status": "ok" | "alerta" | "critico",
+     * "cpu": 45,   // Porcentagem (0-100)
+     * "ram": 60,   // Porcentagem (0-100)
+     * "disk": 30,  // Porcentagem (0-100)
+     * "temp": 55,  // Graus Celsius
+     * "uptime": 120, // Horas
+     * "ping": 20     // Milissegundos
+     * }, ...
+     * ]
+     */
+    async function fetchDados() {
+      try {
+        // ========================================================
+        // DADOS DE TESTE (MOCK)
+        // ========================================================
+        return [
+            { id: "DOOH-SP-P001", location: "Av. Paulista, 1000", lat: -23.561, lng: -46.656, status: "ok", cpu: 45, ram: 60, disk: 30, temp: 55, uptime: 120, ping: 20 },
+            { id: "DOOH-SP-P002", location: "Metrô Consolação", lat: -23.558, lng: -46.660, status: "critico", cpu: 95, ram: 80, disk: 92, temp: 85, uptime: 10, ping: 120 },
+            { id: "DOOH-SP-P003", location: "Shopping Cidade SP", lat: -23.564, lng: -46.652, status: "alerta", cpu: 78, ram: 70, disk: 50, temp: 76, uptime: 48, ping: 45 },
+            { id: "DOOH-SP-P004", location: "MASP", lat: -23.562, lng: -46.657, status: "ok", cpu: 50, ram: 55, disk: 40, temp: 60, uptime: 200, ping: 25 },
+            { id: "DOOH-SP-P005", location: "Rua Augusta", lat: -23.555, lng: -46.663, status: "ok", cpu: 30, ram: 40, disk: 25, temp: 45, uptime: 350, ping: 15 },
+            { id: "DOOH-SP-P006", location: "Hospital das Clínicas", lat: -23.556, lng: -46.668, status: "alerta", cpu: 82, ram: 65, disk: 70, temp: 78, uptime: 24, ping: 60 },
+            { id: "DOOH-SP-P007", location: "Parque Trianon", lat: -23.563, lng: -46.658, status: "ok", cpu: 40, ram: 50, disk: 35, temp: 50, uptime: 150, ping: 18 },
+            { id: "DOOH-SP-P008", location: "Centro Cultural SP", lat: -23.572, lng: -46.641, status: "critico", cpu: 98, ram: 90, disk: 85, temp: 92, uptime: 2, ping: 200 },
+            { id: "DOOH-SP-P009", location: "Av. Brigadeiro", lat: -23.568, lng: -46.648, status: "ok", cpu: 25, ram: 35, disk: 20, temp: 40, uptime: 500, ping: 10 },
+            { id: "DOOH-SP-P010", location: "Metrô Paraíso", lat: -23.576, lng: -46.646, status: "ok", cpu: 55, ram: 60, disk: 45, temp: 58, uptime: 100, ping: 22 }
+        ];
+      } catch (e) {
+        console.error("Erro ao buscar dados:", e);
+        return [];
+      }
+    }
+
+    // =========================================================
+    //  LÓGICA DE NEGÓCIO (Predição e Estatísticas)
+    // =========================================================
+    
+    // Calcula risco baseado nos dados recebidos do DB
+    function calculatePrediction(device) {
+      // Se o backend já entregar esses dados processados, remova esta função.
+      const riskScore = (device.temp * 0.5) + (device.cpu * 0.3) + (device.disk * 0.2);
+      let prob = Math.min(99, Math.floor(riskScore));
+      
+      let cause = 'Desgaste Natural';
+      let rec = 'Manutenção Preventiva Padrão';
+      let riskLevel = 'low';
+
+      if (device.status === 'critico' || prob > 80) {
+        riskLevel = 'high';
+        if (device.disk > 90) { cause = 'Falha de Disco I/O'; rec = 'Substituição de SSD Iminente'; }
+        else if (device.temp > 80) { cause = 'Sobrecarga Térmica'; rec = 'Verificar ventoinhas e arrefecimento'; }
+        else { cause = 'Falha Crítica de Sistema'; rec = 'Reiniciar e analisar logs de kernel'; }
+      } else if (device.status === 'alerta' || prob > 60) {
+        riskLevel = 'medium';
+        cause = 'Carga Elevada'; rec = 'Monitorar processos em background';
+      }
+
+      return { prob, cause, rec, riskLevel };
+    }
+
+    function getMedian(values) {
+      if(!values.length) return 0;
+      values.sort((a,b)=>a-b);
+      const mid = Math.floor(values.length/2);
+      return values.length%2 ? values[mid] : (values[mid-1]+values[mid])/2;
+    }
+
+    function updateStats(list) {
+      document.getElementById('list-count').textContent = list.length;
+      document.getElementById('kpi-total').textContent = list.length;
+      document.getElementById('kpi-critico').textContent = list.filter(d=>d.status==='critico').length;
+      document.getElementById('kpi-alerta').textContent = list.filter(d=>d.status==='alerta').length;
+      document.getElementById('kpi-ok').textContent = list.filter(d=>d.status==='ok').length;
+
+      if (list.length > 0) {
+        const cpus = list.map(d=>d.cpu);
+        const rams = list.map(d=>d.ram);
+        const temps = list.map(d=>d.temp);
+        const disks = list.map(d=>d.disk);
+
+        document.getElementById('kpi-cpu-med').textContent = Math.floor(getMedian(cpus)) + '%';
+        document.getElementById('kpi-ram-med').textContent = Math.floor(getMedian(rams)) + '%';
+        document.getElementById('kpi-temp-med').textContent = Math.floor(getMedian(temps)) + '°C';
+        document.getElementById('kpi-disk-med').textContent = Math.floor(getMedian(disks)) + '%';
+      }
+    }
+
+    // =========================================================
+    //  RENDERIZAÇÃO (MAPA, LISTA, MODAL)
+    // =========================================================
+
+    function initMap() {
+      mapInstance = L.map('vizor-map', { zoomControl: false }).setView([-23.55, -46.63], 12);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        maxZoom: 19
+      }).addTo(mapInstance);
+      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+      markersLayer = L.layerGroup().addTo(mapInstance);
+    }
+
+    function renderMap(list) {
+      markersLayer.clearLayers();
+      list.forEach(d => {
+        let color = '#2ecc71'; 
+        if(d.status === 'alerta') color = '#f1c40f'; 
+        if(d.status === 'critico') color = '#e74c3c'; 
+
+        const marker = L.circleMarker([d.lat, d.lng], {
+          radius: 8, fillColor: color, color: '#fff', weight: 2, opacity: 1, fillOpacity: 1
+        });
+
+        marker.on('click', () => openModal(d));
+        marker.bindTooltip(`<b>${d.id}</b>`, { direction: 'top', offset: [0, -10] });
+        marker.addTo(markersLayer);
+      });
+    }
+
+    function renderList(list) {
+      const container = document.getElementById('device-list');
+      container.innerHTML = '';
+      
+      // Ordenar Críticos Primeiro
+      const sorted = [...list].sort((a,b) => {
+        const score = s => s==='critico'?3 : s==='alerta'?2 : 1;
+        return score(b.status) - score(a.status);
+      });
+
+      sorted.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'device-item';
+        el.onclick = () => {
+          mapInstance.setView([d.lat, d.lng], 14);
+          openModal(d);
+        };
+
+        let stLabel = d.status === 'critico' ? 'CRITICAL' : (d.status === 'alerta' ? 'WARNING' : 'OK');
+        let hlMetric = '', hlColor = '#fff';
+        
+        if(d.status==='critico') { hlMetric = `Disco (${d.disk}%)`; hlColor='#e74c3c'; }
+        else if(d.status==='alerta') { hlMetric = `Temp (${d.temp}°C)`; hlColor='#f1c40f'; }
+        else { hlMetric = `Ping: ${d.ping}ms`; hlColor='#2ecc71'; }
+
+        el.innerHTML = `
+          <div class="device-head">
+            <div class="device-name">${d.id}</div>
+            <span class="badge ${d.status}">${stLabel}</span>
+          </div>
+          <div class="device-loc"><i data-lucide="map-pin" size="12"></i> ${d.location}</div>
+          <div class="device-stats">
+            <span style="color:rgba(255,255,255,0.5)">Uptime: ${d.uptime}h</span>
+            <span class="hl-metric" style="color:${hlColor}">${hlMetric}</span>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+      lucide.createIcons();
+    }
+
+    function openModal(d) {
+      const modal = document.getElementById('modal-overlay');
+      const pred = calculatePrediction(d); // Calcula ou usa dados do backend
+      
+      // Popula Modal
+      document.getElementById('modal-title').innerHTML = `${d.id} <span class="badge ${d.status}" style="margin-left:10px; font-size:12px; vertical-align:middle;">${d.status.toUpperCase()}</span>`;
+      document.getElementById('modal-loc').innerHTML = d.location;
+      document.getElementById('modal-prob').textContent = pred.prob + '%';
+      
+      let color = '#2ecc71';
+      if (pred.riskLevel === 'high') color = '#e74c3c';
+      else if (pred.riskLevel === 'medium') color = '#f1c40f';
+
+      const prog = document.getElementById('modal-prog');
+      prog.style.width = pred.prob + '%';
+      prog.style.backgroundColor = color;
+      document.getElementById('modal-prob').style.color = color;
+      
+      const causeEl = document.getElementById('modal-cause');
+      causeEl.textContent = pred.cause;
+      causeEl.style.color = color;
+      
+      document.getElementById('modal-rec').textContent = pred.rec;
+
+      document.getElementById('modal-cpu').textContent = d.cpu + '%';
+      document.getElementById('modal-ram').textContent = d.ram + '%';
+      document.getElementById('modal-temp').textContent = d.temp + '°C';
+      document.getElementById('modal-disk').textContent = d.disk + '%';
+      document.getElementById('modal-uptime').textContent = d.uptime + 'h';
+      document.getElementById('modal-ping').textContent = d.ping + 'ms';
+
+      modal.style.display = 'flex';
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    // =========================================================
+    //  EVENTOS E INICIALIZAÇÃO
+    // =========================================================
+
+     function applyFilters() {
+      // 1. Captura os valores dos inputs
+      const term = document.getElementById('search-dooh').value.toLowerCase();
+      const statusFilter = document.getElementById('filter-status').value;
+
+      // 2. Filtra a lista de dispositivos
+      const filtered = allDevices.filter(d => {
+        const matchSearch = d.id.toLowerCase().includes(term);
+        const matchStatus = statusFilter === 'todos' || d.status === statusFilter;
+        return matchSearch && matchStatus;
+      });
+
+      // 3. Atualiza o Mapa e a Lista
+      renderMap(filtered);
+      renderList(filtered);
+
+      // --- LÓGICA DE ZOOM AUTOMÁTICO ---
+      if (filtered.length === 1) {
+        // CASO A: Encontrou apenas 1 DOOH -> Aproxima (Zoom 18) e foca nele
+        const target = filtered[0];
+        mapInstance.flyTo([target.lat, target.lng], 18, { duration: 1.5 });
+        
+
+      } else if (filtered.length > 1) {
+        // CASO B: Vários resultados -> Ajusta o mapa para caber todos na tela
+        const bounds = L.latLngBounds(filtered.map(d => [d.lat, d.lng]));
+        mapInstance.fitBounds(bounds, { padding: [50, 50] });
+
+      } else {
+        // CASO C: Nenhum resultado -> Reseta para a visão geral (Ex: Paulista)
+        // mapInstance.setView([-23.56, -46.65], 13);
+      }
+    }
+
+    // Inicializa Dashboard
+    window.onload = async () => {
+      // Se existir a função verificarCargo do script importado, ela roda no body onload.
+      // Aqui inicializamos a parte visual do dashboard.
+      
+      initMap();
+
+      // 1. Buscar Dados
+      allDevices = await fetchDados();
+      
+      // 2. Renderizar
+      if (allDevices.length > 0) {
+        renderMap(allDevices);
+        renderList(allDevices);
+        updateStats(allDevices);
+      } else {
+        // Opcional: Mostrar estado de "Nenhum dado" ou "Carregando"
+        console.log("Nenhum dado carregado.");
+      }
+
+      // Listeners
+      document.getElementById('search-dooh').addEventListener('input', applyFilters);
+      document.getElementById('filter-status').addEventListener('change', applyFilters);
+      document.getElementById('btn-reset-map').addEventListener('click', () => {
+        document.getElementById('search-dooh').value = '';
+        document.getElementById('filter-status').value = 'todos';
+        applyFilters();
+        mapInstance.setView([-23.55, -46.63], 12);
+      });
+
+      document.getElementById('modal-overlay').addEventListener('click', (e) => {
+        if(e.target.id === 'modal-overlay') closeModal();
+      });
+    };
+
+  </script>
+</body>
+</html>
