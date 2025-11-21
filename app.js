@@ -20,6 +20,7 @@ var usuarioRouter = require("./src/routes/usuarios");
 var empresaRouter = require("./src/routes/empresa");
 var dadosUsuarioRouter = require("./src/routes/dadosUsuario");
 var loteRouter = require("./src/routes/lote");
+var pedroRoute = require("./src/routes/pedroRoute"); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -32,16 +33,17 @@ app.use("/usuarios", usuarioRouter);
 app.use("/empresa", empresaRouter);
 app.use("/dadosUsuario", dadosUsuarioRouter);
 app.use("/lote", loteRouter);
+app.use("/pedroDashboard", pedroRoute); 
 
 app.listen(PORTA_APP, function () {
     console.log(`
-    ##   ##  ######   #####             ####       ##     ######     ##              ##  ##    ####    ######  
-    ##   ##  ##       ##  ##            ## ##     ####      ##      ####             ##  ##     ##         ##  
-    ##   ##  ##       ##  ##            ##  ##   ##  ##     ##     ##  ##            ##  ##     ##        ##   
-    ## # ##  ####     #####    ######   ##  ##   ######     ##     ######   ######   ##  ##     ##       ##    
-    #######  ##       ##  ##            ##  ##   ##  ##     ##     ##  ##            ##  ##     ##      ##     
-    ### ###  ##       ##  ##            ## ##    ##  ##     ##     ##  ##             ####      ##     ##      
-    ##   ##  ######   #####             ####     ##  ##     ##     ##  ##              ##      ####    ######  
+    ##   ##  ######   #####             ####        ##     ######     ##             ##  ##    ####    ######  
+    ##   ##  ##       ##  ##           ##  ##      ####      ##      ####            ##  ##     ##         ##   
+    ##   ##  ##       ##  ##           ##   ##    ##  ##     ##     ##  ##           ##  ##     ##        ##    
+    ## # ##  ####     #####    ######  ##   ##    ######     ##     ######   ######  ##  ##     ##       ##    
+    #######  ##       ##  ##           ##   ##    ##  ##     ##     ##  ##           ##  ##     ##      ##    
+    ### ###  ##       ##  ##           ##  ##     ##  ##     ##     ##  ##            ####      ##     ##      
+    ##   ##  ######   #####             ####      ##  ##     ##     ##  ##             ##      ####    ######   
     \n\n\n                                                                                                 
     Servidor do seu site já está rodando! Acesse o caminho a seguir para visualizar .: http://${HOST_APP}:${PORTA_APP} :. \n\n
     Você está rodando sua aplicação em ambiente de .:${process.env.AMBIENTE_PROCESSO}:. \n\n

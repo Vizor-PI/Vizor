@@ -133,3 +133,110 @@
     .btn-vizor:hover { background: rgba(255,255,255,0.05); }
     .btn-primary { background: #00b8d4; border-color: #00b8d4; color: #000; }
     .btn-primary:hover { background: #00e5ff; border-color: #00e5ff; }
+
+      .modal-overlay { 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); 
+      z-index: 2000; display: none; justify-content: center; align-items: center; 
+    }
+    .vizor-modal { 
+      background: #09141d; width: 750px; max-width: 95%; max-height: 90vh; 
+      border: 1px solid #0f344d; border-radius: 16px; 
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7); 
+      display: flex; flex-direction: column; overflow-y: auto; 
+    }
+    .modal-header { 
+      padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); 
+      display: flex; justify-content: space-between; align-items: flex-start; 
+    }
+    .modal-title-group h3 { margin: 0; font-size: 20px; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .modal-subtitle { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+    .btn-close { 
+      background: transparent; border: none; color: rgba(255,255,255,0.4); 
+      cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; 
+      display: flex; align-items: center; justify-content: center; 
+    }
+    .btn-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .modal-body { padding: 24px; }
+
+    /* Seção de Predição e Métricas */
+    .prediction-section { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; background: rgba(255,255,255,0.02); margin-bottom: 24px; display: flex; gap: 24px; align-items: center; }
+    .pred-left { flex: 1; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.08); }
+    .pred-right { flex: 1.5; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+    .pred-title { font-size: 14px; font-weight: 700; color: aqua; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .risk-percent { font-size: 48px; font-weight: 800; line-height: 1; margin-bottom: 8px; color: #fff; }
+    .risk-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+    .progress-bg { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; width: 100%; margin-top: 12px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .cause-box { font-size: 13px; }
+    .cause-label { color: rgba(255,255,255,0.4); font-size: 10px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+    .cause-text { color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .rec-text { color: aqua; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .metric-card { background: #0f1b26; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; text-align: center; }
+    .m-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 10px; text-transform: uppercase; font-weight: 700; }
+    .m-value { font-size: 20px; font-weight: 700; } /* Alterei classe para .m-value para bater com o JS */
+
+    .footer-row { display: flex; gap: 12px; margin-top: 16px; margin-bottom: 0; }
+    .info-pill { flex: 1; background: #0f1b26; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 13px; align-items: center; }
+    
+    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .vizor-btn { padding: 8px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; border: none; transition: 0.2s; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; gap: 8px; }
+    .vizor-btn:hover { background: rgba(255,255,255,0.05); }
+    .vizor-btn.primary { background: #00b8d4; border-color: #00b8d4; color: #000; }
+
+    /* --- ÁREA DE GRÁFICOS --- */
+    .charts-container { 
+      display: none; margin-top: 24px; padding-top: 24px; 
+      border-top: 1px solid rgba(255,255,255,0.1); animation: slideIn 0.3s ease-out; 
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .charts-title { font-size: 14px; font-weight: 700; color: aqua; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    
+    .chart-box { 
+      background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; 
+      padding: 12px; height: 200px; display: flex; flex-direction: column;
+      cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative;
+    }
+    .chart-box:hover { transform: translateY(-2px); border-color: rgba(0, 255, 255, 0.3); }
+    /* Dica de clique */
+    .chart-box::after {
+      content: '🔍 Ampliar'; position: absolute; top: 10px; right: 10px; font-size: 10px;
+      background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 4px; opacity: 0;
+      transition: opacity 0.2s; pointer-events: none;
+    }
+    .chart-box:hover::after { opacity: 1; }
+
+    .chart-label { font-size: 12px; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 4px; font-weight: 600; }
+    .chart-render { flex: 1; width: 100%; min-height: 0; }
+
+    /* --- MODAL DE ZOOM (EXPANDIDO) --- */
+    .expanded-overlay { 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+      background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); 
+      z-index: 3000; display: none; justify-content: center; align-items: center;
+      animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .expanded-modal {
+      background: #0b1821; width: 90%; max-width: 900px; height: 80vh;
+      border: 1px solid #0f344d; border-radius: 16px;
+      box-shadow: 0 0 60px rgba(0,255,255,0.1);
+      display: flex; flex-direction: column; padding: 24px;
+    }
+    .expanded-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px;
+    }
+    .expanded-title { font-size: 22px; color: aqua; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .expanded-body { flex: 1; width: 100%; display: flex; flex-direction: column; }
+    
+    .btn-close-expanded {
+      background: transparent; border: none; color: #fff; cursor: pointer;
+      transition: transform 0.2s; display: flex; align-items: center;
+    }
+    .btn-close-expanded:hover { transform: scale(1.1); color: aqua; }
