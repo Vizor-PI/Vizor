@@ -11,8 +11,8 @@
 </head>
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-* { box-sizing: border-box; font-family: "Akatab", sans-serif; }
-
+  * { box-sizing: border-box; font-family: "Akatab", sans-serif; }
+  
 /* Área da direita (conteúdo) */
 body {
   margin: 0;
@@ -48,7 +48,7 @@ body {
     width: 50%;
     padding: 30px;
   }
-
+  
   .bloco {
     padding: 20px;
     width: 100%;
@@ -57,7 +57,7 @@ body {
     border: solid 0.7px #334155;
     border-radius: 10px;
   }
-
+  
   .bloco h2 {
     color:#d6d6d6;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -75,7 +75,7 @@ body {
   h2, p {
     margin: 0px;
   }
-
+  
   .tempAtual h2 {
     font-size: 30px;
   }
@@ -87,7 +87,7 @@ body {
     /* font-size: 40px; */
     align-items: center;
   }
-
+  
   .midAtual {
     font-size: 70px;
   }
@@ -97,11 +97,11 @@ body {
     flex-direction: column;
     justify-content: space-evenly;
   }
-
+  
   .previsao h2 {
     margin-bottom: 40px;
   }
-
+  
   .previsoes {
     display: flex;
     justify-content: space-evenly;
@@ -153,21 +153,19 @@ body {
       <div class="tempAtual bloco">
         <h2>Clima atual</h2>
         <div class="midAtual">
-          <img src="../assets/imgs/iconesClima/t03d.png" alt="" id="img_temp_atual">
-          <p>22°</p>
+          <img src="" alt="" id="img_atual">
+          <p id="temp_atual"></p>
         </div>
-        <p>Parcialmente nublado</p>
+        <p id="desc_atual"></p>
       </div>
 
       <div class="previsao bloco">
         <h2>Previsão da próxima semana</h2>
-        <div class="previsoes">
-
-          
+        <div class="previsoes">          
           <div class="blocoPrevisao bloco" id="prev_1">
-            <p id="prev_dia_1">07-11</p>
-            <img src="../assets/imgs/iconesClima/a01d.png" alt="" id="prev_img_1">
-            <p id="prev_temp_1">22°</p>
+            <p id="prev_dia_1"></p>
+            <img src="" alt="" id="prev_img_1">
+            <p id="prev_temp_1"></p>
           </div>
 
           <div class="blocoPrevisao bloco" id="prev_2">
@@ -221,12 +219,13 @@ body {
 
 
 </body>
-  <script src="weatherbit.js"></script>
   <script src="../js/verificadorCargo.js"></script>
   <script src="../js/navbar.js"></script>
   <script>
     function limparSessao() {
       sessionStorage.clear();
     }
-  </script>
+    </script>
+    <script src="weatherbit.js">
+    </script>
 </html>
