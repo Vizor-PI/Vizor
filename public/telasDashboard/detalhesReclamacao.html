@@ -1,18 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhe Reclamação</title>
+    <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/detalhesReclamacao.css">
 </head>
+
 <body>
-    
+
+    <header class="header-voltar">
+        <a href="reclamacaoLote.html" class="voltar-btn">← Voltar ao Dashboard</a>
+    </header>
+
+    <section class="titulo-area">
+        <div class="icon-box">💬</div>
+        <h1 id="titulo-reclamacao">Detalhes da Reclamação</h1>
+    </section>
+
+    <section class="card card-reclamacao">
+
+        <div class="linha">
+            <div class="campo">
+                <span>👤 Player ID</span>
+                <strong id="rec-player"></strong>
+            </div>
+
+            <div class="campo">
+                <span>📦 Lote</span>
+                <strong id="rec-lote"></strong>
+            </div>
+
+            <div class="campo">
+                <span>📅 Data</span>
+                <strong id="rec-data"></strong>
+            </div>
+
+            <div class="campo">
+                <span>⚠ Gravidade</span>
+                <span class="gravidade-badge" id="rec-gravidade"></span>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="descricao-bloco">
+            <span>Descrição</span>
+            <p id="rec-descricao"></p>
+        </div>
+
+    </section>
+
+    <section class="card card-reclamacoes-lote">
+        <header class="reclam-lote-header">
+            <h2 class="card-title">📂 Reclamações no lote <span id="nome-lote-titulo"></span></h2>
+            <span class="badge badge-total" id="recl-lote-total">0</span>
+        </header>
+        <div id="reclamacoes-lote-lista" class="reclam-lista">
+            <!-- Inserido por JS -->
+        </div>
+    </section>
+
+    <script src="../js/detalhesReclamacao.js"></script>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const reclamacao = params.get("reclamacao");
+
+        document.getElementById("titulo-lote").innerText = `Reclamacao ${reclamacao}`;
+    </script>
+
 </body>
+
 </html>
-
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const reclamacao= params.get("reclamacao");
-
-    document.getElementById("titulo-lote").innerText = `Reclamacao ${reclamacao}`;
-</script>

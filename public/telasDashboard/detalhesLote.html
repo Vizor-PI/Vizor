@@ -5,17 +5,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes Lote</title>
+    <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/detalhesLote.css">
 </head>
 
 <body>
 
+    <header class="header-voltar">
+        <a href="reclamacaoLote.html" class="voltar-btn">← Voltar ao Dashboard</a>
+    </header>
+
+    <section class="titulo-area">
+        <div class="icon-box">📦</div>
+        <h1 id="titulo-lote">Detalhes do LOTE-XXXX</h1>
+    </section>
+
+    <div class="cards-container">
+
+        <section class="card card-info-geral">
+
+            <h2 class="card-title">📝 Informações Gerais</h2>
+
+            <ul class="info-list">
+                <li>
+                    <span>ID do lote</span>
+                    <strong id="info-id-lote">LOTE-XXXX</strong>
+                </li>
+
+                <li>
+                    <span>📅 Data de fabricação</span>
+                    <strong id="info-data">--/--/----</strong>
+                </li>
+
+                <li>
+                    <span>👥 Quantidade de players</span>
+                    <strong id="info-qtd-players">0</strong>
+                </li>
+
+                <li>
+                    <span>% players com problemas</span>
+                    <span class="badge badge-warning" id="info-porcent-problemas">0%</span>
+                </li>
+
+                <li>
+                    <span>Score do lote</span>
+                    <strong class="lote-score" id="info-score">0</strong>
+                </li>
+
+                <li>
+                    <span>Status</span>
+                    <span class="badge badge-status" id="info-status">--</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="card card-resumo">
+            <h2 class="card-title">🔧 Resumo das Falhas por Componente</h2>
+
+            <table class="tabela-componentes">
+                <thead>
+                    <tr>
+                        <th>Componente</th>
+                        <th>Falhas</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-componentes-body">
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card card-critico">
+            <h2 class="card-title">❗ Componente Mais Crítico</h2>
+
+            <div class="critico-wrapper">
+                <h1 class="critico-nome" id="critico-nome">CPU</h1>
+                <p>
+                    <strong id="critico-nome2">CPU</strong> é responsável por
+                    <span class="badge badge-warning" id="critico-percent">0%</span>
+                    das falhas deste lote.
+                </p>
+
+                <p class="critico-total">Total de <span id="critico-total">0</span> falhas registradas</p>
+            </div>
+        </section>
+
+        <section class="card card-reclamacoes">
+            <header class="reclam-header">
+                <h2 class="card-title">💬 Reclamações Associadas ao Lote</h2>
+                <span class="badge badge-total" id="recl-total">0</span>
+            </header>
+
+            <table class="tabela-reclamacoes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Gravidade</th>
+                    </tr>
+                </thead>
+
+                <tbody id="reclamacoes-body">
+
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="../js/detalhesLote.js"></script>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const lote = params.get("lote");
+
+        document.getElementById("titulo-lote").innerText = `Lote ${lote}`;
+    </script>
+
 </body>
 
 </html>
-
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const lote = params.get("lote");
-
-    document.getElementById("titulo-lote").innerText = `Lote ${lote}`;
-</script>
