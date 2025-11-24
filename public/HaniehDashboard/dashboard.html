@@ -10,255 +10,242 @@
   <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
   <style>
-    
-    .alert-top-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:16px;
-      margin-bottom:16px;
-    }
 
-    .alert-kpi{
-      background:#0f1f2b; /* alinhado ao card geral escuro/azulado */
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:12px;
-      padding:12px 16px;
-      min-height:110px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      color:#fff;
-    }
 
-    .alert-kpi .head{
-      font-size:14px;
-      line-height:1.3;
-      font-weight:600;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      color:#fff;
-    }
+.container-xl {
+  padding: 24px;
+  max-width: 1400px;
+  margin: auto;
+}
 
-    .alert-kpi .sev-dot{
-      width:10px;
-      height:10px;
-      border-radius:999px;
-    }
-    .sev-dot.critico{
-      background:#e74c3c;
-      box-shadow:0 0 10px #e74c3c55;
-    }
-    .sev-dot.alerta{
-      background:#f39c12;
-      box-shadow:0 0 10px #f39c1255;
-    }
-    .sev-dot.info{
-      background:#3498db;
-      box-shadow:0 0 10px #3498db55;
-    }
+h1, h2 {
+  color: #00c8d2;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
 
-    .alert-kpi .value{
-      font-size:28px;
-      font-weight:700;
-      line-height:1.2;
-      color:#fff;
-    }
 
-    .alert-kpi .desc{
-      font-size:12px;
-      line-height:1.4;
-      opacity:.75;
-      color:#fff;
-    }
 
-    /* header e filtro */
-    .alerts-header{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      margin-bottom:16px;
-      color:#fff;
-    }
-    .alerts-header-left h2{
-      margin:0;
-      color:#00c8d2; /* título teal/azul claro como os títulos da dash */
-      font-weight:600;
-    }
-    .alerts-header-left small{
-      font-size:12px;
-      opacity:.7;
-      line-height:1.4;
-      display:block;
-      margin-top:4px;
-      color:#fff;
-    }
+header {
+  background: #0f1f2b;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
 
-    .alerts-header-right{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:flex-end;
-    }
+#date-filters {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
 
-    .filter-group{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      color:#fff;
-    }
-    .filter-group label{
-      font-size:12px;
-      opacity:.8;
-      color:#fff;
-    }
+#date-filters label {
+  font-size: 14px;
+  opacity: .85;
+}
 
-    /* sobrescrevendo ui-select dentro desse contexto
-       só pra garantir contraste azul escuro + borda leve,
-       imitando selects da outra tela  */
-    .alerts-header-right .ui-select{
-      background:#0f1f2b;
-      border:1px solid rgba(255,255,255,.15);
-      color:#fff;
-      border-radius:8px;
-      padding:8px 10px;
-      min-width:140px;
-    }
+#date-filters input[type="date"] {
+  background: #0a141d;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #fff;
+}
 
-    /* lista de alertas (feed) */
-    .alert-list{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      color:#fff;
-    }
+#date-filters button {
+  background: #00c8d2;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #000;
+}
 
-    /* cada alerta vira um "mini-card" com mesma vibe de card da dash */
-    .alert-card{
-      background:#0f1f2b;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:12px;
-      padding:12px 16px;
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:12px;
-      color:#fff;
-    }
+#date-filters button:hover {
+  filter: brightness(1.1);
+}
 
-    .alert-main{
-      font-size:13px;
-      line-height:1.4;
-      color:#fff;
-    }
 
-    .alert-headline{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:8px;
-      margin-bottom:6px;
-      color:#fff;
-    }
 
-    .alert-title{
-      font-size:14px;
-      font-weight:600;
-      line-height:1.4;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:center;
-      color:#fff;
-    }
+.alert-top-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
 
-    .alert-status-badge{
-      font-size:11px;
-      font-weight:600;
-      border-radius:999px;
-      padding:2px 8px;
-      line-height:1.3;
-      display:inline-block;
-      white-space:nowrap;
-    }
-    .alert-status-badge.critico{
-      background:#ffe6e6;
-      color:#a40000;
-    }
-    .alert-status-badge.alerta{
-      background:#fff8e6;
-      color:#a66300;
-    }
-    .alert-status-badge.info{
-      background:#e6f1ff;
-      color:#004a99;
-    }
+#kpi-total, #kpi-critical, #kpi-top-model, #kpi-top-lote, 
+#kpi-model-growth, #kpi-lote-growth {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:16px;
+  min-height:110px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  font-size:14px;
+  font-weight:600;
+}
 
-    .alert-time{
-      opacity:.7;
-      font-size:12px;
-      color:#fff;
-    }
+#kpi-total span,
+#kpi-critical span,
+#kpi-top-model span,
+#kpi-top-lote span,
+#kpi-model-growth span,
+#kpi-lote-growth span {
+  display:block;
+  font-size:28px;
+  font-weight:700;
+  margin-top:6px;
+}
 
-    .alert-subinfo{
-      font-size:12px;
-      opacity:.9;
-      line-height:1.4;
-      color:#fff;
-    }
 
-    .alert-meta-grid{
-      margin-top:8px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      font-size:12px;
-      opacity:.8;
-      line-height:1.4;
-      color:#fff;
-    }
 
-    .alert-aside{
-      min-width:150px;
-      font-size:12px;
-      line-height:1.4;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      text-align:right;
-      color:#fff;
-    }
+#charts canvas {
+  background: #0f1f2b;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 24px;
+}
 
-    .alert-action{
-      margin-top:8px;
-      font-size:12px;
-      line-height:1.4;
-      text-align:right;
-      opacity:.9;
-      color:#fff;
-    }
-    .alert-action strong{
-      display:block;
-      font-size:12px;
-      font-weight:600;
-      margin-bottom:2px;
-      color:#fff;
-    }
+#charts label select {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;
+  border-radius:8px;
+  padding:8px 10px;
+}
 
-    @media(max-width:700px){
-      .alert-card{
-        grid-template-columns:1fr;
-        text-align:left;
-      }
-      .alert-aside{
-        text-align:left;
-      }
-      .alert-action{
-        text-align:left;
-      }
-    }
+
+
+#heatmapContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.1);
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#heatmapContainer th, 
+#heatmapContainer td {
+  padding: 6px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.05);
+}
+
+#heatmapContainer td[data-value] {
+  background: rgba(0,200,210, calc(var(--val) * 0.03));
+}
+
+
+
+#list-section {
+  margin-top: 32px;
+}
+
+#list-section label select {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;
+  border-radius:8px;
+  padding:6px 10px;
+}
+
+#listTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+  background:#0f1f2b;
+  border-radius: 12px;
+  overflow: hidden;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+#listTable th {
+  background:#0a141d;
+  padding: 10px;
+  font-weight:600;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+#listTable td {
+  padding: 10px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+#listTable tr:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.detailBtn {
+  background:#00c8d2;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  font-weight:600;
+  cursor:pointer;
+  color:#000;
+}
+
+
+
+#detailModal {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.2) !important;
+  color:#fff;
+  border-radius:12px;
+  padding:16px;
+}
+
+#detailModal button {
+  background:#e74c3c;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+#detailModal table {
+  width:100%;
+  margin-top:16px;
+  border-collapse: collapse;
+}
+
+#detailModal th, 
+#detailModal td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+
+
+@media(max-width:700px){
+  #date-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #listTable {
+    font-size: 12px;
+  }
+
+  #detailModal {
+    width: 94%;
+    left: 3% !important;
+  }
+}
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -269,7 +256,7 @@
   <div class="container-xl">
 
     <header>
-        <h1>Dashboard de Alertas (Monitoração)</h1>
+        <h1>Comparação de Modelos/Lotes</h1>
         <div id="date-filters">
             <label>De: <input type="date" id="startDate" /></label>
             <label>Até: <input type="date" id="endDate" /></label>
@@ -327,7 +314,12 @@
             <tbody></tbody>
         </table>
     </section>
-      </div>
+
+    <div id="detailModal" style="display:none;position:fixed;left:10%;top:10%;width:80%;height:80%;background:#fff;border:1px solid #000;overflow:auto;">
+      <button id="closeDetail">Fechar</button>
+      <div id="detailContent"></div>
+    </div>
+    </div>
     
   
 
@@ -335,253 +327,228 @@
   <script src="../js/navbar.js"></script>
 
   <script>
-  (function(){
-    // mock de alertas recentes
-    const mockAlerts = [
-      {
-        hostname: "DOOH-SP-P03",
-        severidade: "info",
-        titulo: "Player reiniciado com sucesso",
-        detalhe: "Reboot remoto concluído.",
-        cpu: 18,
-        temp: 50,
-        ram: 41,
-        uptime_h: 0.4,
-        ping: "agora mesmo",
-        abertoHa: "3 min",
-        acao_recomendada: "Monitorar estabilidade pós reboot.",
-        tipo_acao: "Monitoramento"
-      },
-      {
-        hostname: "DOOH-SP-P11",
-        severidade: "critico",
-        titulo: "Sem ping há 5 min",
-        detalhe: "Possível queda de rede ou travamento hard.",
-        cpu: 0,
-        temp: 64,
-        ram: 40,
-        uptime_h: 8,
-        ping: "sem resposta",
-        abertoHa: "5 min",
-        acao_recomendada: "Checar alimentação / link 4G.",
-        tipo_acao: "Visita técnica"
-      },
-      {
-        hostname: "DOOH-SP-P01",
-        severidade: "critico",
-        titulo: "Temperatura acima de 85ºC",
-        detalhe: "CPU em 92% + 87ºC há 14 minutos",
-        cpu: 92,
-        temp: 87,
-        ram: 78,
-        uptime_h: 26,
-        ping: "há 40 s",
-        abertoHa: "14 min",
-        acao_recomendada: "Verificar ventilação / bloqueio de airflow.",
-        tipo_acao: "Intervenção física"
-      },
-      {
-        hostname: "DOOH-SP-P05",
-        severidade: "info",
-        titulo: "Atualização de software aplicada",
-        detalhe: "Build 1.0.37 instalada.",
-        cpu: 29,
-        temp: 59,
-        ram: 47,
-        uptime_h: 3,
-        ping: "há 30 s",
-        abertoHa: "28 min",
-        acao_recomendada: "Verificar se exibidor voltou a rodar playlist.",
-        tipo_acao: "Verificação visual"
-      },
-      {
-        hostname: "DOOH-SP-P04",
-        severidade: "alerta",
-        titulo: "Cpu acima de 75%",
-        detalhe: "Processos acumulando RAM.",
-        cpu: 79,
-        temp: 72,
-        ram: 83,
-        uptime_h: 30,
-        ping: "há 1 min",
-        abertoHa: "2 h",
-        acao_recomendada: "Reinicialização remota sugerida.",
-        tipo_acao: "Ação remota"
-      },
-      {
-        hostname: "DOOH-SP-P07",
-        severidade: "alerta",
-        titulo: "Uptime contínuo acima de 48h",
-        detalhe: "Processos acumulando RAM.",
-        cpu: 64,
-        temp: 75,
-        ram: 86,
-        uptime_h: 53,
-        ping: "há 1 min",
-        abertoHa: "2 h",
-        acao_recomendada: "Reinicialização remota sugerida.",
-        tipo_acao: "Ação remota"
-      },
-      {
-        hostname: "DOOH-SP-P10",
-        severidade: "alerta",
-        titulo: "CPU acima de 75%",
-        detalhe: "Processos acumulando RAM.",
-        cpu: 77,
-        temp: 72,
-        ram: 83,
-        uptime_h: 42,
-        ping: "há 1 min",
-        abertoHa: "2 h",
-        acao_recomendada: "Acompanhamento.",
-        tipo_acao: "Ação remota"
-      },
-      {
-        hostname: "DOOH-SP-P06",
-        severidade: "critico",
-        titulo: "Uptime contínuo acima de 72h",
-        detalhe: "Processos acumulando RAM.",
-        cpu: 68,
-        temp: 75,
-        ram: 84,
-        uptime_h: 72,
-        ping: "há 1 min",
-        abertoHa: "2 h",
-        acao_recomendada: "Reinicialização remota sugerida.",
-        tipo_acao: "Ação remota"
-      }
-    ];
+    const apiBase = '/HaniehDash';
+    let barModelsChart, barLotesChart, lineChart;
 
-    /* ========= KPIs superiores ========= */
-    function atualizarKPIs(alerts){
-      const crit = alerts.filter(a=>a.severidade==="critico").length;
-      const alrt = alerts.filter(a=>a.severidade==="alerta").length;
-      const info = alerts.filter(a=>a.severidade==="info").length;
-
-      document.getElementById("kpi-criticos").textContent = crit;
-      document.getElementById("kpi-alertas").textContent = alrt;
-      document.getElementById("kpi-info").textContent = info;
-    }
-
-    /* ========= Filtros ========= */
-    const filtroSev = document.getElementById("filtro-severidade");
-    const filtroHorario = document.getElementById("filtro-horario");
-
-    filtroSev.addEventListener("change", renderLista);
-    filtroHorario.addEventListener("change", renderLista);
-
-    function passaFiltroTempo(alert, janela){
-      if (janela === "todas") return true; // "Últimas 24h" -> tudo do mock
-
-      const txt = alert.abertoHa; // "14 min", "2 h", ...
-      if (!txt) return true;
-
-      if (janela === "1h"){
-        // só eventos abaixo de 60 min
-        if (txt.includes("min")){
-          const n = parseInt(txt);
-          return !Number.isNaN(n) && n < 60;
-        }
-        if (txt.includes("h")){
-          const n = parseInt(txt);
-          return !Number.isNaN(n) && n < 1;
-        }
-        return false;
-      }
-
-      if (janela === "7d"){
-        // mock não tem dias, então tudo que é hora ou min passa
-        return true;
-      }
-
-      return true;
-    }
-
-    /* ========= Render da lista ========= */
-    function renderLista(){
-      const alvo = document.getElementById("alert-list");
-      alvo.innerHTML = "";
-
-      const sevSelecionada = filtroSev.value;        
-      const tempoSelecionado = filtroHorario.value;  
-
-      const parseMin = (txt)=>{
-        if (!txt) return Infinity;
-        if (txt.includes("min")){
-          const n = parseInt(txt);
-          return Number.isNaN(n)?Infinity:n;
-        }
-        if (txt.includes("h")){
-          const n = parseInt(txt);
-          return Number.isNaN(n)?Infinity:n*60;
-        }
-        return Infinity;
-      };
-
-      const finalList = mockAlerts
-        .filter(a=>{
-          return (sevSelecionada==="todos" || a.severidade===sevSelecionada)
-              && passaFiltroTempo(a, tempoSelecionado);
-        })
-        .sort((a,b)=> parseMin(a.abertoHa) - parseMin(b.abertoHa)); 
-
-      finalList.forEach(a=>{
-        const card = document.createElement("div");
-        card.className = "alert-card";
-
-        card.innerHTML = `
-          <div class="alert-main">
-            <div class="alert-headline">
-              <div class="alert-title">
-                <span>${a.hostname}</span>
-                <span class="alert-status-badge ${a.severidade}">${a.severidade.toUpperCase()}</span>
-              </div>
-              <div class="alert-time">Aberto há ${a.abertoHa}</div>
-            </div>
-
-            <div class="alert-subinfo">
-              <strong>${a.titulo}</strong><br/>
-              ${a.detalhe}
-            </div>
-
-            <div class="alert-meta-grid">
-              <span>CPU ${a.cpu}%</span>
-              <span>Temp ${a.temp}ºC</span>
-              <span>RAM ${a.ram}%</span>
-              <span>Uptime ${a.uptime_h}h</span>
-              <span>Ping ${a.ping}</span>
-            </div>
-          </div>
-
-          <aside class="alert-aside">
-            <div class="alert-action">
-              <strong>${a.tipo_acao}</strong>
-              ${a.acao_recomendada}
-            </div>
-          </aside>
-        `;
-
-        alvo.appendChild(card);
+    function initCharts() {
+      const ctxM = document.getElementById('barModels').getContext('2d');
+        barModelsChart = new Chart(ctxM, {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [] }] },
+        options: { responsive: true }
       });
 
-      if (finalList.length === 0){
-        const empty = document.createElement("div");
-        empty.style.fontSize = "13px";
-        empty.style.opacity = "0.7";
-        empty.style.color = "#fff";
-        empty.textContent = "Nenhum aviso neste filtro.";
-        alvo.appendChild(empty);
-      }
+
+      const ctxL = document.getElementById('barLotes').getContext('2d');
+      barLotesChart = new Chart(ctxL, {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [] }] },
+        options: { responsive: true }
+      });
+
+
+      const ctxLine = document.getElementById('lineComparison').getContext('2d');
+      lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: { responsive: true }
+      });
     }
 
-    document.addEventListener("DOMContentLoaded", ()=>{
-      verificarCargo();
-      atualizarKPIs(mockAlerts);
-      renderLista();
+    function getDateRange() {
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      return { start: start || null, end: end || null };
+    }
+
+    function setPresetWeek() {
+      const today = new Date();
+      const lastMonday = new Date();
+      lastMonday.setDate(today.getDate() - (today.getDay() + 6) % 7 - 7);
+      const lastSunday = new Date(lastMonday);
+      lastSunday.setDate(lastMonday.getDate() + 6);
+      document.getElementById('startDate').value = lastMonday.toISOString().slice(0,10);
+      document.getElementById('endDate').value = lastSunday.toISOString().slice(0,10);
+    }
+
+    function setPresetMonth() {
+      const today = new Date();
+      const lastMonthStart = new Date(today.getFullYear(), today.getMonth()-1, 1);
+      const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+      document.getElementById('startDate').value = lastMonthStart.toISOString().slice(0,10);
+      document.getElementById('endDate').value = lastMonthEnd.toISOString().slice(0,10);
+    }
+
+    async function fetchKpis() {
+      const {start, end} = getDateRange();
+      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const res = await fetch(`${apiBase}/getKpis?${q}`);
+      if (!res.ok) { console.error('Erro ao carregar KPIs'); return; }
+      const data = await res.json();
+      document.getElementById('kpi-total-val').textContent = data.totalAlerts ?? '—';
+      document.getElementById('kpi-critical-val').textContent = data.criticalAlerts ?? '—';
+      document.getElementById('kpi-top-model-val').textContent = data.topModel ? `${data.topModel.name} (${data.topModel.count})` : '—';
+      document.getElementById('kpi-top-lote-val').textContent = data.topLote ? `${data.topLote.name} (${data.topLote.count})` : '—';
+      document.getElementById('kpi-model-growth-val').textContent = data.modelGrowth ? `${data.modelGrowth.name} (${data.modelGrowth.pct}%)` : '—';
+      document.getElementById('kpi-lote-growth-val').textContent = data.loteGrowth ? `${data.loteGrowth.name} (${data.loteGrowth.pct}%)` : '—';
+    }
+
+    async function fetchTopBars() {
+      const {start, end} = getDateRange();
+      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const resM = await fetch(`${apiBase}/topModels?${q}`);
+      const resL = await fetch(`${apiBase}/topLotes?${q}`);
+      if (!resM.ok || !resL.ok) { console.error('Erro ao carregar top bars'); return; }
+      const dataM = await resM.json();
+      const dataL = await resL.json();
+      barModelsChart.data.labels = dataM.map(x=>x.name);
+      barModelsChart.data.datasets[0].data = dataM.map(x=>x.count);
+      barModelsChart.update();
+      barLotesChart.data.labels = dataL.map(x=>x.name);
+      barLotesChart.data.datasets[0].data = dataL.map(x=>x.count);
+      barLotesChart.update();
+  }
+
+  async function fetchComparison() {
+  const {start, end} = getDateRange();
+  const alertType = document.getElementById('alertTypeSelect').value;
+  const q = new URLSearchParams({ start: start || '', end: end || '', type: alertType });
+  const res = await fetch(`${apiBase}/comparison?${q}`);
+  if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
+  const data = await res.json();
+  lineChart.data.labels = data.labels;
+  lineChart.data.datasets = data.datasets;
+  lineChart.update();
+  }
+
+  async function fetchHeatmap() {
+  const {start, end} = getDateRange();
+  const q = new URLSearchParams({ start: start || '', end: end || '' });
+  const res = await fetch(`${apiBase}/heatmap?${q}`);
+  if (!res.ok) { console.error('Erro ao carregar heatmap'); return; }
+  const data = await res.json();
+  renderHeatmap(data);
+  }
+
+  function renderHeatmap(data) {
+    const container = document.getElementById('heatmapContainer');
+    container.innerHTML = '';
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const trHead = document.createElement('tr');
+    trHead.appendChild(document.createElement('th'));
+    data.days.forEach(d => { const th = document.createElement('th'); th.textContent = d; trHead.appendChild(th); });
+    thead.appendChild(trHead);
+    table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    data.hours.forEach((h, i) => {
+      const tr = document.createElement('tr');
+      const th = document.createElement('th'); th.textContent = h; tr.appendChild(th);
+      data.days.forEach((_, j) => {
+        const td = document.createElement('td');
+        const val = data.matrix[i] && data.matrix[i][j] ? data.matrix[i][j] : 0;
+        td.textContent = val;
+        td.setAttribute('data-value', val);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
     });
-  })();
+    table.appendChild(tbody);
+    container.appendChild(table);
+  }
+
+  async function fetchList() {
+    const {start, end} = getDateRange();
+    const view = document.getElementById('viewSelect').value;
+    const state = document.getElementById('stateSelect').value;
+    const order = document.getElementById('orderSelect').value;
+    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order });
+    const res = await fetch(`${apiBase}/list?${q}`);
+    if (!res.ok) { console.error('Erro ao carregar lista'); return; }
+    const data = await res.json();
+    renderList(data);
+  }
+
+
+  function renderList(items) {
+    const tbody = document.querySelector('#listTable tbody');
+    tbody.innerHTML = '';
+    items.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${item.type}</td><td>${item.name}</td><td>${item.total}</td><td>${item.critical}</td><td>${item.state}</td><td><button data-id='${item.type}|${item.id}' class='detailBtn'>Detalhes</button></td>`;
+      tbody.appendChild(tr);
+    });
+    document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
+      const [type,id] = e.target.dataset.id.split('|');
+      openDetails(type, id);
+    }));
+  }
+
+  async function fetchRecommendations() {
+    const {start, end} = getDateRange();
+    const q = new URLSearchParams({ start: start || '', end: end || '' });
+    const res = await fetch(`${apiBase}/recommend?${q}`);
+    if (!res.ok) { console.error('Erro ao carregar recomendações'); return; }
+    const data = await res.json();
+    document.getElementById('rec-investigate-content').textContent = data.investigate ? `${data.investigate.type} ${data.investigate.name}: ${data.investigate.reason}` : '—';
+    document.getElementById('rec-keep-content').textContent = data.keep ? `${data.keep.type} ${data.keep.name}: ${data.keep.reason}` : '—';
+    document.getElementById('rec-emerging-content').textContent = data.emerging ? `${data.emerging.type} ${data.emerging.name}: ${data.emerging.reason}` : '—';
+  }
+
+  async function openDetails(type, id) {
+    const res = await fetch(`${apiBase}/alerts/${type}/${id}`);
+    if (!res.ok) { console.error('Erro ao carregar detalhes'); return; }
+    const alerts = await res.json();
+    const content = document.getElementById('detailContent');
+    content.innerHTML = `<h3>Detalhes — ${type} ${id}</h3>`;
+    const table = document.createElement('table');
+    table.border = 1;
+    table.innerHTML = `<thead><tr><th>timestamp</th><th>tipo</th><th>severidade</th><th>mensagem</th></tr></thead>`;
+    const tbody = document.createElement('tbody');
+    alerts.forEach(a => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${a.timestamp}</td><td>${a.type}</td><td>${a.severity}</td><td>${a.message}</td>`;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    content.appendChild(table);
+    document.getElementById('detailModal').style.display = 'block';
+  }
+
+  document.getElementById('applyRange').addEventListener('click', () => { refreshAll(); });
+  document.getElementById('presetWeek').addEventListener('click', () => { setPresetWeek(); refreshAll(); });
+  document.getElementById('presetMonth').addEventListener('click', () => { setPresetMonth(); refreshAll(); });
+  document.getElementById('alertTypeSelect').addEventListener('change', () => fetchComparison());
+  document.getElementById('viewSelect').addEventListener('change', () => fetchList());
+  document.getElementById('stateSelect').addEventListener('change', () => fetchList());
+  document.getElementById('orderSelect').addEventListener('change', () => fetchList());
+  document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
+
+  async function refreshAll() {
+    await Promise.all([
+      fetchKpis(),
+      fetchTopBars(),
+      fetchComparison(),
+      fetchHeatmap(),
+      fetchList(),
+      fetchRecommendations()
+    ]);
+  }
+
+  initCharts();
+  setPresetWeek(); 
+  refreshAll();
+
+
   </script>
 
+  <div id="detailModal" class="modal" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative;">
+      <span id="closeDetail" class="close" style="position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+    
   <script>
     function limparSessao() {
       sessionStorage.clear();

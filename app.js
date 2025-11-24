@@ -22,6 +22,7 @@ var empresaRouter = require("./src/routes/empresa");
 var dadosUsuarioRouter = require("./src/routes/dadosUsuario");
 var dadosModeloRouter = require("./src/routes/dadosModelos");
 var loteRouter = require("./src/routes/lote");
+var HaniehRouter = require("./src/routes/HaniehDash");
 
 // Jira:
 var jiraRouter = require("./src/routes/jiraRoutes");
@@ -39,6 +40,7 @@ app.use("/empresa", empresaRouter);
 app.use("/dadosUsuario", dadosUsuarioRouter);
 app.use("/dadosModelos", dadosModeloRouter);
 app.use("/lote", loteRouter);
+app.use("/HaniehDash", HaniehRouter);
 
 // Jira:
 app.use("/api/jira", jiraRouter);
