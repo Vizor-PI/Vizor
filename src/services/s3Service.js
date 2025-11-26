@@ -13,7 +13,7 @@ const PREFIX = "aquino-client/";
 
 async function listarAvisos() {
     try {
-        // Listando todos os arquivos JSON na pasta dashboard-data
+        // Listando todos os arquivos JSON na pasta aquino-client/
         const listCommand = new ListObjectsV2Command({
             Bucket: BUCKET_NAME,
             Prefix: PREFIX
