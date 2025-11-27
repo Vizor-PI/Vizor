@@ -1,21 +1,35 @@
 const jiraService = require('../services/jiraService');
+const s3Service = require('../services/s3Service'); 
 
-// Endpoint para listar chamados recentes
-exports.listarChamados = async (req, res) => {
+async function listarChamados(req, res) {
   try {
-    const issues = await jiraService.getRecentIssues();
-    res.status(200).json({ total: issues.length, issues });
+    const chamados = await jiraService.getRequests();
+    res.json(chamados);
   } catch (err) {
-    res.status(500).json({ error: 'Erro ao buscar chamados do Jira' });
+    res.status(500).json({ error: "Erro ao listar chamados" });
   }
-};
+}
 
-// Endpoint para retornar métricas de incidentes
-exports.metricas = async (req, res) => {
+async function metricas(req, res) {
   try {
-    const stats = await jiraService.getIssueStats();
-    res.status(200).json(stats);
+    const stats = await jiraService.getDashboardStats();
+    res.json(stats);
   } catch (err) {
-    res.status(500).json({ error: 'Erro ao buscar métricas do Jira' });
+    console.error("Erro ao calcular métricas:", err);
+    res.status(500).json({ error: "Erro ao calcular métricas" });
   }
-};
+}
+
+// <--- NOVA FUNÇÃO --->
+async function listarAvisos(req, res) {
+  try {
+    const avisos = await s3Service.listarAvisos();
+    res.json(avisos);
+  } catch (err) {
+    console.error("Erro ao buscar avisos:", err);
+    // Retorna array vazio em caso de erro para não quebrar o front
+    res.json([]); 
+  }
+}
+
+module.exports = { listarChamados, metricas, listarAvisos };
