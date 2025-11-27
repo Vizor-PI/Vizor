@@ -34,6 +34,8 @@ create table endereco (
   bairro varchar(100) not null,
   fkZona int,
   fkCidade int,
+  latitude DECIMAL(10, 8);
+  longitude DECIMAL(11, 8);
   foreign key (fkCidade) references cidade(id),
   foreign key (fkZona) references zona(id)
 );
@@ -142,10 +144,10 @@ insert into estado (nome, fkPais) values ('São Paulo', 1);
 insert into cidade (nome, fkEstado) values ('São Paulo', 1);
 insert into zona (zona) values ('Sul'), ('Norte'), ('Leste'), ('Oeste');
 
-insert into endereco (rua, numero, cep, bairro, fkZona, fkCidade) values
-('Rua das Flores', 123, '01001000', 'Centro', 1, 1),
-('Avenida Paulista', 456, '01311000', 'Bela Vista', 2, 1),
-('Rua Central', 789, '02020202', 'Jardins', 3, 1);
+INSERT INTO endereco (rua, numero, cep, bairro, fkZona, fkCidade, latitude, longitude) VALUES
+('Rua das Flores', 123, '01001000', 'Centro', 1, 1, -23.550520, -46.633308),
+('Avenida Paulista', 456, '01311000', 'Bela Vista', 2, 1, -23.561350, -46.656200),
+('Rua Central', 789, '02020202', 'Jardins', 3, 1, -23.565170, -46.651500);
 
 INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
 ('Tech Solutions', '12345678000190', 'A1234', NULL),
