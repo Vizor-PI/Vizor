@@ -3,6 +3,11 @@ var router = express.Router();
 
 var HaniController = require("../controllers/HaniehDashController");
 
+router.post("/syncAlerts", function(req, res){
+    HaniController.syncAlerts(req,res)
+});
+
+
 router.get("/getKpis", function (req, res) {
     HaniController.getKpis(req, res);
 });
@@ -31,8 +36,10 @@ router.get("/recommend", function (req, res) {
     HaniController.recommend(req, res);
 });
 
-router.get("/listAlerts", function (req, res) {
-    HaniController.listAlerts(req, res);
+router.get("/alerts/:type/:id", function(req, res) {
+    HaniController.listAlerts(req, res)
 });
+
+
 
 module.exports = router;

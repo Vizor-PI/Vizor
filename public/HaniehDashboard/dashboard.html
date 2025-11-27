@@ -90,6 +90,7 @@ header {
   justify-content:space-between;
   font-size:14px;
   font-weight:600;
+  gap: 4px;
 }
 
 #kpi-total span,
@@ -315,7 +316,15 @@ header {
         </table>
     </section>
 
-    <div id="detailModal" style="display:none;position:fixed;left:10%;top:10%;width:80%;height:80%;background:#fff;border:1px solid #000;overflow:auto;">
+    <section id="recommendations">
+      <h2>Recomendações</h2>
+      <div id="rec-investigate-content"></div>
+      <div id="rec-keep-content"></div>
+      <div id="rec-emerging-content"></div>
+    </section>
+
+    <div id="detailModal"
+     style="display:none;position:fixed;left:10%;top:10%;width:80%;height:80%;overflow:auto;">
       <button id="closeDetail">Fechar</button>
       <div id="detailContent"></div>
     </div>
@@ -448,7 +457,7 @@ header {
         const td = document.createElement('td');
         const val = data.matrix[i] && data.matrix[i][j] ? data.matrix[i][j] : 0;
         td.textContent = val;
-        td.setAttribute('data-value', val);
+        td.style.setProperty('--val', val);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -522,6 +531,7 @@ header {
   document.getElementById('viewSelect').addEventListener('change', () => fetchList());
   document.getElementById('stateSelect').addEventListener('change', () => fetchList());
   document.getElementById('orderSelect').addEventListener('change', () => fetchList());
+  document.getElementById('detailModal').style.display = 'block';
   document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
 
   async function refreshAll() {
