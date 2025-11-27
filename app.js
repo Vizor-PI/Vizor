@@ -19,8 +19,12 @@ var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 var empresaRouter = require("./src/routes/empresa");
 var dadosUsuarioRouter = require("./src/routes/dadosUsuario");
+var dadosModeloRouter = require("./src/routes/dadosModelos");
 var loteRouter = require("./src/routes/lote");
 var pedroRoute = require("./src/routes/pedroRoute"); 
+
+// Jira:
+var jiraRouter = require("./src/routes/jiraRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -32,8 +36,12 @@ app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresa", empresaRouter);
 app.use("/dadosUsuario", dadosUsuarioRouter);
+app.use("/dadosModelos", dadosModeloRouter);
 app.use("/lote", loteRouter);
 app.use("/pedroDashboard", pedroRoute); 
+
+// Jira:
+app.use("/api/jira", jiraRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`

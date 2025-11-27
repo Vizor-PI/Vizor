@@ -1,0 +1,271 @@
+@import url("https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+* {
+  font-family: "Inter", sans-serif;
+}
+
+/* body {
+  overflow: hidden;
+} */
+
+.container {
+  width: 84vw;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  background-color: rgb(3, 14, 23);
+}
+
+.container .container-xl {
+  background-color: rgb(7, 33, 53);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 75vw;
+  border-radius: 1.5vw;
+  height: fit-content;
+}
+
+.container .container-xl .cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: rgb(12, 145, 145);
+  padding-bottom: 2vw;
+  margin-top: 2vw;
+  width: 25vw;
+}
+
+.container .container-xl .cabecalho a {
+  border-radius: 0.3vw;
+  background-color: rgb(12, 145, 145);
+  border: none;
+  font-weight: 600;
+  padding: 0.5vw;
+  width: 14vw;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.container .container-xl .cabecalho a:hover {
+  transform: scale(1.1);
+}
+
+.container .container-xl .listaDeLotes {
+  display: block;
+  width: 95%;
+  height: 17vw;
+  gap: 0.2vw;
+  margin-bottom: 2vw;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.container .container-xl .listaDeLotes::-webkit-scrollbar {
+  width: 10px;
+  background-color: rgb(3, 14, 23);
+}
+
+.container .container-xl .listaDeLotes::-webkit-scrollbar-thumb {
+  background-color: rgb(12, 145, 145);
+  border-radius: 5vw;
+  border: 1px solid white;
+}
+
+.container .container-xl .informacoes {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 1vw;
+  font-size: 0.8vw;
+  font-weight: bold;
+  color: white;
+}
+
+.container .container-xl .informacoes div {
+  width: 15%;
+}
+
+.container .container-xl .informacoes .dadosPessoais {
+  display: flex;
+  justify-content: space-evenly;
+  width: 70%;
+}
+
+.container .container-xl .informacoes .dadosPessoais div {
+  width: 100%;
+}
+
+.container .container-xl .linha {
+  border: 1px rgb(255, 255, 255) solid;
+  display: flex;
+  border-radius: 0.3vw;
+  justify-content: space-evenly;
+  justify-content: center;
+  align-items: center;
+}
+
+.excluir {
+  border-color: transparent;
+  background-color: rgb(255, 255, 255);
+  padding: 0.5vw;
+  margin-bottom: 0.3vw;
+  border-radius: 0.3vw;
+  width: 3.5vw;
+  font-weight: 600;
+  margin-top: 0.3vw;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.excluir:hover, .editar:hover {
+  transform: scale(1.03);
+}
+
+.editar {
+  background-color: transparent;
+  border-radius: 0.3vw;
+  font-weight: 600;
+  margin-top: 0.3vw;
+  margin-bottom: 0.3vw;
+  color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  padding: 0.5vw;
+  width: 3.5vw;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.tex {
+  display: flex;
+  width: 95%;
+  justify-content: flex-start;
+  gap: 0;
+  color: rgb(12, 145, 145);
+  font-weight: normal;
+  font-size: 1vw;
+  padding: 0 1vw;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.tex .telefonee {
+  padding-left: 7vw;
+}
+
+.tex .nomee {
+  margin-left: 2.5vw;
+}
+
+.tex .emaill {
+  margin-left: 2vw;
+}
+
+.tex .cargoo {
+  margin-left: 2vw;
+}
+
+.tex input {
+  border-radius: 0.5vw;
+  width: 12vw;
+  height: 1.5vw;
+  margin-right: 1.8vw;
+  padding-left: 0.5vw;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.tex input::placeholder {
+  color: white;
+}
+
+.botoes-users {
+  margin-left: 2vw;
+  display: flex;
+  gap: 0.5vw;
+  margin-right: 0.5vw;
+}
+
+#botaoGestao {
+  cursor: pointer;
+}
+
+.alerta-custom {
+  width: 40vw;
+  height: 30vh;
+}
+
+.alerta-custom-senha {
+  padding: 2rem !important;
+  border-radius: 15px;
+  width: 50vw;
+  height: 80vh;
+}
+
+.alerta-icone {
+  width: 20vw;
+  height: 20vh;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+}
+
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 3vw;
+  height: 60vh;
+  width: 40vw;
+  max-width: 90%;
+  background-color: black;
+  opacity: 1;
+  color: white;
+  text-align: center;
+  border: 2px solid white;
+}
+
+dialog input,
+dialog button {
+  display: block;
+  margin: 0.8vw auto;
+  width: 80%;
+  padding: 0.8vw;
+  border-radius: 5px;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  font-size: 1vw;
+}
+
+dialog select {
+  display: block;
+  margin: 0.8vw auto;
+  width: 80%;
+  padding: 0.8vw;
+  border-radius: 5px;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  font-size: 1vw;
+}
+
+select option {
+  color: black;
+}
+
+dialog button {
+  background-color: #7066e0;
+  color: white !important;
+}
+
+dialog h1,
+dialog h3,
+dialog p {
+  margin: 0.8vw 0;
+}
