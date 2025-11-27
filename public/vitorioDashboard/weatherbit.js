@@ -1,3 +1,7 @@
+let climaAtual = null;
+let eventosExtremos = null;
+let previsaoSemanal = null;
+
 async function pegarClimaAtual() {
     const resp = await fetch("https://api.weatherbit.io//v2.0/current?city=Sao%20Paulo&country=BR&key=8e71021053ed4cb0b006ce4560638438&lang=pt")
     const json = await resp.json();
@@ -69,8 +73,7 @@ async function pegarPrevisaoSemanal() {
         
         previsoes.push({
             datetime: dia.datetime,
-            temp_max: dia.max_temp,
-            temp_min: dia.min_temp,
+            temp: dia.temp,
             descricao: dia.weather.description,
             icone: dia.weather.icon
         });
@@ -79,14 +82,37 @@ async function pegarPrevisaoSemanal() {
     return previsoes;
 }
 
-async function main() {
-    const climaAtual = await pegarClimaAtual();
-    const eventosExtremos = await pegarEventosExtremos();
-    const previsaoSemanal = await pegarPrevisaoSemanal();
 
-    console.log("Clima Atual:", climaAtual);
-    console.log("Eventos Extremos:", eventosExtremos);
-    console.log("Previsão Semanal: ", previsaoSemanal)
+function atualizarDash() {
+    if (!climaAtual) return; // se a API ainda não carregou, não tenta usar
+   // CLIMA ATUAL 
+    document.getElementById("img_atual").src = "../assets/imgs/iconesClima/"+climaAtual.icone+".png";
+    document.getElementById("temp_atual").innerHTML = climaAtual.temp + "°";
+    document.getElementById("desc_atual").innerHTML = climaAtual.descricao;
+
+    // CLIMA PREVISAO
+    for(let i = 0; i < 7; i++){
+        // console.log("prev_dia_"+i)
+        // console.log(previsaoSemanal[i])
+
+        let data = previsaoSemanal[i].datetime
+        let [ano, mes, dia] = data.split("-") 
+        document.getElementById("prev_dia_"+(i+1)).textContent = `${dia}/${mes}`
+
+        document.getElementById("prev_img_"+(i+1)).src = "../assets/imgs/iconesClima/"+previsaoSemanal[i].icone+".png"
+
+        document.getElementById("prev_temp_"+(i+1)).textContent = previsaoSemanal[i].temp + "°"
+    }
+
+
+}
+
+async function main() {
+    climaAtual = await pegarClimaAtual();
+    eventosExtremos = await pegarEventosExtremos();
+    previsaoSemanal = await pegarPrevisaoSemanal();
+
+    atualizarDash()
 }
 
 main();
