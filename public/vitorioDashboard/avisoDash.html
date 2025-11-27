@@ -206,7 +206,7 @@ body {
         </div>
       </div>
       <div class="eventosExtremos bloco">
-        <h2>Eventos climáticos extremos</h2>
+        <h2>Métrica</h2>
         <div id="out_eventosExtremos"></div>
       </div>
     </div>
@@ -225,6 +225,48 @@ body {
     function limparSessao() {
       sessionStorage.clear();
     }
+
+    const prefix = 'clima-dash/';
+
+    const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
+    const url = `${baseUrl}/?list-type=2&prefix=${encodeURIComponent(prefix)}`;
+
+    const resultados = [];
+
+    fetch(url)
+    .then(response => response.text())
+    .then(async (xml) => {
+
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xml, "application/xml");
+
+      const keys = Array.from(xmlDoc.getElementsByTagName("Key"))
+      .map(node => node.textContent);
+
+    console.log("Arquivos encontrados:", keys);
+
+    for (const key of keys) {
+      try {
+        const resp = await fetch(`${baseUrl}/${key}`);
+        const json = await resp.json();
+        console.log(resp)
+        console.log(json)
+        resultados.push(json);
+
+      } catch (error) {
+        console.error("Erro ao ler JSON:", key, error);
+      }
+    }})
+    .catch(err => console.error("Erro ao buscar bucket:", err));
+
+
+    console.log(resultados)
+    
+    for(let i = 0; i <= resultados.length; i++){
+      console.log("pene cruel")
+      console.log(resultados[i])
+    }
+    
     </script>
     <script src="weatherbit.js">
     </script>

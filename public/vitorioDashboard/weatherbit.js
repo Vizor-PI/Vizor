@@ -82,6 +82,7 @@ async function pegarPrevisaoSemanal() {
     return previsoes;
 }
 
+
 function atualizarDash() {
     if (!climaAtual) return; // se a API ainda não carregou, não tenta usar
    // CLIMA ATUAL 
@@ -91,8 +92,8 @@ function atualizarDash() {
 
     // CLIMA PREVISAO
     for(let i = 0; i < 7; i++){
-        console.log("prev_dia_"+i)
-        console.log(previsaoSemanal[i])
+        // console.log("prev_dia_"+i)
+        // console.log(previsaoSemanal[i])
 
         let data = previsaoSemanal[i].datetime
         let [ano, mes, dia] = data.split("-") 
