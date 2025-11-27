@@ -5,17 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vizor | Dashboard de Incidentes ITIL</title>
 
+  <!-- 
+     ___________________________________________________________________________________
+     IMPORTAÇÃO DE ESTILOS E BIBLIOTECAS
+     ___________________________________________________________________________________
+  -->
   <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
   <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
   <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
-  <!-- Leaflet CSS -->
+  <!-- Leaflet CSS (Para o Mapa) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
+  <!-- Chart.js (Para os Gráficos) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
+    /* ___________________________________________________________________________________
+       ESTILOS GERAIS E LAYOUT
+       Definição do Grid principal e correções de posicionamento.
+       ___________________________________________________________________________________
+    */
+    
     /* ======== ESTILO BASE ======== */
     body {
       background-color: #061722;
@@ -23,21 +35,64 @@
       font-family: 'Akatab', sans-serif;
       margin: 0;
       padding: 0;
-      /* Ajuste para layout lateral (Navbar + Conteúdo) */
+      /* [CORREÇÃO] Flexbox para layout lateral robusto (Navbar na esquerda, Conteúdo na direita) */
       display: flex; 
+      flex-direction: row;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    h1 { color: aqua; text-align: center; margin: 30px 0; }
+    /* [CORREÇÃO CRÍTICA DA NAVBAR] 
+       Força a navbar a se comportar como uma coluna flexível e fixa, 
+       independentemente do que o CSS externo diga. */
+    .navbar {
+        position: sticky !important; /* Fica fixa ao rolar a página */
+        top: 0;
+        height: 100vh !important;    /* Ocupa a altura total da tela */
+        flex-shrink: 0;              /* Impede que a navbar encolha se o conteúdo for grande */
+        z-index: 999;                /* Garante que fique por cima de outros elementos */
+        /* Se o navbar.css original não tiver width, definimos um padrão */
+        min-width: 250px;            
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Header Principal com Botão */
+    .main-header {
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        position: relative;
+        margin: 30px 0;
+    }
     
+    .main-header h1 {
+        color: aqua;
+        margin: 0;
+        text-align: center;
+    }
+
+    .header-actions {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* Container Principal (Onde fica o conteúdo da dashboard) */
     .container-xl { 
-      /* Ajuste para ocupar o espaço restante ao lado da navbar */
       flex-grow: 1; 
       padding: 24px; 
       box-sizing: border-box;
-      width: auto; /* Reseta largura fixa que poderia quebrar o flex */
-      overflow-x: hidden;
+      width: 100%; /* Garante que ocupe o espaço restante */
+      max-width: calc(100vw - 250px); /* Evita overflow horizontal */
+      overflow-y: auto;
     }
+
+    /* ___________________________________________________________________________________
+       COMPONENTES VISUAIS (KPIs, Cards, Alertas)
+       ___________________________________________________________________________________
+    */
 
     /* ======== KPIs GERAIS (JIRA) ======== */
     .kpi-card {
@@ -67,7 +122,7 @@
     .card-header { margin-bottom: 12px; }
     .card-title { color: aqua; font-weight: 700; font-size: 1.4rem; }
 
-    /* ======== ALERTAS: KPIs SUPERIORES (Estilo novo) ======== */
+    /* ======== ALERTAS: KPIs SUPERIORES ======== */
     .alert-top-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -92,6 +147,7 @@
       align-items: center;
       gap: 8px;
     }
+    /* Bolinhas indicadoras de severidade */
     .sev-dot { width: 10px; height: 10px; border-radius: 999px; }
     .sev-dot.critico { background: #e74c3c; box-shadow: 0 0 10px #e74c3c55; }
     .sev-dot.alerta { background: #f39c12; box-shadow: 0 0 10px #f39c1255; }
@@ -116,7 +172,7 @@
     /* ======== ALERTAS: LISTA DE CARDS ======== */
     .alert-list { display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto; padding-right: 5px; }
     
-    /* Scrollbar personalizada para a lista */
+    /* Customização da Scrollbar */
     .alert-list::-webkit-scrollbar { width: 6px; }
     .alert-list::-webkit-scrollbar-track { background: #0e1117; }
     .alert-list::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 4px; }
@@ -167,15 +223,50 @@
     .chart-box { height: 350px; }
     #vizor-map { width: 100%; height: 420px; border-radius: 12px; }
 
+    /* ======== BOTÕES ======== */
+    .vizor-btn {
+        background: #00bcd4; 
+        color: #000; 
+        border: none; 
+        padding: 8px 16px; 
+        border-radius: 4px; 
+        cursor: pointer; 
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+    .vizor-btn:hover { background: #00acc1; }
+
+    /* ======== MODAL ======== */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); z-index: 1000; display: none;
+        justify-content: center; align-items: center;
+    }
+    .modal-content {
+        background: #072135; padding: 24px; border-radius: 12px;
+        border: 1px solid #00bcd4; width: 90%; max-width: 600px;
+        color: white;
+    }
+
+    /* Responsividade Mobile */
     @media(max-width:700px){
+      body { flex-direction: column; }
+      .navbar { height: auto !important; position: relative !important; width: 100%; }
+      .container-xl { max-width: 100%; }
       .alert-card { grid-template-columns: 1fr; text-align: left; }
       .alert-aside { text-align: left; justify-content: flex-start; margin-top: 8px; }
+      .main-header { flex-direction: column; gap: 16px; }
+      .header-actions { position: static; transform: none; }
     }
   </style>
 </head>
 
 <body>
-    <!-- NAVBAR ORIGINAL RESTAURADA -->
+    <!-- 
+       ___________________________________________________________________________________
+       NAVBAR
+       ___________________________________________________________________________________
+    -->
     <nav class="navbar">
       <!-- Logo -->
       <a href="#">
@@ -184,17 +275,9 @@
 
       <!-- Menu -->
       <ul id="textosNavbar">
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
-        <a href="dashboard.html"> Dashboard </a>
-      </li>
       <li class="nav-item active">
         <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
         <a href="dashboardIncidentes.html"> Incidentes </a>
-      </li>
-      <li class="nav-item">
-        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash">
-        <a href="avisoDash.html"> Avisos </a>
       </li>
     
       <li class="nav-item" id="adm-only" style="display: none;">
@@ -217,18 +300,27 @@
       </div>
  </nav>
 
- <!-- ___________________________________________________________________________________________ -->
-
  <main class="container-xl">
-    <h1>Dashboard de Incidentes - ITIL</h1>
+    
+    <!-- HEADER PRINCIPAL COM BOTÃO DE RELATÓRIO -->
+    <div class="main-header">
+        <h1>Dashboard de Incidentes - ITIL</h1>
+        <div class="header-actions">
+            <button id="btn-open-report" class="vizor-btn">Gerar Relatório</button>
+        </div>
+    </div>
 
-    <!-- 1. KPIs DO JIRA (GLOBAL) -->
+    <!-- 
+       ___________________________________________________________________________________
+       SEÇÃO 1: KPIs GERAIS (JIRA)
+       Mostra os números consolidados de incidentes e SLA.
+       ___________________________________________________________________________________
+    -->
     <section class="card kpi-card">
       <header class="card-header">
         <h2 class="card-title">Status Geral dos Chamados (Jira)</h2>
       </header>
       
-      <!-- Filtro de período -->
       <div class="vizor-filter" style="padding-left: 22px; padding-top: 10px;">
         <label for="periodo" style="font-size: 0.9rem; color: #ccc;">Período:</label>
         <select id="periodo" class="vizor-select" style="background:#0e1117; color:white; border:1px solid #00bcd4; border-radius:6px; padding:4px 8px;">
@@ -248,8 +340,11 @@
       </div>
     </section>
 
-    <!-- 2. ÁREA DE ALERTAS DE HARDWARE (INTEGRAÇÃO S3 CLIENT) -->
-    <!-- KPIs de Alerta Rápido -->
+    <!-- 
+       ___________________________________________________________________________________
+       SEÇÃO 2: ALERTAS DE HARDWARE (TEMPO REAL - S3)
+       ___________________________________________________________________________________
+    -->
     <section class="alert-top-grid">
       <div class="alert-kpi">
         <div class="head"><span class="sev-dot critico"></span><span>Alertas Críticos</span></div>
@@ -268,7 +363,7 @@
       </div>
     </section>
 
-    <!-- Lista de Alertas com Filtros -->
+    <!-- Lista de Cards com Filtros -->
     <section class="card">
         <div class="alerts-header">
           <div class="alerts-header-left">
@@ -288,13 +383,17 @@
           </div>
         </div>
 
-        <!-- Container onde os cards serão injetados -->
         <div class="alert-list" id="alert-list">
-          <p style="text-align: center; color: #888; padding: 20px;">Carregando avisos do Data Lake...</p>
+          <p style="text-align: center; color: #888; padding: 20px;">Carregando avisos do S3 Client...</p>
         </div>
     </section>
 
-    <!-- 3. GRÁFICOS DO JIRA -->
+    <!-- 
+       ___________________________________________________________________________________
+       SEÇÃO 3: GRÁFICOS (CHART.JS)
+       Visualizações de tendências e categorias.
+       ___________________________________________________________________________________
+    -->
     <section class="grid-2">
       <div class="card">
         <header class="card-header"><h2 class="card-title">Incidentes por Área</h2></header>
@@ -306,39 +405,91 @@
       </div>
     </section>
 
-    <!-- 4. MAPA -->
+    <!-- 
+       ___________________________________________________________________________________
+       SEÇÃO 4: MAPA DE CALOR (LEAFLET)
+       Distribuição geográfica dos incidentes.
+       ___________________________________________________________________________________
+    -->
     <section class="card" style="padding:16px; margin-bottom:16px;">
       <header class="card-header"><h2 class="card-title">Mapa de Calor</h2><small style="opacity:.7;">Distribuição geográfica</small></header>
       <div id="vizor-map"></div>
     </section>
 
-    <!-- 5. BOTÃO DE RELATÓRIOS (MODAL) -->
-    <section class="card" style="padding:16px; margin-bottom:16px;">
-        <header class="card-header" style="margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-            <h2 class="card-title">Relatórios de Incidentes</h2>
-            <button id="btn-open-report" class="vizor-btn" style="background: #00bcd4; color: #000; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Abrir Relatórios</button>
-        </header>
-        <!-- (Conteúdo do modal oculto, mesmo do anterior) -->
-        <div id="report-selector" style="display:none; background: #0e1117; padding: 15px; margin-top:10px; border-radius: 8px; border: 1px solid #333;">
-            <div class="row" style="margin-bottom:8px;">
-                <span class="vizor-label" style="margin-right: 10px;">Tipo:</span>
-                <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Semanal</label>
+    <!-- 
+       ___________________________________________________________________________________
+       SEÇÃO 5: MODAL DE RELATÓRIO (PDF)
+       Configuração e geração de relatório para impressão.
+       ___________________________________________________________________________________
+    -->
+    <div id="modal-relatorio" class="modal-overlay">
+        <div class="modal-content">
+            <!-- Passo 1: Seletor de Filtros -->
+            <div id="step-selector">
+                <h2 style="margin-top:0; color:aqua;">Configurar Relatório</h2>
+                
+                <div style="margin-bottom: 16px;">
+                    <label class="vizor-label">Período:</label><br>
+                    <div style="margin-top: 8px; display: flex; gap: 15px;">
+                        <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Semanal</label>
+                        <label class="vizor-radio"><input type="radio" name="report-type" value="mensal"> Mensal</label>
+                        <label class="vizor-radio"><input type="radio" name="report-type" value="trimestral"> Trimestral</label>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label class="vizor-label">Filtrar por Máquina:</label><br>
+                    <select id="filtro-maquina-rel" class="ui-select" style="width: 100%; margin-top:8px;">
+                        <option value="todas">Todas as Máquinas</option>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content: flex-end; gap: 10px;">
+                    <button id="btn-cancel-report" class="vizor-btn" style="background:#171a20; border:1px solid #555;">Cancelar</button>
+                    <button id="btn-generate-report" class="vizor-btn">Gerar Relatório</button>
+                </div>
             </div>
-            <div class="report-actions" style="margin-top: 15px;">
-                <button id="btn-cancel-report" style="background:#171a20;border:1px solid #555; color: white; padding: 6px 12px; border-radius: 4px; cursor:pointer;">Cancelar</button>
-                <button id="btn-generate-report" style="background:#00bcd4; color:black; border:none; padding: 6px 12px; border-radius: 4px; cursor:pointer; margin-left: 10px;">Gerar</button>
+
+            <!-- Passo 2: Relatório Gerado (Card para Impressão) -->
+            <div id="step-result" style="display: none;">
+                <div id="printable-area" style="background: #072135; padding: 20px; border-radius: 8px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <div>
+                            <h3 style="margin:0; color:aqua;">Relatório de Incidentes</h3>
+                            <small id="report-date-display" style="color:#ccc;">Emissão: 26/11/2025</small>
+                        </div>
+                    </div>
+
+                    <div class="kpi-row-4" style="margin-bottom: 20px;">
+                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <div style="font-size:0.8rem; opacity:0.8">Abertos</div>
+                            <div id="rel-kpi-abertos" style="font-size:1.4rem; font-weight:bold;">-</div>
+                        </div>
+                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <div style="font-size:0.8rem; opacity:0.8">Fechados</div>
+                            <div id="rel-kpi-fechados" style="font-size:1.4rem; font-weight:bold;">-</div>
+                        </div>
+                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <div style="font-size:0.8rem; opacity:0.8">Tempo Médio</div>
+                            <div id="rel-kpi-tempo" style="font-size:1.4rem; font-weight:bold;">-</div>
+                        </div>
+                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <div style="font-size:0.8rem; opacity:0.8">SLA</div>
+                            <div id="rel-kpi-sla" style="font-size:1.4rem; font-weight:bold;">-</div>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.9rem; color: #aaa;">* Dados extraídos do Jira Service Management.</p>
+                </div>
+
+                <div style="display:flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button id="btn-back-report" class="vizor-btn" style="background:#171a20; border:1px solid #555;">Voltar</button>
+                    <button id="btn-print-report" class="vizor-btn" style="background:#2fbf71;">Baixar PDF</button>
+                </div>
             </div>
         </div>
-        <section id="report-card" class="card" style="padding:16px; margin-top:16px; display:none; border: 1px solid #00bcd4;">
-            <h3 id="report-title" style="margin-top:0;">Relatório Gerado</h3>
-            <div class="kpi-row-4" style="margin: 20px 0;">
-                <div>Abertos: <span id="kpi-incidentes-abertos-rel" style="font-weight:bold;">-</span></div>
-                <div>Resolvidos: <span id="kpi-incidentes-fechados-rel" style="font-weight:bold;">-</span></div>
-            </div>
-            <button id="btn-close-report" style="background:#171a20;border:1px solid #555; color: white; padding: 6px 12px; cursor:pointer;">Fechar</button>
-            <button id="btn-print-report" style="background:#2fbf71; border:none; color: white; padding: 6px 12px; cursor:pointer;">Salvar PDF</button>
-        </section>
-    </section>
+    </div>
 
  </main>
 
@@ -348,39 +499,126 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    // --- CONFIGURAÇÃO ---
+    // URL da API Node.js (Backend)
     const API_BASE_URL = "http://localhost:3333/api/jira"; 
-    let globalAvisos = []; // Para armazenar e filtrar localmente
+    
+    // Variáveis globais de estado
+    let globalAvisos = []; 
+    let map; 
+    let markersLayer = new L.LayerGroup(); 
+    
+    // Cache de dados para uso no Relatório (Modal)
+    let dadosKpiCache = { aberto: 0, fechado: 0, tempoMedio: 0, sla: 0 };
+    let listaMaquinasCache = new Set(); 
 
+    // Inicialização da página
     document.addEventListener("DOMContentLoaded", () => {
+      inicializarMapa(); 
       atualizarKPIsJira();
       processarAvisos();
-      gerarGraficos();
+      gerarGraficos(); 
     });
 
-    // --- 1. KPIs do JIRA ---
+    /* ___________________________________________________________________________________
+       FUNÇÕES DO MAPA (LEAFLET)
+       Inicialização e plotagem de marcadores dinâmicos.
+       ___________________________________________________________________________________
+    */
+    function inicializarMapa() {
+      // Cria o mapa focado em São Paulo
+      map = L.map('vizor-map').setView([-23.5614, -46.6559], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+        attribution: '&copy; OpenStreetMap' 
+      }).addTo(map);
+      // Adiciona camada de marcadores (para poder limpar depois)
+      markersLayer.addTo(map);
+    }
+    
+    function renderizarMapa() {
+      markersLayer.clearLayers(); // Limpa marcadores antigos
+      
+      globalAvisos.forEach(aviso => {
+        // Verifica se o JSON possui Lat/Long válidas
+        if (aviso.raw_metrics.latitude && aviso.raw_metrics.longitude) {
+            const lat = aviso.raw_metrics.latitude;
+            const long = aviso.raw_metrics.longitude;
+            const severidade = aviso.ui.severity;
+            const mensagem = aviso.ui.message;
+
+            // Define cor baseada na severidade
+            let corCirculo = '#3498db'; 
+            let raio = 8; 
+
+            if (severidade === "CRITICO") {
+                corCirculo = '#e74c3c'; // Vermelho
+                raio = 14; 
+            } else if (severidade === "ALERTA") {
+                corCirculo = '#f39c12'; // Amarelo
+                raio = 11;
+            }
+            
+            const marcador = L.circleMarker([lat, long], {
+                radius: raio,
+                fillColor: corCirculo,
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            });
+            
+            // Popup com detalhes
+            const popupContent = `
+                <div style="color:black;">
+                    <strong>Máquina ID:</strong> ${aviso.machine_id}<br>
+                    <strong>Situação:</strong> <span style="font-weight:bold; color: ${corCirculo};">${severidade}</span><br>
+                    <strong>Problema:</strong> ${mensagem}<br>
+                    <strong>Temp/CPU/Disco:</strong> ${aviso.raw_metrics.temp}°C / ${aviso.raw_metrics.cpu}% / ${aviso.raw_metrics.disco}%
+                </div>
+            `;
+            marcador.bindPopup(popupContent);
+            markersLayer.addLayer(marcador);
+        }
+      });
+      
+      // Ajusta o zoom para mostrar todos os pontos
+      if (markersLayer.getLayers().length > 0) {
+           try { map.fitBounds(markersLayer.getBounds(), { padding: [50, 50] }); } catch(e) {}
+      }
+    }
+
+    /* ___________________________________________________________________________________
+       FUNÇÕES DO JIRA (KPIs)
+       Busca dados do backend para preencher os cards de topo.
+       ___________________________________________________________________________________
+    */
     async function atualizarKPIsJira() {
       try {
         const response = await fetch(`${API_BASE_URL}/metricas`);
         const dados = await response.json();
+        dadosKpiCache = dados; // Armazena para o relatório
+
         document.getElementById("kpi-incidentes-abertos").textContent = dados.aberto;
         document.getElementById("kpi-incidentes-fechados").textContent = dados.fechado;
         document.getElementById("kpi-tempo-resolucao").textContent = dados.tempoMedio + "h";
         document.getElementById("kpi-sla").textContent = dados.sla + "%";
-        
-        // Modal
-        document.getElementById("kpi-incidentes-abertos-rel").textContent = dados.aberto;
-        document.getElementById("kpi-incidentes-fechados-rel").textContent = dados.fechado;
       } catch (err) { console.error("Erro KPIs Jira", err); }
     }
 
-    // --- 2. AVISOS E ALERTAS (S3) ---
+    /* ___________________________________________________________________________________
+       FUNÇÕES DE ALERTAS (S3)
+       Busca JSONs do S3, calcula contagens e renderiza a lista de cards.
+       ___________________________________________________________________________________
+    */
     async function processarAvisos() {
       try {
         const response = await fetch(`${API_BASE_URL}/avisos`);
         globalAvisos = await response.json();
         
-        // 2.1 Atualiza os KPIs de Alerta (Contagem)
+        // Coleta IDs para o filtro do relatório
+        globalAvisos.forEach(aviso => listaMaquinasCache.add(aviso.machine_id));
+        popularSelectMaquinas();
+
+        // Conta totais por severidade
         const criticos = globalAvisos.filter(a => a.ui.severity === "CRITICO").length;
         const alertas = globalAvisos.filter(a => a.ui.severity === "ALERTA").length;
         const infos = globalAvisos.filter(a => a.ui.severity === "INFO").length;
@@ -389,35 +627,42 @@
         document.getElementById("kpi-alertas").textContent = alertas;
         document.getElementById("kpi-infos").textContent = infos;
 
-        // 2.2 Renderiza a lista inicial
         renderizarListaAvisos();
-
+        renderizarMapa(); 
       } catch (err) {
         console.error("Erro Avisos S3", err);
         document.getElementById("alert-list").innerHTML = "<p>Erro ao carregar.</p>";
       }
     }
 
-    // Função de renderização com filtros
+    function popularSelectMaquinas() {
+        const select = document.getElementById("filtro-maquina-rel");
+        select.innerHTML = '<option value="todas">Todas as Máquinas</option>';
+        listaMaquinasCache.forEach(id => {
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.textContent = id;
+            select.appendChild(opt);
+        });
+    }
+
     function renderizarListaAvisos() {
         const container = document.getElementById("alert-list");
         container.innerHTML = "";
-        
         const filtroSev = document.getElementById("filtro-severidade").value;
-
-        // Filtra
+        
+        // Filtra a lista global
         const filtrados = globalAvisos.filter(a => {
             return filtroSev === "todos" || a.ui.severity === filtroSev;
         });
 
         if (filtrados.length === 0) {
-            container.innerHTML = "<p style='text-align:center; opacity:0.7;'>Nenhum aviso encontrado.</p>";
+            container.innerHTML = "<p style='text-align:center; opacity:0.7; padding:20px;'>Nenhum aviso encontrado.</p>";
             return;
         }
 
-        // Cria o HTML dos Cards
+        // Cria o HTML de cada card
         filtrados.forEach(aviso => {
-            // Mapeamento de estilos
             let sevClass = "info";
             if (aviso.ui.severity === "CRITICO") sevClass = "critico";
             if (aviso.ui.severity === "ALERTA") sevClass = "alerta";
@@ -441,12 +686,12 @@
                         <span>CPU ${aviso.raw_metrics.cpu}</span>
                         <span>Temp ${aviso.raw_metrics.temp}</span>
                         <span>RAM ${aviso.raw_metrics.ram}</span>
-                        <span>Disco ${aviso.raw_metrics.disco || aviso.raw_metrics.disk}</span>
+                        <span>Disco ${aviso.raw_metrics.disco}</span>
                     </div>
                 </div>
                 <aside class="alert-aside">
                     <div class="alert-action">
-                        <strong>Ação Recomendada:</strong>
+                        <strong>Ação:</strong>
                         ${aviso.ui.action}
                     </div>
                 </aside>
@@ -454,66 +699,145 @@
             container.appendChild(card);
         });
     }
-
-    // Listener do Filtro
     document.getElementById("filtro-severidade").addEventListener("change", renderizarListaAvisos);
 
-
-    // --- 3. GRÁFICOS E MAPAS (MANTIDOS DO ANTERIOR) ---
+    /* ___________________________________________________________________________________
+       FUNÇÕES DE GRÁFICOS (CHART.JS)
+       Gera os gráficos de barras (Áreas) e linha (Tendência).
+       ___________________________________________________________________________________
+    */
     async function gerarGraficos() {
-        try {
-            const response = await fetch(`${API_BASE_URL}/issues`);
-            const issues = await response.json();
-            // Mock de dados para gráfico (já que Jira varia muito)
-            const ctxArea = document.getElementById('chartIncidentesArea').getContext('2d');
-            new Chart(ctxArea, {
-                type: 'bar',
-                data: {
-                    labels: ['Infra', 'Apps', 'Rede', 'Segurança', 'BD'],
-                    datasets: [{ label: 'Incidentes', data: [18, 25, 10, 14, 20], backgroundColor: 'rgba(10,203,227,0.6)' }]
-                },
-                options: { responsive: true, scales: { x: { ticks: {color:'#fff'} }, y: { ticks: {color:'#fff'} } } }
-            });
+      try {
+        const resposta = await fetch(`${API_BASE_URL}/issues`);
+        const listaChamados = await resposta.json();
 
-            const ctxTrend = document.getElementById('chartTendenciaIncidentes').getContext('2d');
-            new Chart(ctxTrend, {
-                type: 'line',
-                data: {
-                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
-                    datasets: [{ label: 'Novos', data: [5, 8, 6, 10, 7], borderColor: '#ff5c5c', backgroundColor:'rgba(255,92,92,0.2)', fill:true }]
-                },
-                options: { responsive: true, scales: { x: { ticks: {color:'#fff'} }, y: { ticks: {color:'#fff'} } } }
-            });
-        } catch(e){ console.error(e); }
+        // Contagem para o gráfico de áreas (Labels)
+        let totalInfra = 0; let totalApps = 0; let totalRede = 0; let totalSeguranca = 0; let totalBanco = 0;
+
+        listaChamados.forEach(chamado => {
+            if (chamado.fields && chamado.fields.labels && chamado.fields.labels.length > 0) {
+                const etiquetas = chamado.fields.labels;
+                if (etiquetas.includes("infraestrutura")) totalInfra++;
+                else if (etiquetas.includes("aplicacoes")) totalApps++;
+                else if (etiquetas.includes("rede")) totalRede++;
+                else if (etiquetas.includes("seguranca")) totalSeguranca++;
+                else if (etiquetas.includes("banco_de_dados")) totalBanco++;
+                else totalInfra++;
+            } else { totalInfra++; }
+        });
+
+        const ctxArea = document.getElementById('chartIncidentesArea').getContext('2d');
+        new Chart(ctxArea, {
+          type: 'bar',
+          data: {
+            labels: ['Infraestrutura', 'Aplicações', 'Rede', 'Segurança', 'Banco de Dados'],
+            datasets: [{
+              label: 'Quantidade de Incidentes',
+              data: [totalInfra, totalApps, totalRede, totalSeguranca, totalBanco],
+              backgroundColor: 'rgba(10, 203, 227, 0.6)',
+              borderColor: 'rgba(10, 203, 227, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }, y: { beginAtZero: true, ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } } },
+            plugins: { legend: { display: false } }
+          }
+        });
+
+        // Contagem para o gráfico de tendência (Semanal)
+        let contagemSemanal = [0, 0, 0, 0, 0, 0, 0]; 
+        const hoje = new Date();
+        const seteDiasAtras = new Date();
+        seteDiasAtras.setDate(hoje.getDate() - 7);
+
+        listaChamados.forEach(chamado => {
+            if (chamado.fields && chamado.fields.created) {
+                const dataCriacao = new Date(chamado.fields.created);
+                if (dataCriacao >= seteDiasAtras) {
+                    const diaDaSemana = dataCriacao.getDay(); 
+                    contagemSemanal[diaDaSemana]++;
+                }
+            }
+        });
+
+        const ctxTrend = document.getElementById('chartTendenciaIncidentes').getContext('2d');
+        new Chart(ctxTrend, {
+          type: 'line',
+          data: {
+            labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            datasets: [{
+              label: 'Novos Incidentes (Últimos 7 dias)',
+              data: contagemSemanal,
+              borderColor: '#ff5c5c',
+              backgroundColor: 'rgba(255, 92, 92, 0.2)',
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }, y: { beginAtZero: true, ticks: { stepSize: 1, color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } } },
+            plugins: { legend: { labels: { color: '#fff' } } }
+          }
+        });
+      } catch (erro) { console.error("Erro ao gerar gráficos:", erro); }
     }
 
-    // Mapa Estático
-    const map = L.map('vizor-map').setView([-23.5614, -46.6559], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
-    const regioes = [{coords: [-23.5505, -46.6333], qtd: 25}, {coords: [-23.6445, -46.7043], qtd: 18}];
-    regioes.forEach(r => L.circleMarker(r.coords, { radius: 10, color: '#ff5c5c' }).addTo(map));
+    /* ___________________________________________________________________________________
+       FUNÇÕES DE RELATÓRIO (MODAL & PDF)
+       ___________________________________________________________________________________
+    */
+    const modal = document.getElementById("modal-relatorio");
+    const stepSelector = document.getElementById("step-selector");
+    const stepResult = document.getElementById("step-result");
 
-    // --- LÓGICA RELATÓRIOS (MODAL) ---
-    document.getElementById("btn-open-report").onclick = () => { document.getElementById("report-selector").style.display = "block"; };
-    document.getElementById("btn-cancel-report").onclick = () => { document.getElementById("report-selector").style.display = "none"; };
-    document.getElementById("btn-generate-report").onclick = () => {
-        document.getElementById("report-card").style.display = "block";
-        document.getElementById("report-selector").style.display = "none";
+    // Abrir Modal
+    document.getElementById("btn-open-report").onclick = () => {
+        modal.style.display = "flex";
+        stepSelector.style.display = "block";
+        stepResult.style.display = "none";
     };
-    document.getElementById("btn-close-report").onclick = () => { document.getElementById("report-card").style.display = "none"; };
+
+    // Cancelar/Fechar
+    const fecharModal = () => { modal.style.display = "none"; };
+    document.getElementById("btn-cancel-report").onclick = fecharModal;
+    document.getElementById("btn-close-report").onclick = fecharModal;
+    
+    // Voltar
+    document.getElementById("btn-back-report").onclick = () => {
+        stepSelector.style.display = "block";
+        stepResult.style.display = "none";
+    };
+
+    // Gerar Relatório (Preencher dados)
+    document.getElementById("btn-generate-report").onclick = () => {
+        document.getElementById("rel-kpi-abertos").textContent = dadosKpiCache.aberto;
+        document.getElementById("rel-kpi-fechados").textContent = dadosKpiCache.fechado;
+        document.getElementById("rel-kpi-tempo").textContent = dadosKpiCache.tempoMedio + "h";
+        document.getElementById("rel-kpi-sla").textContent = dadosKpiCache.sla + "%";
+        document.getElementById("report-date-display").textContent = "Emissão: " + new Date().toLocaleDateString("pt-BR");
+
+        stepSelector.style.display = "none";
+        stepResult.style.display = "block";
+    };
+
+    // Download do PDF
     document.getElementById("btn-print-report").onclick = async () => {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF();
-        const element = document.getElementById("report-card");
+        const element = document.getElementById("printable-area");
+        
         const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#072135" });
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", 10, 10, 190, 0);
+        const imgData = canvas.toDataURL("image/png");
+        
+        pdf.text("Relatório de Incidentes - Vizor", 10, 15);
+        pdf.addImage(imgData, "PNG", 10, 25, 190, 0);
         pdf.save("Relatorio_Vizor.pdf");
     };
 
-    // --- LÓGICA SAIR ---
-    function limparSessao() {
-      sessionStorage.clear();
-    }
-  </script>
+    function limparSessao() { sessionStorage.clear(); }
+  </script>
 </body>
 </html>

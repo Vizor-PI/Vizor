@@ -129,6 +129,14 @@ create table alertas (
   foreign key (fkParametro) references parametro(id)
 );
 
+CREATE TABLE chamados_gerados (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    codigo_maquina VARCHAR(20) NOT NULL,
+    data_alerta DATE NOT NULL,
+    situacao VARCHAR(20) NOT NULL,
+    UNIQUE (codigo_maquina, data_alerta, situacao)
+);
+
 insert into pais (nome) values ('Brasil');
 insert into estado (nome, fkPais) values ('São Paulo', 1);
 insert into cidade (nome, fkEstado) values ('São Paulo', 1);

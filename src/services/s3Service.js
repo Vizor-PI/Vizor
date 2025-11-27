@@ -30,6 +30,8 @@ async function listarAvisos() {
         // Promise.all = baixa tudo em paralelo (rápido)
         const promises = listResponse.Contents
             .filter(item => item.Key.endsWith(".json")) // Garante que só pega JSON
+
+            // .map faz  
             .map(async (item) => {
                 const getCommand = new GetObjectCommand({
                     Bucket: BUCKET_NAME,
