@@ -25,6 +25,7 @@ function listarModelos(id) {
   var instrucaoSql =
     `
    SELECT 
+    m.id AS id,
     m.nome AS modelo,
     GROUP_CONCAT(CONCAT(c.nome, ': ', mc.especificacao) SEPARATOR ', ') AS componentes,
     l.dataFabricacao
@@ -47,9 +48,18 @@ function listarTodosModelos() {
   var instrucaoSql =
     `
    SELECT 
-    id, 
-    nome AS modelo
-   FROM modelo;
+    m.id AS id,
+    m.nome AS modelo,
+    GROUP_CONCAT(CONCAT(c.nome, ': ', mc.especificacao) SEPARATOR ', ') AS componentes,
+    l.dataFabricacao
+FROM usuario u
+JOIN empresa e ON u.fkEmpresa = e.id
+JOIN lote l ON l.fkEmpresa = e.id
+JOIN modelo m ON l.fkModelo = m.id
+JOIN modelo_componente mc ON m.id = mc.fkModelo
+JOIN componente c ON mc.fkComponente = c.id
+WHERE u.id = ${id} 
+GROUP BY m.id, l.dataFabricacao;
   `;
   console.log("Executando a instrução SQL: \n" + instrucaoSql);
   return database.executar(instrucaoSql);

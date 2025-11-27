@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de modelos/lotes</title>
+
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+
+  <style>
+
+
+.container-xl {
+  padding: 24px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+h1, h2 {
+  color: #00c8d2;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+
+
+header {
+  background: #0f1f2b;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+#date-filters {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+#date-filters label {
+  font-size: 14px;
+  opacity: .85;
+}
+
+#date-filters input[type="date"] {
+  background: #0a141d;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #fff;
+}
+
+#date-filters button {
+  background: #00c8d2;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #000;
+}
+
+#date-filters button:hover {
+  filter: brightness(1.1);
+}
+
+
+
+.alert-top-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+#kpi-total, #kpi-critical, #kpi-top-model, #kpi-top-lote, 
+#kpi-model-growth, #kpi-lote-growth {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:16px;
+  min-height:110px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  font-size:14px;
+  font-weight:600;
+  gap: 4px;
+}
+
+#kpi-total span,
+#kpi-critical span,
+#kpi-top-model span,
+#kpi-top-lote span,
+#kpi-model-growth span,
+#kpi-lote-growth span {
+  display:block;
+  font-size:28px;
+  font-weight:700;
+  margin-top:6px;
+}
+
+
+
+#charts canvas {
+  background: #0f1f2b;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 24px;
+}
+
+#charts label select {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;
+  border-radius:8px;
+  padding:8px 10px;
+}
+
+
+
+#heatmapContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.1);
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#heatmapContainer th, 
+#heatmapContainer td {
+  padding: 6px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.05);
+}
+
+#heatmapContainer td[data-value] {
+  background: rgba(0,200,210, calc(var(--val) * 0.03));
+}
+
+
+
+#list-section {
+  margin-top: 32px;
+}
+
+#list-section label select {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;
+  border-radius:8px;
+  padding:6px 10px;
+}
+
+#listTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+  background:#0f1f2b;
+  border-radius: 12px;
+  overflow: hidden;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+#listTable th {
+  background:#0a141d;
+  padding: 10px;
+  font-weight:600;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+#listTable td {
+  padding: 10px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+#listTable tr:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.detailBtn {
+  background:#00c8d2;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  font-weight:600;
+  cursor:pointer;
+  color:#000;
+}
+
+
+
+#detailModal {
+  background:#0f1f2b;
+  border:1px solid rgba(255,255,255,.2) !important;
+  color:#fff;
+  border-radius:12px;
+  padding:16px;
+}
+
+#detailModal button {
+  background:#e74c3c;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+#detailModal table {
+  width:100%;
+  margin-top:16px;
+  border-collapse: collapse;
+}
+
+#detailModal th, 
+#detailModal td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+
+
+@media(max-width:700px){
+  #date-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #listTable {
+    font-size: 12px;
+  }
+
+  #detailModal {
+    width: 94%;
+    left: 3% !important;
+  }
+}
+
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body onload="verificarCargo()">
+  <nav class="navbar" id="navbarConstructor"></nav>
+
+  <div class="container-xl">
+
+    <header>
+        <h1>Comparação de Modelos/Lotes</h1>
+        <div id="date-filters">
+            <label>De: <input type="date" id="startDate" /></label>
+            <label>Até: <input type="date" id="endDate" /></label>
+            <button id="applyRange">Aplicar</button>
+            <button id="presetWeek">Semana passada</button>
+            <button id="presetMonth">Último mês</button>
+        </div>
+    </header>
+
+    <section class="alert-top-grid">
+        <div id="kpi-total">Total de alertas: <span id="kpi-total-val">—</span></div>
+        <div id="kpi-critical">Alertas críticos: <span id="kpi-critical-val">—</span></div>
+        <div id="kpi-top-model">Modelo com mais alertas: <span id="kpi-top-model-val">—</span></div>
+        <div id="kpi-top-lote">Lote com mais alertas: <span id="kpi-top-lote-val">—</span></div>
+        <div id="kpi-model-growth">Modelo com aumento crítico: <span id="kpi-model-growth-val">—</span></div>
+        <div id="kpi-lote-growth">Lote com aumento crítico: <span id="kpi-lote-growth-val">—</span></div>
+    </section>
+
+    <section id="charts">
+        <h2>Top 5 — Modelos (alertas críticos)</h2>
+        <canvas id="barModels" width="600" height="200"></canvas>
+
+
+        <h2>Top 5 — Lotes (alertas críticos)</h2>
+        <canvas id="barLotes" width="600" height="200"></canvas>
+
+
+        <h2>Comparação</h2>
+        <label>Tipo de alerta:
+            <select id="alertTypeSelect">
+                <option value="all">Todos</option>
+                <option value="typeA">ok</option>
+                <option value="typeB">médio</option>
+                <option value="typeC">crítico</option>
+            </select>
+        </label>
+        <canvas id="lineComparison" width="900" height="250"></canvas>
+
+
+        <h2>Mapa de calor — alertas críticos (semana padrão)</h2>
+        <div id="heatmapContainer">(o heatmap será desenhado em tabela)</div>
+    </section>
+
+    <section id="list-section">
+        <h2>Lista de modelos e lotes</h2>
+        <label>Ver: <select id="viewSelect"><option value="both">Modelos + Lotes</option><option value="models">Modelos</option><option value="lotes">Lotes</option></select></label>
+        <label>Estado: <select id="stateSelect"><option value="all">Todos</option><option value="critical">Crítico</option><option value="high">Alto</option><option value="medium">Médio</option><option value="low">Baixo</option></select></label>
+        <label>Ordenar: <select id="orderSelect"><option value="desc">Mais → Menos</option><option value="asc">Menos → Mais</option></select></label>
+
+
+        <table id="listTable" border="1">
+            <thead>
+                <tr><th>Tipo</th><th>Nome</th><th>Alertas (total)</th><th>Alertas críticos</th><th>Estado</th><th>Ações</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section id="recommendations">
+      <h2>Recomendações</h2>
+      <div id="rec-investigate-content"></div>
+      <div id="rec-keep-content"></div>
+      <div id="rec-emerging-content"></div>
+    </section>
+
+    <div id="detailModal"
+     style="display:none;position:fixed;left:10%;top:10%;width:80%;height:80%;overflow:auto;">
+      <button id="closeDetail">Fechar</button>
+      <div id="detailContent"></div>
+    </div>
+    </div>
+    
+  
+
+  <script src="../js/verificadorCargo.js"></script>
+  <script src="../js/navbar.js"></script>
+
+  <script>
+    const apiBase = '/HaniehDash';
+    let barModelsChart, barLotesChart, lineChart;
+
+    function initCharts() {
+      const ctxM = document.getElementById('barModels').getContext('2d');
+        barModelsChart = new Chart(ctxM, {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [] }] },
+        options: { responsive: true }
+      });
+
+
+      const ctxL = document.getElementById('barLotes').getContext('2d');
+      barLotesChart = new Chart(ctxL, {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [] }] },
+        options: { responsive: true }
+      });
+
+
+      const ctxLine = document.getElementById('lineComparison').getContext('2d');
+      lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: { responsive: true }
+      });
+    }
+
+    function getDateRange() {
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      return { start: start || null, end: end || null };
+    }
+
+    function setPresetWeek() {
+      const today = new Date();
+      const lastMonday = new Date();
+      lastMonday.setDate(today.getDate() - (today.getDay() + 6) % 7 - 7);
+      const lastSunday = new Date(lastMonday);
+      lastSunday.setDate(lastMonday.getDate() + 6);
+      document.getElementById('startDate').value = lastMonday.toISOString().slice(0,10);
+      document.getElementById('endDate').value = lastSunday.toISOString().slice(0,10);
+    }
+
+    function setPresetMonth() {
+      const today = new Date();
+      const lastMonthStart = new Date(today.getFullYear(), today.getMonth()-1, 1);
+      const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+      document.getElementById('startDate').value = lastMonthStart.toISOString().slice(0,10);
+      document.getElementById('endDate').value = lastMonthEnd.toISOString().slice(0,10);
+    }
+
+    async function fetchKpis() {
+      const {start, end} = getDateRange();
+      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const res = await fetch(`${apiBase}/getKpis?${q}`);
+      if (!res.ok) { console.error('Erro ao carregar KPIs'); return; }
+      const data = await res.json();
+      document.getElementById('kpi-total-val').textContent = data.totalAlerts ?? '—';
+      document.getElementById('kpi-critical-val').textContent = data.criticalAlerts ?? '—';
+      document.getElementById('kpi-top-model-val').textContent = data.topModel ? `${data.topModel.name} (${data.topModel.count})` : '—';
+      document.getElementById('kpi-top-lote-val').textContent = data.topLote ? `${data.topLote.name} (${data.topLote.count})` : '—';
+      document.getElementById('kpi-model-growth-val').textContent = data.modelGrowth ? `${data.modelGrowth.name} (${data.modelGrowth.pct}%)` : '—';
+      document.getElementById('kpi-lote-growth-val').textContent = data.loteGrowth ? `${data.loteGrowth.name} (${data.loteGrowth.pct}%)` : '—';
+    }
+
+    async function fetchTopBars() {
+      const {start, end} = getDateRange();
+      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const resM = await fetch(`${apiBase}/topModels?${q}`);
+      const resL = await fetch(`${apiBase}/topLotes?${q}`);
+      if (!resM.ok || !resL.ok) { console.error('Erro ao carregar top bars'); return; }
+      const dataM = await resM.json();
+      const dataL = await resL.json();
+      barModelsChart.data.labels = dataM.map(x=>x.name);
+      barModelsChart.data.datasets[0].data = dataM.map(x=>x.count);
+      barModelsChart.update();
+      barLotesChart.data.labels = dataL.map(x=>x.name);
+      barLotesChart.data.datasets[0].data = dataL.map(x=>x.count);
+      barLotesChart.update();
+  }
+
+  async function fetchComparison() {
+  const {start, end} = getDateRange();
+  const alertType = document.getElementById('alertTypeSelect').value;
+  const q = new URLSearchParams({ start: start || '', end: end || '', type: alertType });
+  const res = await fetch(`${apiBase}/comparison?${q}`);
+  if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
+  const data = await res.json();
+  lineChart.data.labels = data.labels;
+  lineChart.data.datasets = data.datasets;
+  lineChart.update();
+  }
+
+  async function fetchHeatmap() {
+  const {start, end} = getDateRange();
+  const q = new URLSearchParams({ start: start || '', end: end || '' });
+  const res = await fetch(`${apiBase}/heatmap?${q}`);
+  if (!res.ok) { console.error('Erro ao carregar heatmap'); return; }
+  const data = await res.json();
+  renderHeatmap(data);
+  }
+
+  function renderHeatmap(data) {
+    const container = document.getElementById('heatmapContainer');
+    container.innerHTML = '';
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const trHead = document.createElement('tr');
+    trHead.appendChild(document.createElement('th'));
+    data.days.forEach(d => { const th = document.createElement('th'); th.textContent = d; trHead.appendChild(th); });
+    thead.appendChild(trHead);
+    table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    data.hours.forEach((h, i) => {
+      const tr = document.createElement('tr');
+      const th = document.createElement('th'); th.textContent = h; tr.appendChild(th);
+      data.days.forEach((_, j) => {
+        const td = document.createElement('td');
+        const val = data.matrix[i] && data.matrix[i][j] ? data.matrix[i][j] : 0;
+        td.textContent = val;
+        td.style.setProperty('--val', val);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    container.appendChild(table);
+  }
+
+  async function fetchList() {
+    const {start, end} = getDateRange();
+    const view = document.getElementById('viewSelect').value;
+    const state = document.getElementById('stateSelect').value;
+    const order = document.getElementById('orderSelect').value;
+    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order });
+    const res = await fetch(`${apiBase}/list?${q}`);
+    if (!res.ok) { console.error('Erro ao carregar lista'); return; }
+    const data = await res.json();
+    renderList(data);
+  }
+
+
+  function renderList(items) {
+    const tbody = document.querySelector('#listTable tbody');
+    tbody.innerHTML = '';
+    items.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${item.type}</td><td>${item.name}</td><td>${item.total}</td><td>${item.critical}</td><td>${item.state}</td><td><button data-id='${item.type}|${item.id}' class='detailBtn'>Detalhes</button></td>`;
+      tbody.appendChild(tr);
+    });
+    document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
+      const [type,id] = e.target.dataset.id.split('|');
+      openDetails(type, id);
+    }));
+  }
+
+  async function fetchRecommendations() {
+    const {start, end} = getDateRange();
+    const q = new URLSearchParams({ start: start || '', end: end || '' });
+    const res = await fetch(`${apiBase}/recommend?${q}`);
+    if (!res.ok) { console.error('Erro ao carregar recomendações'); return; }
+    const data = await res.json();
+    document.getElementById('rec-investigate-content').textContent = data.investigate ? `${data.investigate.type} ${data.investigate.name}: ${data.investigate.reason}` : '—';
+    document.getElementById('rec-keep-content').textContent = data.keep ? `${data.keep.type} ${data.keep.name}: ${data.keep.reason}` : '—';
+    document.getElementById('rec-emerging-content').textContent = data.emerging ? `${data.emerging.type} ${data.emerging.name}: ${data.emerging.reason}` : '—';
+  }
+
+  async function openDetails(type, id) {
+    const res = await fetch(`${apiBase}/alerts/${type}/${id}`);
+    if (!res.ok) { console.error('Erro ao carregar detalhes'); return; }
+    const alerts = await res.json();
+    const content = document.getElementById('detailContent');
+    content.innerHTML = `<h3>Detalhes — ${type} ${id}</h3>`;
+    const table = document.createElement('table');
+    table.border = 1;
+    table.innerHTML = `<thead><tr><th>timestamp</th><th>tipo</th><th>severidade</th><th>mensagem</th></tr></thead>`;
+    const tbody = document.createElement('tbody');
+    alerts.forEach(a => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${a.timestamp}</td><td>${a.type}</td><td>${a.severity}</td><td>${a.message}</td>`;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    content.appendChild(table);
+    document.getElementById('detailModal').style.display = 'block';
+  }
+
+  document.getElementById('applyRange').addEventListener('click', () => { refreshAll(); });
+  document.getElementById('presetWeek').addEventListener('click', () => { setPresetWeek(); refreshAll(); });
+  document.getElementById('presetMonth').addEventListener('click', () => { setPresetMonth(); refreshAll(); });
+  document.getElementById('alertTypeSelect').addEventListener('change', () => fetchComparison());
+  document.getElementById('viewSelect').addEventListener('change', () => fetchList());
+  document.getElementById('stateSelect').addEventListener('change', () => fetchList());
+  document.getElementById('orderSelect').addEventListener('change', () => fetchList());
+  document.getElementById('detailModal').style.display = 'block';
+  document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
+
+  async function refreshAll() {
+    await Promise.all([
+      fetchKpis(),
+      fetchTopBars(),
+      fetchComparison(),
+      fetchHeatmap(),
+      fetchList(),
+      fetchRecommendations()
+    ]);
+  }
+
+  initCharts();
+  setPresetWeek(); 
+  refreshAll();
+
+
+  </script>
+
+  <div id="detailModal" class="modal" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative;">
+      <span id="closeDetail" class="close" style="position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+    
+  <script>
+    function limparSessao() {
+      sessionStorage.clear();
+    }
+  </script>
+</body>
+</html>
