@@ -11,16 +11,13 @@ const s3 = new AWS.S3({
 const CLIENT_BUCKET = "meu-bucket-client";
 const OUTPUT_KEY = "alertas-tratado.json";
 
+let cachedAlerts = [];
+
 async function syncAlerts(req, res) {
     try {
-        const data = await s3.getObject({
-            Bucket: CLIENT_BUCKET,
-            Key: OUTPUT_KEY
-        }).promise();
-
-        const parsedAlerts = JSON.parse(data.Body.toString("utf-8"));
-
-        return res.status(200).send("S3 alerts fetched successfully.");
+        const data = await s3.getObject({ Bucket: CLIENT_BUCKET, Key: OUTPUT_KEY }).promise();
+        cachedAlerts = JSON.parse(data.Body.toString("utf-8"));
+        return res.status(200).send("Alerts synchronized.");
     } catch (error) {
         console.error("Erro ao sincronizar alerts:", error);
         return res.status(500).send("Erro ao sincronizar alerts");
@@ -28,8 +25,8 @@ async function syncAlerts(req, res) {
 }
 
 async function getKpis(req, res) {
-    const { start, end } = req.params.query;
-    const userId = req.params.userId;
+    const { start, end } = req.query;
+    const userId = req.query.userId || req.params.userId;
 
     if (!start || !end) {
         return res.status(400).send("Parâmetros de data ausentes!");
@@ -45,8 +42,8 @@ async function getKpis(req, res) {
 }
 
 async function topModels(req, res) {
-    const { start, end } = req.params.query;
-    const userId = req.params.userId;
+    const { start, end } = req.query;
+    const userId = req.query.userId || req.params.userId;
 
     if (!start || !end) {
         return res.status(400).send("Parâmetros de data ausentes!");
@@ -62,8 +59,8 @@ async function topModels(req, res) {
 }
 
 async function topLotes(req, res) {
-    const { start, end } = req.params.query;
-    const userId = req.params.userId;
+    const { start, end } = req.query;
+    const userId = req.query.userId || req.params.userId;
 
     if (!start || !end) {
         return res.status(400).send("Parâmetros de data ausentes!");
@@ -78,24 +75,26 @@ async function topLotes(req, res) {
     }
 }
 
-function comparison(req, res) {
-    const { start, end, type } = req.params.query;
-    const userId = req.params.userId;
+async function comparison(req, res) {
+    const { start, end, type } = req.query;
+    const userId = req.query.userId || req.params.userId;
 
     if (!type) return res.status(400).send("O tipo está vazio!");
     if (!start || !end) return res.status(400).send("O período está incompleto!");
 
-    model.comparison(start, end, type, userId)
-        .then(result => res.json(result[0]))
-        .catch(erro => {
-            console.log("Erro ao buscar comparação:", erro);
-            res.status(500).json(erro.sqlMessage);
-        });
+    try {
+        const result = await model.comparison(start, end, type, userId);
+        return res.status(200).json(result[0]);
+    } catch (erro) {
+        console.log("Erro ao buscar comparação:", erro);
+        return res.status(500).json(erro.sqlMessage || "Erro ao buscar comparação");
+    }
 }
 
+
 async function heatmap(req, res) {
-    const { start, end } = req.params.query;
-    const userId = req.params.userId;
+    const { start, end } = req.query;
+    const userId = req.query.userId || req.params.userId;
 
     if (!start || !end) {
         return res.status(400).send("Parâmetros de data ausentes!");
@@ -111,20 +110,38 @@ async function heatmap(req, res) {
 }
 
 async function list(req, res) {
-    const { start, end, tipo } = req.params.query;
-    const userId = req.params.userId;
+    const { start, end, tipo } = req.query;
+    const userId = req.query.userId || req.params.userId;
+
+    if ((start && !end) || (!start && end)) {
+        return res.status(400).send("É necessário enviar start e end juntos.");
+    }
+
+    if (start && end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            return res.status(400).send("Datas inválidas! Use ISO YYYY-MM-DD.");
+        }
+
+        if (startDate > endDate) {
+            return res.status(400).send("A data inicial não pode ser maior que a final.");
+        }
+    }
 
     try {
         const resultado = await model.list(start, end, tipo, userId);
-        res.status(200).json(resultado);
+        return res.status(200).json(resultado);
     } catch (erro) {
         console.log("Erro ao listar modelos e lotes:", erro);
-        res.status(500).send("Erro ao listar dados");
+        return res.status(500).send("Erro ao listar dados");
     }
 }
 
+
 async function recommend(req, res) {
-    const userId = req.params.userId;
+    const userId = req.query.userId || req.params.userId;
 
     try {
         const resultado = await model.recommend(userId);
@@ -137,35 +154,23 @@ async function recommend(req, res) {
 
 async function listAlerts(req, res) {
     const { type, id } = req.params;  
-    const userId = req.params.userId;
+    const userId = req.query.userId;  
+    const alerts = cachedAlerts;
 
     if (!type) return res.status(400).send("Tipo ausente!");
     if (!id) return res.status(400).send("ID ausente!");
+    if (!userId) return res.status(400).send("userId ausente!");
 
     try {
-        
-        const data = await s3.getObject({
-            Bucket: CLIENT_BUCKET,
-            Key: OUTPUT_KEY
-        }).promise();
-
-        const alerts = JSON.parse(data.Body.toString("utf-8"));
-
+        // modelos permitidos para este usuário
         const allowedModels = await model2.listarModelos(userId);
         const modelosPermitidos = allowedModels.map(m => m.modelo);
 
         const filtrado = alerts.filter(alert => {
-            if (!modelosPermitidos.includes(alert.modelo)) {
-                return false;
-            }
+            if (!modelosPermitidos.includes(alert.modelo)) return false;
 
-            if (type === "modelo") {
-                return alert.modelo === id;
-            }
-
-            if (type === "lote") {
-                return alert.lote === id;
-            }
+            if (type === "modelo") return alert.modelo === id;
+            if (type === "lote") return alert.lote === id;
 
             return false;
         });
@@ -177,6 +182,9 @@ async function listAlerts(req, res) {
         return res.status(500).send("Erro ao listar alertas");
     }
 }
+
+
+    
 
 module.exports = {
     syncAlerts,
