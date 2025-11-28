@@ -1,0 +1,184 @@
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
+
+* {
+    box-sizing: border-box;
+    font-family: "Akatab", sans-serif;
+}
+
+body {
+    background: #061722;
+    color: #d7f0ff;
+    font-family: 'Inter', sans-serif;
+    padding: 20px 40px;
+}
+
+.header-voltar {
+    margin-bottom: 20px;
+    height: fit-content;
+    width: 100%;
+}
+
+.voltar-btn {
+    color: #4dc9ff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.titulo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.titulo-area h1 {
+    font-size: 32px;
+    color: #45c7ff;
+}
+
+.icon-box {
+    font-size: 30px;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.card {
+    background: #04344e;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.card-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #6bd5ff;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+}
+
+.info-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+}
+
+.badge-warning {
+    background: #df5461;
+}
+
+.badge-status {
+    background: #df5461;
+}
+
+.lote-score {
+    font-size: 24px;
+    color: #4dc9ff;
+}
+
+.tabela-componentes {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tabela-componentes thead th {
+    padding: 8px 0;
+    color: #81dbff;
+    font-size: 15px;
+}
+
+.tabela-componentes tbody td {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.card-critico {
+    text-align: center;
+}
+
+.critico-nome {
+    font-size: 42px;
+    color: #ff6e73;
+    margin: 10px 0;
+}
+
+.critico-total {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #9fd8f9;
+}
+
+.card-reclamacoes {
+    margin-top: 10px;
+    grid-column: 1 / 4;
+    padding: 25px;
+    border-radius: 18px;
+    background: #04344e;
+}
+
+.reclam-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.badge-total {
+    background: #0a6da0;
+    padding: 4px 12px;
+    font-size: 14px;
+    border-radius: 12px;
+}
+
+.tabela-reclamacoes {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabela-reclamacoes thead th {
+    text-align: left;
+    padding: 10px 0;
+    color: #81dbff;
+    font-size: 15px;
+}
+
+.tabela-reclamacoes tbody td {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.gravidade-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.gravidade-alta {
+    background: #d44a57;
+}
+
+.gravidade-media {
+    background: #b7953a;
+}
+
+.gravidade-baixa {
+    background: #3fa66b;
+}

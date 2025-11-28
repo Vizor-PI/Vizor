@@ -1,0 +1,238 @@
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
+
+* {
+    box-sizing: border-box;
+    font-family: "Akatab", sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: #061722;
+}
+
+.container-xl {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 16px 24px;
+}
+
+
+.titulo-dash {
+    color: aqua;
+}
+
+.card {
+    background-color: #072135;
+    border-radius: 1.5rem;
+    color: #ffffff;
+    border: 0;
+    box-shadow: none;
+}
+
+.card-header {
+    padding: 1.2rem 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    color: aqua;
+    font-size: 1.4vw;
+    font-weight: 700;
+    margin: 0;
+}
+
+.card-content {
+    padding: 1.2rem 1.4rem 1.6rem;
+}
+
+.kpi-top-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.kpi-card {
+    padding: 25px 30px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.kpi-card .card-title {
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    margin-left: 0px;
+}
+
+.kpi-value {
+    font-size: 48px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.card-header-ranking{
+    padding: 1.2rem 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ranking-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.ranking-card {
+    padding-bottom: 20px;
+}
+
+.ranking-card .card-content{
+    max-height: 31  0px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.ranking-card .card-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ranking-card .card-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.ranking-card .card-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.ui-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ui-table th,
+.ui-table td {
+    text-align: left;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 1vw;
+}
+
+.ui-table th {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85vw;
+    display: inline-block;
+}
+
+.badge--ok {
+    background: rgba(47, 191, 113, .15);
+    color: #2fbf71;
+}
+
+.badge--warn {
+    background: rgba(240, 180, 41, .15);
+    color: #f0b429;
+}
+
+.badge--crit {
+    background: rgba(255, 92, 92, .15);
+    color: #ff5c5c;
+}
+
+.linha-lote {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.linha-lote:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.linha-reclamacao {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.linha-reclamacao:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.card-header-grafico{
+    padding: 1.2rem 2.4rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grafico-card {
+    margin-top: 20px;
+}
+
+.grafico-select {
+    background: #072135;
+    color: aqua;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+#grafico-componentes {
+    width: 100%;
+    height: 350px;
+}
+
+.chart-box {
+    height: 350px;
+    display: grid;
+    place-items: center;
+}
+
+@media (max-width: 1200px) {
+    .kpi-top-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ranking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-title {
+        font-size: 2vw;
+    }
+
+    .ui-table th,
+    .ui-table td {
+        font-size: 1.3vw;
+    }
+}
+
+@media (max-width: 700px) {
+    .kpi-top-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-title {
+        font-size: 3.5vw;
+    }
+}
