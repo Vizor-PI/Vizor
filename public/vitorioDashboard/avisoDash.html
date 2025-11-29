@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,20 +12,26 @@
 </head>
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-  * { box-sizing: border-box; font-family: "Akatab", sans-serif; }
-  
-/* Área da direita (conteúdo) */
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;           /* sem scroll horizontal */
-  background: #061722;        /* fundo geral */
-}
-  
+
+  * {
+    box-sizing: border-box;
+    font-family: "Akatab", sans-serif;
+  }
+
+  /* Área da direita (conteúdo) */
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    /* sem scroll horizontal */
+    background: #061722;
+    /* fundo geral */
+  }
+
 
   .dashMain {
     display: flex;
@@ -42,13 +49,14 @@ body {
     align-items: space-between;
     justify-content: space-between;
   }
+
   .dashRight {
     display: flex;
     flex-direction: column;
     width: 50%;
     padding: 30px;
   }
-  
+
   .bloco {
     padding: 20px;
     width: 100%;
@@ -57,25 +65,26 @@ body {
     border: solid 0.7px #334155;
     border-radius: 10px;
   }
-  
+
   .bloco h2 {
-    color:#d6d6d6;
+    color: #d6d6d6;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
   .tempAtual {
     display: flex;
     flex-direction: column;
-    color:#d6d6d6;
+    color: #d6d6d6;
     font-weight: 800;
     justify-content: center;
   }
 
 
-  h2, p {
+  h2,
+  p {
     margin: 0px;
   }
-  
+
   .tempAtual h2 {
     font-size: 30px;
   }
@@ -83,11 +92,11 @@ body {
   .midAtual {
     display: flex;
     flex-direction: row;
-    color:#d6d6d6;
+    color: #d6d6d6;
     /* font-size: 40px; */
     align-items: center;
   }
-  
+
   .midAtual {
     font-size: 70px;
   }
@@ -97,11 +106,11 @@ body {
     flex-direction: column;
     justify-content: space-evenly;
   }
-  
+
   .previsao h2 {
     margin-bottom: 40px;
   }
-  
+
   .previsoes {
     display: flex;
     justify-content: space-evenly;
@@ -118,7 +127,7 @@ body {
     height: 100%;
     padding: 15px;
     background-color: #334155;
-    color:#d6d6d6;
+    color: #d6d6d6;
     font-size: fit-content;
     font-weight: 900;
   }
@@ -128,6 +137,7 @@ body {
     height: auto;
   }
 
+  /* 
   .listaDooh{
     display: flex;
     flex-direction: column;
@@ -138,16 +148,96 @@ body {
     border: solid 0.7px #334155;
     background-color: rgba(30, 41, 59, 0.5);
     border-radius: 10px;
-}
+} */
 
+  .listaDooh {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    border: solid 0.7px #334155;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  #sessaoDooh {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px;
+  }
+  
   .listaDooh input {
     background-color: #334155;
+    margin-bottom: 10px;
+  }
+
+  .card-dooh {
+    width: 90%;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+  }
+
+  .card-dooh h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #f1f5f9;
+  }
+
+  .card-dooh .empresa {
+    margin: 2px 0 0 0;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+
+  .card-dooh .atualizacao {
+    margin: 4px 0 10px 0;
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .metricas {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .metric-row {
+    width: 100%;
+  }
+
+  .metric-row span {
+    font-size: 14px;
+    color: #cbd5e1;
+  }
+
+  .metric-bar {
+    width: 100%;
+    height: 10px;
+    background: #334155;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .metric-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease;
   }
 </style>
 
 <body onload="verificarCargo()">
   <nav class="navbar" id="navbarConstructor"></nav>
-      
+
   <div class="dashMain">
     <div class="dashLeft">
       <div class="tempAtual bloco">
@@ -161,7 +251,7 @@ body {
 
       <div class="previsao bloco">
         <h2>Previsão da próxima semana</h2>
-        <div class="previsoes">          
+        <div class="previsoes">
           <div class="blocoPrevisao bloco" id="prev_1">
             <p id="prev_dia_1"></p>
             <img src="" alt="" id="prev_img_1">
@@ -213,61 +303,114 @@ body {
     <div class="dashRight">
       <div class="listaDooh">
         <input type="text" id="ipt_buscaDooh" class="bloco" style="color: #d6d6d6; width: 90%; height: fit-content;">
+        <div id="sessaoDooh">
+        </div>
       </div>
     </div>
   </div>
 
 
 </body>
-  <script src="../js/verificadorCargo.js"></script>
-  <script src="../js/navbar.js"></script>
-  <script>
-    function limparSessao() {
-      sessionStorage.clear();
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  function criarCardDooh(dado) {
+
+    function barra(label, valorStr) {
+      const numero = parseFloat(valorStr.replace("%", "").replace("°C", ""));
+      const largura = Math.min(numero, 100);
+
+      let cor = "#22c55e";
+      if (numero >= 70) cor = "#f97316";
+      if (numero >= 85) cor = "#ef4444";
+
+      return `
+      <div class="metric-row">
+        <span>${label}: <b>${valorStr}</b></span>
+        <div class="metric-bar">
+          <div class="metric-fill" style="width: ${largura}%; background: ${cor};"></div>
+        </div>
+      </div>
+    `;
     }
 
-    const prefix = 'clima-dash/';
+    return `
+    <div class="card-dooh">
+      <h2>${dado.machine_id}</h2>
+      <p class="empresa">${dado.company}</p>
+      <p class="atualizacao">${dado.last_update}</p>
 
+      <div class="metricas">
+        ${barra("CPU", dado.raw_metrics.cpu)}
+        ${barra("RAM", dado.raw_metrics.ram)}
+        ${barra("Disco", dado.raw_metrics.disco)}
+        ${barra("Temperatura do DOOH", dado.raw_metrics.temp)}
+      </div>
+    </div>
+  `;
+  }
+
+  function limparSessao() {
+    sessionStorage.clear();
+  }
+
+
+  async function carregarClima() {
+    const prefix = 'clima-dash/';
     const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
     const url = `${baseUrl}/?list-type=2&prefix=${encodeURIComponent(prefix)}`;
 
     const resultados = [];
+    try {
+      const resp = await fetch(url);
+      const xmlText = await resp.text();
+      const xml = new DOMParser().parseFromString(xmlText, "application/xml");
 
-    fetch(url)
-    .then(response => response.text())
-    .then(async (xml) => {
+      const keyNodes = xml.getElementsByTagName("Key");
 
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xml, "application/xml");
+      const keys = [...keyNodes]
+        .map(node => node.textContent?.trim())
+        .filter(k => k && !k.endsWith("/"));  // ignora "clima-dash/"
 
-      const keys = Array.from(xmlDoc.getElementsByTagName("Key"))
-      .map(node => node.textContent);
+      console.log("Arquivos encontrados:", keys);
 
-    console.log("Arquivos encontrados:", keys);
-
-    for (const key of keys) {
-      try {
-        const resp = await fetch(`${baseUrl}/${key}`);
-        const json = await resp.json();
-        console.log(resp)
-        console.log(json)
-        resultados.push(json);
-
-      } catch (error) {
-        console.error("Erro ao ler JSON:", key, error);
+      for (const key of keys) {
+        try {
+          const respJson = await fetch(`${baseUrl}/${key}`);
+          const json = await respJson.json();
+          resultados.push(json);
+        } catch (e) {
+          console.error("Erro lendo", key, e);
+        }
       }
-    }})
-    .catch(err => console.error("Erro ao buscar bucket:", err));
 
+      console.log("Resultados finais:", resultados);
 
-    console.log(resultados)
-    
-    for(let i = 0; i <= resultados.length; i++){
-      console.log("pene cruel")
-      console.log(resultados[i])
+    } catch (err) {
+      console.error("Erro geral:", err);
     }
-    
-    </script>
-    <script src="weatherbit.js">
-    </script>
+
+    const container = document.getElementById("sessaoDooh");
+    if (!container) {
+      console.error("Elemento #sessaoDooh não encontrado");
+      return;
+    }
+
+    if (resultados.length === 0) {
+      container.innerHTML = `<p style="color:#d6d6d6;">Nenhum DOOH encontrado no bucket.</p>`;
+      return;
+    }
+
+    container.innerHTML = resultados
+      .map(dado => criarCardDooh(dado))
+      .join("");
+  }
+
+  carregarClima();
+
+
+</script>
+<script src="weatherbit.js">
+</script>
+
 </html>
