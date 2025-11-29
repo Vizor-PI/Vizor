@@ -233,6 +233,28 @@
     border-radius: 6px;
     transition: width 0.4s ease;
   }
+
+  .info-icon-simple {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .tooltip-simple {
+    position: absolute;
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    width: 230px;
+    display: none;
+    z-index: 999;
+  }
+
+
 </style>
 
 <body onload="verificarCargo()">
@@ -456,7 +478,11 @@
   container.innerHTML = `
     <div style="display:flex; flex-direction:column; gap:12px; color:#e2e8f0;">
       <div>
-        <h2 style="margin:0;">Índice de Risco Operacional</h2>
+        <h3 style="margin:0; font-size:18px; display:flex; align-items:center; gap:6px;">
+          Índice de Risco Operacional
+          <img src="../assets/imgs/info-icon.png" class="info-icon-simple" alt="info">
+        </h3>
+
         <p style="margin:2px 0 6px 0; font-size:13px; color:#94a3b8;">
           Combinação do clima atual com o estresse médio das máquinas monitoradas.
         </p>
@@ -468,7 +494,7 @@
         </div>
       </div>
 
-      <div style="font-size:13px; color:#cbd5e1;">
+      <div style="font-size:19px; color:#cbd5e1;">
         <p style="margin:0 0 4px 0;">
           <b>Clima atual:</b> ${tempExt ?? "N/A"} °C • ${descClima ?? ""}
         </p>
@@ -500,7 +526,7 @@
 
       const keys = [...keyNodes]
         .map(node => node.textContent?.trim())
-        .filter(k => k && !k.endsWith("/"));  // ignora "clima-dash/"
+        .filter(k => k && !k.endsWith("/"));  
 
       console.log("Arquivos encontrados:", keys);
 
@@ -536,6 +562,7 @@
       .join("");
 
     atualizarMetricaGlobal(resultados);
+    ativarTooltip();
   }
 
   const inputBusca = document.getElementById("ipt_buscaDooh");
@@ -545,12 +572,38 @@
     cards.forEach(card => {
       const name = card.querySelector("h2").innerText.toLowerCase();
       if (name.includes(termo)) {
-        card.style.display = "";  // mostra
+        card.style.display = ""; 
       } else {
-        card.style.display = "none";  // esconde
+        card.style.display = "none";  
       }
     });
   });
+
+  function ativarTooltip() {
+  const icon = document.querySelector(".info-icon-simple");
+  if (!icon) return;
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip-simple";
+  tooltip.innerText =
+    "O índice é calculado combinando fatores climáticos (temperatura externa) e estresse do hardware (CPU, RAM, Disco, Temperatura interna). Valores altos indicam maior risco de falhas por calor ou uso excessivo.";
+
+
+  document.body.appendChild(tooltip);
+
+  icon.addEventListener("mouseenter", () => {
+    const rect = icon.getBoundingClientRect();
+    tooltip.style.left = rect.left + "px";
+    tooltip.style.top = rect.bottom + 8 + "px";
+    tooltip.style.display = "block";
+  });
+
+  icon.addEventListener("mouseleave", () => {
+    tooltip.style.display = "none";
+  });
+}
+
+setTimeout(ativarTooltip, 500);
 
 
 </script>
