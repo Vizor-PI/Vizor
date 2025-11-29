@@ -296,7 +296,6 @@
         </div>
       </div>
       <div class="eventosExtremos bloco">
-        <h2>Métrica</h2>
         <div id="out_eventosExtremos"></div>
       </div>
     </div>
@@ -354,8 +353,139 @@
     sessionStorage.clear();
   }
 
+  function extrairNumero(valorStr) {
+  if (!valorStr) return 0;
+  return parseFloat(
+    String(valorStr)
+      .replace("%", "")
+      .replace("°C", "")
+      .replace(",", ".")
+  );
+}
+  
+  function calcularRiscoClimatico(tempExterna) {
+    const t = tempExterna || 0;
 
-  async function carregarClima() {
+    if (t < 28) return 0;
+    if (t < 35) return 10;
+    if (t < 40) return 20;
+    if (t < 45) return 30;
+    return 40; 
+  }
+
+  function calcularRiscoOperacional(metrics) {
+    const cpu = extrairNumero(metrics.cpu);
+    const ram = extrairNumero(metrics.ram);
+    const disco = extrairNumero(metrics.disco);
+    const tempInt = extrairNumero(metrics.temp);
+
+    let risco = 0;
+
+    // CPU
+    if (cpu >= 60 && cpu <= 80) risco += 10;
+    else if (cpu > 80 && cpu <= 90) risco += 15;
+    else if (cpu > 90) risco += 20;
+
+    // RAM
+    if (ram >= 60 && ram <= 80) risco += 10;
+    else if (ram > 80) risco += 15;
+
+    // Disco
+    if (disco >= 70 && disco <= 85) risco += 10;
+    else if (disco > 85) risco += 15;
+
+    // Temperatura interna
+    if (tempInt >= 55 && tempInt <= 65) risco += 10;
+    else if (tempInt > 65 && tempInt <= 75) risco += 15;
+    else if (tempInt > 75) risco += 20;
+
+    return risco;
+  }
+
+  // junta clima + máquina
+  function calcularIndiceRiscoDooh(clima, metrics) {
+    const riscoClima = calcularRiscoClimatico(clima?.temp);
+    const riscoOper = calcularRiscoOperacional(metrics);
+    return Math.max(0, Math.min(100, riscoClima + riscoOper));
+  }
+
+  // traduz score pra status e cor
+  function classificarRisco(score) {
+    if (score <= 30) return { label: "Baixo", cor: "#22c55e" };       // verde
+    if (score <= 60) return { label: "Moderado", cor: "#eab308" };    // amarelo
+    if (score <= 85) return { label: "Alto", cor: "#f97316" };        // laranja
+    return { label: "Crítico", cor: "#ef4444" };                      // vermelho
+  }
+
+  function atualizarMetricaGlobal(resultados) {
+  const container = document.getElementById("out_eventosExtremos");
+  if (!container) return;
+
+  if (!climaAtual) {
+    container.innerHTML = `
+      <p style="color:#cbd5e1;">Aguardando dados climáticos...</p>
+    `;
+    return;
+  }
+
+  if (!resultados || resultados.length === 0) {
+    container.innerHTML = `
+      <p style="color:#cbd5e1;">Nenhuma máquina monitorada no momento.</p>
+    `;
+    return;
+  }
+
+  let soma = 0;
+  let maisCritico = null;
+
+  resultados.forEach((dooh) => {
+    const score = calcularIndiceRiscoDooh(climaAtual, dooh.raw_metrics);
+    soma += score;
+
+    if (!maisCritico || score > maisCritico.score) {
+      maisCritico = { score, dooh };
+    }
+  });
+
+  const media = Math.round(soma / resultados.length);
+  const { label, cor } = classificarRisco(media);
+
+  const tempExt = climaAtual?.temp;
+  const descClima = climaAtual?.descricao;
+
+  container.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:12px; color:#e2e8f0;">
+      <div>
+        <h2 style="margin:0;">Índice de Risco Operacional</h2>
+        <p style="margin:2px 0 6px 0; font-size:13px; color:#94a3b8;">
+          Combinação do clima atual com o estresse médio das máquinas monitoradas.
+        </p>
+        <div style="font-size:32px; font-weight:700; color:${cor};">
+          ${media} <span style="font-size:16px; margin-left:8px;">(${label})</span>
+        </div>
+        <div style="margin-top:6px; background:#1e293b; border-radius:999px; height:10px; overflow:hidden;">
+          <div style="width:${media}%; height:100%; background:${cor};"></div>
+        </div>
+      </div>
+
+      <div style="font-size:13px; color:#cbd5e1;">
+        <p style="margin:0 0 4px 0;">
+          <b>Clima atual:</b> ${tempExt ?? "N/A"} °C • ${descClima ?? ""}
+        </p>
+        <p style="margin:0 0 4px 0;">
+          <b>Máquina mais crítica:</b> ${maisCritico.dooh.machine_id}  
+          (risco ${Math.round(maisCritico.score)})
+        </p>
+        <p style="margin:0;">
+          <b>Fatores de risco principais:</b> temperatura do DOOH e uso de CPU/RAM/Disco.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+
+  async function carregarDoohs() {
     const prefix = 'clima-dash/';
     const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
     const url = `${baseUrl}/?list-type=2&prefix=${encodeURIComponent(prefix)}`;
@@ -404,9 +534,23 @@
     container.innerHTML = resultados
       .map(dado => criarCardDooh(dado))
       .join("");
+
+    atualizarMetricaGlobal(resultados);
   }
 
-  carregarClima();
+  const inputBusca = document.getElementById("ipt_buscaDooh");
+  inputBusca.addEventListener("input", () => {
+    const termo = inputBusca.value.toLowerCase();
+    const cards = document.querySelectorAll(".card-dooh");
+    cards.forEach(card => {
+      const name = card.querySelector("h2").innerText.toLowerCase();
+      if (name.includes(termo)) {
+        card.style.display = "";  // mostra
+      } else {
+        card.style.display = "none";  // esconde
+      }
+    });
+  });
 
 
 </script>

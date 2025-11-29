@@ -113,6 +113,7 @@ async function main() {
     previsaoSemanal = await pegarPrevisaoSemanal();
 
     atualizarDash()
+    carregarDoohs()
 }
 
 main();
