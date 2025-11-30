@@ -390,7 +390,13 @@ header {
 
     async function fetchKpis() {
       const {start, end} = getDateRange();
-      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const userId = sessionStorage.ID_USUARIO;
+      if (!userId) {
+        console.error('Usuário não autenticado!');
+        // Opcional: redirecionar para login ou mostrar mensagem
+        return;
+      }
+      const q = new URLSearchParams({ start: start || '', end: end || '', userId });
       const res = await fetch(`${apiBase}/getKpis?${q}`);
       if (!res.ok) { console.error('Erro ao carregar KPIs'); return; }
       const data = await res.json();
@@ -404,7 +410,12 @@ header {
 
     async function fetchTopBars() {
       const {start, end} = getDateRange();
-      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const userId = sessionStorage.ID_USUARIO;
+      if (!userId) {
+        console.error('Usuário não autenticado!');
+        return;
+      }
+      const q = new URLSearchParams({ start: start || '', end: end || '', userId });
       const resM = await fetch(`${apiBase}/topModels?${q}`);
       const resL = await fetch(`${apiBase}/topLotes?${q}`);
       if (!resM.ok || !resL.ok) { console.error('Erro ao carregar top bars'); return; }
@@ -416,18 +427,23 @@ header {
       barLotesChart.data.labels = dataL.map(x=>x.name);
       barLotesChart.data.datasets[0].data = dataL.map(x=>x.count);
       barLotesChart.update();
-  }
+    }
 
   async function fetchComparison() {
-  const {start, end} = getDateRange();
-  const alertType = document.getElementById('alertTypeSelect').value;
-  const q = new URLSearchParams({ start: start || '', end: end || '', type: alertType });
-  const res = await fetch(`${apiBase}/comparison?${q}`);
-  if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
-  const data = await res.json();
-  lineChart.data.labels = data.labels;
-  lineChart.data.datasets = data.datasets;
-  lineChart.update();
+    const {start, end} = getDateRange();
+    const alertType = document.getElementById('alertTypeSelect').value;
+    const userId = sessionStorage.ID_USUARIO; // ou sessionStorage.getItem('ID_USUARIO')
+    if (!userId) {
+      console.error('Usuário não autenticado!');
+      return;
+    }
+    const q = new URLSearchParams({ start: start || '', end: end || '', type: alertType, userId });
+    const res = await fetch(`${apiBase}/comparison?${q}`);
+    if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
+    const data = await res.json();
+    lineChart.data.labels = data.labels;
+    lineChart.data.datasets = data.datasets;
+    lineChart.update();
   }
 
   async function fetchHeatmap() {
@@ -471,7 +487,12 @@ header {
     const view = document.getElementById('viewSelect').value;
     const state = document.getElementById('stateSelect').value;
     const order = document.getElementById('orderSelect').value;
-    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order });
+    const userId = sessionStorage.ID_USUARIO;
+    if (!userId) {
+      console.error('Usuário não autenticado!');
+      return;
+    }
+    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order, userId });
     const res = await fetch(`${apiBase}/list?${q}`);
     if (!res.ok) { console.error('Erro ao carregar lista'); return; }
     const data = await res.json();
@@ -495,7 +516,12 @@ header {
 
   async function fetchRecommendations() {
     const {start, end} = getDateRange();
-    const q = new URLSearchParams({ start: start || '', end: end || '' });
+    const userId = sessionStorage.ID_USUARIO;
+    if (!userId) {
+      console.error('Usuário não autenticado!');
+      return;
+    }
+    const q = new URLSearchParams({ start: start || '', end: end || '', userId });
     const res = await fetch(`${apiBase}/recommend?${q}`);
     if (!res.ok) { console.error('Erro ao carregar recomendações'); return; }
     const data = await res.json();
