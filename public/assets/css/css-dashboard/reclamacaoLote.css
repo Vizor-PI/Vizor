@@ -100,7 +100,7 @@ body {
 }
 
 .ranking-card .card-content{
-    max-height: 31  0px;
+    max-height: 380px;
     overflow-y: auto;
     padding-right: 8px;
 }

@@ -114,9 +114,11 @@
             sessionStorage.ID_USUARIO = json.id;
             sessionStorage.CODIGO = json.codigoAtivacao;
             sessionStorage.CODIGOCARGO = json.codigocargo;
+            sessionStorage.ID_EMPRESA = json.idEmpresa;
+            sessionStorage.NOME_EMPRESA = json.nomeEmpresa;
 
             setTimeout(function () {
-              window.location = "telasDashboard/dashboard.html";
+              window.location = "telasDashboard/reclamacaoLote.html";
             }, 1000);
           });
         } else {
