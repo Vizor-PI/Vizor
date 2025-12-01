@@ -21,6 +21,19 @@ CREATE TABLE cidade (
   nome VARCHAR(200) NOT NULL,
   fkEstado INT,
   FOREIGN KEY (fkEstado) REFERENCES estado(id)
+  
+create table endereco (
+  id int primary key auto_increment not null,
+  rua varchar(300) not null,
+  numero int not null,
+  cep char(8) not null,
+  bairro varchar(100) not null,
+  fkZona int,
+  fkCidade int,
+  latitude DECIMAL(10, 8);
+  longitude DECIMAL(11, 8);
+  foreign key (fkCidade) references cidade(id),
+  foreign key (fkZona) references zona(id)
 );
 
 CREATE TABLE zona (
@@ -131,10 +144,11 @@ INSERT INTO estado (nome, fkPais) VALUES ('São Paulo', 1);
 INSERT INTO cidade (nome, fkEstado) VALUES ('São Paulo', 1);
 INSERT INTO zona (zona) VALUES ('Sul'), ('Norte'), ('Leste'), ('Oeste');
 
-INSERT INTO endereco (rua, numero, cep, bairro, latitude, longitude, fkZona, fkCidade) VALUES
-('Rua das Flores', 123, '01001000', 'Centro', -23.558, -46.660, 1, 1),
-('Avenida Paulista', 456, '01311000', 'Bela Vista', -23.561, -46.656, 2, 1),
-('Rua Central', 789, '02020202', 'Jardins', -23.564, -46.652, 3, 1);
+
+INSERT INTO endereco (rua, numero, cep, bairro, fkZona, fkCidade, latitude, longitude) VALUES
+('Rua das Flores', 123, '01001000', 'Centro', 1, 1, -23.550520, -46.633308),
+('Avenida Paulista', 456, '01311000', 'Bela Vista', 2, 1, -23.561350, -46.656200),
+('Rua Central', 789, '02020202', 'Jardins', 3, 1, -23.565170, -46.651500);
 
 INSERT INTO empresa (nome, cnpj, codigoAtivacao, fkEndereco) VALUES
 ('Tech Solutions', '12345678000190', 'A1234X9M2Q7K', 1),

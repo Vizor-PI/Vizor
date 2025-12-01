@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Correlação Reclamações por Lote</title>
+
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+    <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/reclamacaoLote.css">
+</head>
+
+<body onload="verificarCargo()">
+    <nav class="navbar" id="navbarConstructor"></nav>
+
+    <div class="container-xl">
+
+        <div class="titulo-dash">
+            <h1>Dashboard - Reclamações por Lotes</h1>
+        </div>
+        <section class="kpi-top-grid">
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Lotes Problemáticos</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-lote-problematico">12</p>
+                </div>
+            </section>
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Lotes saudáveis</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-lote-saudavel">85%</p>
+                </div>
+            </section>
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Reclamações Críticas <br>(Últimos 7 dias)</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-reclamacoes-criticas">7</p>
+                </div>
+            </section>
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Mediana do score dos Lotes</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-mediana-score">78</p>
+                </div>
+            </section>
+
+        </section>
+
+        <section class="rankings">
+
+            <div class="ranking-grid">
+
+                <section class="card ranking-card">
+                    <header class="card-header-ranking">
+                        <h2 class="card-title">Ranking dos Lotes Mais Problemáticos</h2>
+                    </header>
+
+                    <div class="card-content">
+                        <table class="ui-table">
+                            <thead>
+                                <tr> 
+                                    <th>Posição</th>
+                                    <th>Lote</th>
+                                    <th>Total de Falhas</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr class="linha-lote" data-lote="2024-A1">
+                                    <td>#1</td>
+                                    <td>2024-A1</td>
+                                    <td>28</td>
+                                    <td><span class="badge badge--crit">45</span></td>
+                                    <td><span class="badge badge--crit">Crítico</span></td>
+                                    <td>➜</td>
+                                </tr>
+
+                                <tr class="linha-lote" data-lote="2024-B3">
+                                    <td>#2</td>
+                                    <td>2024-B3</td>
+                                    <td>23</td>
+                                    <td><span class="badge badge--crit">52</span></td>
+                                    <td><span class="badge badge--crit">Crítico</span></td>
+                                    <td>➜</td>
+                                </tr>
+
+                                <tr class="linha-lote" data-lote="2024-C2">
+                                    <td>#3</td>
+                                    <td>2024-C2</td>
+                                    <td>19</td>
+                                    <td><span class="badge badge--warn">58</span></td>
+                                    <td><span class="badge badge--warn">Alerta</span></td>
+                                    <td>➜</td>
+                                </tr>
+
+                                <tr class="linha-lote" data-lote="2024-D5">
+                                    <td>#4</td>
+                                    <td>2024-D5</td>
+                                    <td>11</td>
+                                    <td><span class="badge badge--ok">71</span></td>
+                                    <td><span class="badge badge--ok">OK</span></td>
+                                    <td>➜</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="card ranking-card">
+                    <header class="card-header-ranking">
+                        <h2 class="card-title">Reclamações Relacionadas</h2>
+                    </header>
+
+                    <div class="card-content">
+                        <table class="ui-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Lote</th>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr class="linha-reclamacao" data-reclamacao="1">
+                                    <td>#1</td>
+                                    <td>2024-A1</td>
+                                    <td>15/11/2025</td>
+                                    <td>Superaquecimento frequente da CPU</td>
+                                    <td>➜</td>
+                                </tr>
+
+                                <tr class="linha-reclamacao" data-reclamacao="2">
+                                    <td>#2</td>
+                                    <td>2024-B3</td>
+                                    <td>16/11/2025</td>
+                                    <td>Memória RAM apresentando erros</td>
+                                    <td>➜</td>
+                                </tr>
+
+                                <tr class="linha-reclamacao" data-reclamacao="3">
+                                    <td>#3</td>
+                                    <td>2024-C2</td>
+                                    <td>17/11/2025</td>
+                                    <td>HD com setores defeituosos</td>
+                                    <td>➜</td>
+                                </tr>
+
+                                <tr class="linha-reclamacao" data-reclamacao="4">
+                                    <td>#4</td>
+                                    <td>2024-D5</td>
+                                    <td>18/11/2025</td>
+                                    <td>Ventoínhas fazendo ruído anormal</td>
+                                    <td>➜</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+        </section>
+
+        <section class="grafico-barra">
+
+            <section class="card grafico-card">
+                <header class="card-header-grafico">
+                    <h2 class="card-title">Componentes Críticos por Lote</h2>
+
+                    <select id="select-lote" class="grafico-select">
+                        <option value="2024-A1">LOTE-2024-A1</option>
+                        <option value="2024-B3">LOTE-2024-B3</option>
+                        <option value="2024-C2">LOTE-2024-C2</option>
+                        <option value="2024-D5">LOTE-2024-D5</option>
+                    </select>
+                </header>
+
+                <div class="card-content">
+                    <div id="grafico-componentes" class="chart-box"></div>
+                </div>
+            </section>
+
+        </section>
+
+    </div>
+
+    <script src="../js/verificadorCargo.js"></script>
+    <script src="../js/navbar.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+</body>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const dadosPorLote = {
+        "2024-A1": [18, 15, 12],
+        "2024-B3": [10, 14, 9],
+        "2024-C2": [8, 11, 5],
+        "2024-D5": [5, 7, 4]
+    };
+
+    var options = {
+        chart: {
+            type: "bar",
+            height: 350,
+            toolbar: { show: false }
+        },
+        series: [{
+            name: "Falhas",
+            data: dadosPorLote["2024-A1"]
+        }],
+        xaxis: {
+            categories: ["CPU", "RAM", "HD"],
+            labels: { style: { colors: "#cce4ff" } }
+        },
+        yaxis: {
+            labels: { style: { colors: "#cce4ff" } }
+        },
+        plotOptions: {
+            bar: { borderRadius: 8, columnWidth: "45%" }
+        },
+        dataLabels: { enabled: false },
+        colors: ["#00aaff"],
+        grid: { borderColor: "rgba(255,255,255,0.08)" },
+        tooltip: { theme: "dark" }
+    };
+
+    var chart = new ApexCharts(
+        document.querySelector("#grafico-componentes"),
+        options
+    );
+
+    chart.render();
+
+    document.getElementById("select-lote").addEventListener("change", function () {
+        let lote = this.value;
+
+        chart.updateSeries([{
+            data: dadosPorLote[lote]
+        }]);
+    });
+
+});
+
+document.querySelectorAll(".linha-lote").forEach(linha => {
+    linha.addEventListener("click", () => {
+        const lote = linha.dataset.lote;
+        window.location.href = `detalhesLote.html?lote=${lote}`;
+    });
+});
+
+document.querySelectorAll(".linha-reclamacao").forEach(linha => {
+    linha.addEventListener("click", () => {
+        const reclamacao = linha.dataset.reclamacao;
+        window.location.href = `detalhesReclamacao.html?reclamacao=${reclamacao}`;
+    });
+});
+</script>
+
+</html>
