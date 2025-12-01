@@ -11,6 +11,27 @@ function carregarAlertasDoArquivo() {
     return JSON.parse(raw);
 }
 
+function parseDate(str) {
+    // Try ISO first
+    let d = new Date(str);
+    if (!isNaN(d)) return d;
+    // Try DD-MM-YYYY HH:mm:ss
+    const m = str.match(/^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+    if (m) {
+        return new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:${m[6]}`);
+    }
+    return new Date(NaN);
+}
+
+function normalizeSeverity(sev) {
+    if (!sev) return "";
+    sev = sev.toLowerCase();
+    if (sev.startsWith("crit")) return "critico";
+    if (sev.startsWith("aten")) return "atencao";
+    if (sev === "normal") return "normal";
+    return sev;
+}
+
 async function filtrarPorUsuario(alertas, userId) {
     // pega os modelos e lotes permitidos ao usuário
     const dadosUsuario = await dadosModelosModel.listarModelosELotes(userId);
@@ -46,37 +67,108 @@ module.exports = {
             alertas = alertas.filter(a => a.tipo === tipo);
         }
         if (dataInicio) {
-            const ini = new Date(dataInicio);
-            alertas = alertas.filter(a => new Date(a.timestamp) >= ini);
+            const ini = parseDate(dataInicio);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
         }
         if (dataFim) {
-            const fim = new Date(dataFim);
-            alertas = alertas.filter(a => new Date(a.timestamp) <= fim);
+            const fim = parseDate(dataFim);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
         return alertas;
     },
 
-    async getKpis(userId, start, end) {
+    async getKpis(userId) {
         let alertas = await this.listarTodos(userId);
 
-        if (start) {
-            const ini = new Date(start);
-            alertas = alertas.filter(a => new Date(a.timestamp) >= ini);
-        }
-        if (end) {
-            const fim = new Date(end);
-            alertas = alertas.filter(a => new Date(a.timestamp) <= fim);
-        }
+        // Calculate last full week (Monday to Sunday)
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        // Find last Monday
+        const lastMonday = new Date(today);
+        lastMonday.setDate(today.getDate() - ((dayOfWeek + 6) % 7) - 7);
+        lastMonday.setHours(0,0,0,0);
+        // Find Monday before that
+        const prevMonday = new Date(lastMonday);
+        prevMonday.setDate(lastMonday.getDate() - 7);
 
-        const totalAlerts = alertas.length;
-        const criticalAlerts = alertas.filter(a => a.severidade.toLowerCase() === "critical").length;
+        // Filter for last week (Monday to Sunday)
+        const weekAlerts = alertas.filter(a => {
+            const dt = parseDate(a.timestamp);
+            return dt >= lastMonday && dt < parseDate(lastMonday.getTime() + 7*24*60*60*1000);
+        });
 
-        // Exemplo de outros KPIs (ajuste conforme necessário)
+        // Filter for previous week
+        const prevWeekAlerts = alertas.filter(a => {
+            const dt = parseDate(a.timestamp);
+            return dt >= prevMonday && dt < lastMonday;
+        });
+
+        // KPIs
+        const totalAlerts = weekAlerts.length;
+        const criticoAlerts = weekAlerts.filter(a => normalizeSeverity(a.severidade) === "critico").length;
+
+        // Model with most critico alerts
+        const modelCount = {};
+        weekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                modelCount[a.modelo] = (modelCount[a.modelo] || 0) + 1;
+            }
+        });
+        const topModel = Object.entries(modelCount).sort((a, b) => b[1] - a[1])[0];
+        const topModelObj = topModel ? { name: topModel[0], count: topModel[1] } : null;
+
+        // Lote with most critico alerts
+        const loteCount = {};
+        weekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                loteCount[a.lote] = (loteCount[a.lote] || 0) + 1;
+            }
+        });
+        const topLote = Object.entries(loteCount).sort((a, b) => b[1] - a[1])[0];
+        const topLoteObj = topLote ? { name: topLote[0], count: topLote[1] } : null;
+
+        // Model growth
+        const prevModelCount = {};
+        prevWeekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                prevModelCount[a.modelo] = (prevModelCount[a.modelo] || 0) + 1;
+            }
+        });
+        let modelGrowth = null;
+        Object.keys(modelCount).forEach(model => {
+            const prev = prevModelCount[model] || 0;
+            const curr = modelCount[model];
+            const pct = prev === 0 ? 100 : Math.round(((curr - prev) / prev) * 100);
+            if (!modelGrowth || pct > modelGrowth.pct) {
+                modelGrowth = { name: model, pct };
+            }
+        });
+
+        // Lote growth
+        const prevLoteCount = {};
+        prevWeekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                prevLoteCount[a.lote] = (prevLoteCount[a.lote] || 0) + 1;
+            }
+        });
+        let loteGrowth = null;
+        Object.keys(loteCount).forEach(lote => {
+            const prev = prevLoteCount[lote] || 0;
+            const curr = loteCount[lote];
+            const pct = prev === 0 ? 100 : Math.round(((curr - prev) / prev) * 100);
+            if (!loteGrowth || pct > loteGrowth.pct) {
+                loteGrowth = { name: lote, pct };
+            }
+        });
+
         return {
             totalAlerts,
-            criticalAlerts,
-            // Adicione outros KPIs conforme seu frontend espera
+            criticoAlerts,
+            topModel: topModelObj,
+            topLote: topLoteObj,
+            modelGrowth,
+            loteGrowth
         };
     },
 
@@ -84,12 +176,12 @@ module.exports = {
         let alertas = await this.listarTodos(userId);
 
         if (start) {
-            const ini = new Date(start);
-            alertas = alertas.filter(a => new Date(a.timestamp) >= ini);
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
         }
         if (end) {
-            const fim = new Date(end);
-            alertas = alertas.filter(a => new Date(a.timestamp) <= fim);
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
         const contador = {};
@@ -108,22 +200,25 @@ module.exports = {
         let alertas = await this.listarTodos(userId);
 
         if (start) {
-            const ini = new Date(start);
-            alertas = alertas.filter(a => new Date(a.timestamp) >= ini);
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
         }
         if (end) {
-            const fim = new Date(end);
-            alertas = alertas.filter(a => new Date(a.timestamp) <= fim);
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
-        const contador = {};
+        // Filter only critical alerts
+        alertas = alertas.filter(a => normalizeSeverity(a.severidade) === "critico");
 
+        const contador = {};
         alertas.forEach(a => {
             contador[a.lote] = (contador[a.lote] || 0) + 1;
         });
 
+        // Return in the same structure as topModels
         return Object.entries(contador)
-            .map(([lote, count]) => ({ lote, count }))
+            .map(([name, count]) => ({ name, count }))
             .sort((a, b) => b.count - a.count)
             .slice(0, limit);
     },
@@ -132,27 +227,26 @@ module.exports = {
         let alertas = await this.listarTodos(userId);
 
         if (start) {
-            const ini = new Date(start);
-            alertas = alertas.filter(a => new Date(a.timestamp) >= ini);
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
         }
         if (end) {
-            const fim = new Date(end);
-            alertas = alertas.filter(a => new Date(a.timestamp) <= fim);
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
         // Exemplo: retorna contagem por severidade
         let result = {};
         if (type === "all") {
             result = {
-                labels: ["low", "medium", "high", "critical"],
+                labels: ["normal", "atencao", "critico"],
                 datasets: [
                     {
                         label: "Alertas",
                         data: [
-                            alertas.filter(a => a.severidade === "low").length,
-                            alertas.filter(a => a.severidade === "medium").length,
-                            alertas.filter(a => a.severidade === "high").length,
-                            alertas.filter(a => a.severidade === "critical").length
+                            alertas.filter(a => normalizeSeverity(a.severidade) === "normal").length,
+                            alertas.filter(a => normalizeSeverity(a.severidade) === "atencao").length,
+                            alertas.filter(a => normalizeSeverity(a.severidade) === "critico").length
                         ]
                     }
                 ]
@@ -164,7 +258,7 @@ module.exports = {
                 datasets: [
                     {
                         label: "Alertas",
-                        data: [alertas.filter(a => a.severidade === type).length]
+                        data: [alertas.filter(a => normalizeSeverity(a.severidade) === type).length]
                     }
                 ]
             };
@@ -181,7 +275,7 @@ module.exports = {
         const horasSet = new Set();
 
         alertas.forEach(a => {
-            const dt = new Date(a.timestamp);
+            const dt = parseDate(a.timestamp);
             const dia = dt.toISOString().slice(0, 10); // yyyy-mm-dd
             const hora = dt.getHours();
             diasSet.add(dia);
@@ -196,7 +290,7 @@ module.exports = {
         const matrix = horas.map(h =>
             dias.map(d =>
                 alertas.filter(a => {
-                    const dt = new Date(a.timestamp);
+                    const dt = parseDate(a.timestamp);
                     return dt.toISOString().slice(0, 10) === d && dt.getHours() === h;
                 }).length
             )
@@ -216,12 +310,12 @@ module.exports = {
         let alertas = await this.listarTodos(userId);
 
         if (start) {
-            const ini = new Date(start);
-            alertas = alertas.filter(a => new Date(a.timestamp) >= ini);
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
         }
         if (end) {
-            const fim = new Date(end);
-            alertas = alertas.filter(a => new Date(a.timestamp) <= fim);
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
         // Filtro por tipo de visualização
@@ -258,14 +352,13 @@ module.exports = {
             alertas.forEach(a => {
                 const key = a[campo];
                 if (!map[key]) {
-                    map[key] = { type: campo, name: key, total: 0, critical: 0, state: "low", id: key };
+                    map[key] = { type: campo, name: key, total: 0, critico: 0, id: key };
                 }
                 map[key].total++;
-                if (a.severidade === "critical") map[key].critical++;
-                // Atualize o estado conforme sua lógica
-                if (a.severidade === "critical") map[key].state = "critical";
-                else if (a.severidade === "high" && map[key].state !== "critical") map[key].state = "high";
-                else if (a.severidade === "medium" && !["critical", "high"].includes(map[key].state)) map[key].state = "medium";
+                if (normalizeSeverity(a.severidade) === "critico") map[key].critico++;
+                if (normalizeSeverity(a.severidade) === "critico") map[key].state = "critico";
+                else if (normalizeSeverity(a.severidade) === "atencao" && map[key].state !== "critico") map[key].state = "atencao";
+                else if (normalizeSeverity(a.severidade) === "normal" && !["critico", "atencao"].includes(map[key].state)) map[key].state = "normal";
             });
         return Object.values(map);
         }
@@ -278,23 +371,23 @@ module.exports = {
         // Agrupa por modelo
         const modelos = {};
         alertas.forEach(a => {
-            if (!modelos[a.modelo]) modelos[a.modelo] = { total: 0, critical: 0 };
+            if (!modelos[a.modelo]) modelos[a.modelo] = { total: 0, critico: 0 };
             modelos[a.modelo].total++;
-            if (a.severidade === "critical") modelos[a.modelo].critical++;
+            if (a.severidade === "critico") modelos[a.modelo].critico++;
         });
 
         // Agrupa por lote
         const lotes = {};
         alertas.forEach(a => {
-            if (!lotes[a.lote]) lotes[a.lote] = { total: 0, critical: 0 };
+            if (!lotes[a.lote]) lotes[a.lote] = { total: 0, critico: 0 };
             lotes[a.lote].total++;
-            if (a.severidade === "critical") lotes[a.lote].critical++;
+            if (a.severidade === "critico") lotes[a.lote].critico++;
         });
 
         // Recomendações simples
-        const topModel = Object.entries(modelos).sort((a, b) => b[1].critical - a[1].critical)[0];
-        const keepModel = Object.entries(modelos).sort((a, b) => a[1].critical - b[1].critical)[0];
-        const emergingModel = Object.entries(modelos).find(([k, v]) => v.critical > 0 && v.critical < 3);
+        const topModel = Object.entries(modelos).sort((a, b) => b[1].critico - a[1].critico)[0];
+        const keepModel = Object.entries(modelos).sort((a, b) => a[1].critico - b[1].critico)[0];
+        const emergingModel = Object.entries(modelos).find(([k, v]) => v.critico > 0 && v.critico < 3);
 
         return {
             investigate: topModel ? { type: "modelo", name: topModel[0], reason: "Mais alertas críticos" } : null,
