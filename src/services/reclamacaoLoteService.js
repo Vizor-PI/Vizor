@@ -4,9 +4,7 @@ const db = require("../database/config");
 class DataService {
 
     constructor() {
-        // Inicializa cliente S3
         this.s3 = new S3Client({ region: "us-east-1" });
-        // [CORREÇÃO 1] Forçando o bucket certo.
         this.bucket = "vizor-client"; 
     }
 
@@ -51,13 +49,9 @@ class DataService {
         }
     }
 
-    // [CORREÇÃO CRÍTICA]
-    // A Lambda do Miguel salva usando o nome do banco ("Tech Solutions" com espaço).
-    // Antes estávamos forçando underline ("Tech_Solutions"), por isso dava NoSuchKey.
-    // Agora retornamos o nome original.
     formatarNomeEmpresa(nome) {
         if (!nome) return "";
-        return nome; // Retorna com espaços se houver (ex: "Tech Solutions")
+        return nome;
     }
 
     async listarLotes(empresa) {
@@ -70,13 +64,10 @@ class DataService {
         const lotes = [];
 
         for (const folder of pastas) {
-            // folder.Prefix ex: miguel-client/Tech Solutions/1008234/
             const parts = folder.Prefix.split('/');
-            // Pega o penúltimo item (o ID do lote)
             const loteId = parts[parts.length - 2]; 
 
             try {
-                // Busca o lote.json dentro da pasta
                 const key = `miguel-client/${empresaPath}/${loteId}/lote.json`;
                 const loteJson = await this.getS3Json(key);
                 lotes.push(loteJson);
