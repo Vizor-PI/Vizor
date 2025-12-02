@@ -12,7 +12,7 @@ navbarConstructor.innerHTML += `
       <ul id="textosNavbar">
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
-        <a href="dashboard.html"> Comparação de Modelos </a>
+        <a href="dashboardHanieh.html"> Comparação de Modelos </a>
       </li>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/reclamacoes.png" alt="" id="logoNavbarDash" />
