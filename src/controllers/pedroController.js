@@ -1,28 +1,18 @@
 var pedroModel = require("../models/pedroModel");
+const { S3Client, ListObjectsV2Command, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const {
-  S3Client,
-  ListObjectsV2Command,
-  GetObjectCommand,
-} = require("@aws-sdk/client-s3");
-
-// Bucket onde o Lambda grava os JSONs de dashboard
 const CLIENT_BUCKET = process.env.CLIENT_BUCKET || "vizor-client";
-const CLIENT_PREFIX = process.env.CLIENT_PREFIX || "pedro-client/Tech_Solutions/";
+// Ajuste para garantir que pegamos a pasta certa. Se tiver duvida, use apenas "pedro-client/"
+const CLIENT_PREFIX = "pedro-client/"; 
 
-// cliente S3 – usa as credenciais definidas no .env 
 const s3 = new S3Client({
   region: process.env.AWS_REGION || "us-east-1",
 });
 
-// converte o Body do GetObject para string
 async function bodyToString(body) {
-  // SDK v3 novo tem transformToString
   if (body && typeof body.transformToString === "function") {
     return body.transformToString();
   }
-
-  // fallback
   return await new Promise((resolve, reject) => {
     let data = "";
     body.on("data", (chunk) => (data += chunk.toString()));
@@ -31,236 +21,158 @@ async function bodyToString(body) {
   });
 }
 
-/**
- * le todos os jsons
- * vizor-client/pedro-client/<empresa>/<AAAA-MM-DD>/<maquina_id>.json
- * e consolida em um mapa
- */
 async function carregarDashboardsS3() {
-  console.log("[S3] Listando JSONs no bucket client:", CLIENT_BUCKET, "prefix:", CLIENT_PREFIX);
+  console.log("[S3] Listando JSONs em:", CLIENT_BUCKET, CLIENT_PREFIX);
 
-  const listCmd = new ListObjectsV2Command({
-    Bucket: CLIENT_BUCKET,
-    Prefix: CLIENT_PREFIX,
-  });
-
-  const listResp = await s3.send(listCmd);
-  const objetos = listResp.Contents || [];
-
-  if (!objetos.length) {
-    console.log("[S3] Nenhum JSON encontrado no prefixo informado.");
-    return new Map();
+  // Lista recursiva simples
+  let objetos = [];
+  try {
+      const listCmd = new ListObjectsV2Command({ Bucket: CLIENT_BUCKET, Prefix: CLIENT_PREFIX });
+      const listResp = await s3.send(listCmd);
+      objetos = listResp.Contents || [];
+  } catch (e) {
+      console.error("[S3] Erro ao listar objetos:", e);
+      return new Map();
   }
 
-  // mantem só os arquivos .json
   const arquivosJson = objetos.filter((o) => o.Key.endsWith(".json"));
-  console.log("[S3] Total de JSONs encontrados:", arquivosJson.length);
+  console.log("[S3] Arquivos JSON encontrados:", arquivosJson.length);
 
-  // baixa e parseia todos os JSONs encontrados
   const resultados = await Promise.all(
     arquivosJson.map(async (obj) => {
       try {
-        const getCmd = new GetObjectCommand({
-          Bucket: CLIENT_BUCKET,
-          Key: obj.Key,
-        });
-
+        const getCmd = new GetObjectCommand({ Bucket: CLIENT_BUCKET, Key: obj.Key });
         const getResp = await s3.send(getCmd);
         const texto = await bodyToString(getResp.Body);
         const json = JSON.parse(texto);
 
-        // Garantimos pelo menos company e machine_id
-        const company = json.company || "N/A";
-        const machineId = json.machine_id || json.id || null;
-        if (!machineId) {
-          console.warn("[S3] JSON sem machine_id:", obj.Key);
-          return null;
-        }
-
-        // Tentamos extrair a data do próprio caminho:
-        // pedro-client/<empresa>/<AAAA-MM-DD>/<maquina_id>.json
+        // Extrair data do caminho: pedro-client/Empresa/DD-MM-YYYY/COD.json
         let dataArquivo = null;
         const partes = obj.Key.split("/");
-        if (partes.length >= 4) {
-          const possivelData = partes[partes.length - 2];
-          if (/^\d{4}-\d{2}-\d{2}$/.test(possivelData)) {
-            dataArquivo = possivelData;
-          }
+        if (partes.length >= 2) {
+            // Pega a penúltima parte (a pasta da data)
+            const pastaData = partes[partes.length - 2];
+            // [CORREÇÃO] Regex para DD-MM-YYYY (formato do Python)
+            if (/^\d{2}-\d{2}-\d{4}$/.test(pastaData)) {
+                // Converte para ISO para o JS entender (YYYY-MM-DD)
+                const [d, m, y] = pastaData.split('-');
+                dataArquivo = `${y}-${m}-${d}`;
+            }
         }
 
         return {
-          company,
-          machineId,
+          // [CORREÇÃO] Normaliza company para garantir match (sem espaços)
+          company: (json.company || "N/A").replace(/ /g, "_"), 
+          machineId: json.machine_id || json.id,
           data: json,
           dataArquivo,
         };
       } catch (e) {
-        console.error("[S3] Erro ao ler JSON de", obj.Key, e);
         return null;
       }
     })
   );
 
-  // se tiver varios json pega o mais recente
   const mapa = new Map();
-
   const itensValidos = resultados.filter(Boolean);
-  console.log("[S3] JSONs válidos carregados:", itensValidos.length);
 
   itensValidos.forEach((item) => {
+    // Chave única: Tech_Solutions#COD001
     const key = `${item.company}#${item.machineId}`;
+    
     const novoJson = item.data;
     const existente = mapa.get(key);
 
-    // função que tenta descobrir a "data do dado"
-    const parseData = (obj, fallbackDataArquivo) => {
-      // se o Lambda preencheu last_update, usamos isso
-      if (obj.last_update) return new Date(obj.last_update);
-      // se dentro de raw_metrics tiver timestamp, tentamos usar
-      if (obj.raw_metrics && obj.raw_metrics.timestamp) {
-        return new Date(obj.raw_metrics.timestamp);
+    const parseData = (obj, fallback) => {
+      // Tenta ler data brasileira do JSON (DD/MM/YYYY)
+      if (obj.last_update && obj.last_update.includes("/")) {
+          const [d, m, y_hm] = obj.last_update.split('/');
+          const [y, hm] = y_hm.split(' ');
+          return new Date(`${y}-${m}-${d}T${hm}:00`);
       }
-      // se nada disso vier, usamos a data extraída da key (AAAA-MM-DD)
-      if (fallbackDataArquivo) return new Date(fallbackDataArquivo);
-      // se ainda assim nada, voltamos para 1970 (bem antigo)
+      if (fallback) return new Date(fallback);
       return new Date(0);
     };
 
     if (!existente) {
-      // primeira vez que vemos essa máquina -> coloca no mapa direto
       mapa.set(key, novoJson);
     } else {
-      // já temos JSON dessa máquina, comparamos qual é mais recente
-      const dataAntiga = parseData(existente, null);
-      const dataNova = parseData(novoJson, item.dataArquivo);
-
-      if (dataNova > dataAntiga) {
-        mapa.set(key, novoJson);
-      }
+      // Lógica de "vence o mais recente"
+      const d1 = parseData(existente, null);
+      const d2 = parseData(novoJson, item.dataArquivo);
+      if (d2 > d1) mapa.set(key, novoJson);
     }
   });
 
-  console.log("[S3] Máquinas consolidadas (company#machine_id):", mapa.size);
+  console.log("[S3] Mapa consolidado (size):", mapa.size);
+  // Debug: mostra uma chave para conferir se bate com o esperado
+  if(mapa.size > 0) console.log("[S3] Exemplo de chave no mapa:", mapa.keys().next().value);
+  
   return mapa;
 }
 
-/**
- * endpoint principal da sua dashboard
- * busca os DOOHs cadastrados no MySQL
- * carrega os JSONs do S3
- * junta as duas coisas e devolve uma lista pronta pro front
- */
 function listar(req, res) {
-  pedroModel
-    .listar()
+  pedroModel.listar()
     .then(async function (resultado) {
-      console.log("[DB] Registros retornados do banco:", resultado.length);
-
       if (resultado.length === 0) {
-        return res.status(204).send("Nenhum resultado encontrado!");
+        return res.status(204).send("Nenhum resultado encontrado no Banco!");
       }
 
-      // 1) Tenta carregar os dashboards do S3
       let mapaS3 = new Map();
       try {
         mapaS3 = await carregarDashboardsS3();
       } catch (e) {
-        console.error("[S3] Erro ao carregar dashboards do S3:", e);
+        console.error(e);
       }
 
-      // para cada linha do banco, tentamos encaixar o JSON do S3
       const listaFormatada = resultado.map((row) => {
-        // ID do DOOH padronizado – tem que bater com a pasta do trusted
-        const machineId = `DOOH-SP-P${String(row.id).padStart(3, "0")}`;
+        // [CORREÇÃO CRÍTICA DE MATCHING]
+        // 1. Normaliza empresa do banco (Tech Solutions -> Tech_Solutions)
+        const empresaNorm = row.empresa.replace(/ /g, "_");
+        // 2. Usa o código real do banco (COD001) em vez de ID artificial
+        const codigoReal = row.codigo; 
 
-        // chave pra junção com o JSON do Lambda
-        const empresa = row.empresa;
-        const chave = `${empresa}#${machineId}`;
+        // Monta a chave igual à do S3: Tech_Solutions#COD001
+        const chave = `${empresaNorm}#${codigoReal}`;
+        
+        const jsonS3 = mapaS3.get(chave);
 
-        const jsonS3 = mapaS3.get(chave) || null;
-
-        // endereço bonitinho vindo do banco
-        const location = `${row.rua}, ${row.numero} - ${row.bairro}`;
-
+        // Se achou, usa o JSON. Se não, usa fallback com dados do banco
         if (jsonS3) {
-          // se achamos JSON no S3, usamos ele como base
-          const raw = jsonS3.raw_metrics || {};
-
-          return {
-            // campos principais que o front espera
-            machine_id: jsonS3.machine_id || machineId,
-            company: jsonS3.company || empresa,
-            status: jsonS3.status || "ok",
-            last_update: jsonS3.last_update || null,
-
-            // métricas cruas – se algo não vier, usamos valores default
-            raw_metrics: {
-              cpu: raw.cpu || "0%",
-              ram: raw.ram || "0%",
-              disco: raw.disco || raw.disk || "0%",
-              temp: raw.temp || "0°C",
-              uptime: raw.uptime || 0,
-              latitude:
-                raw.latitude !== undefined
-                  ? raw.latitude
-                  : parseFloat(row.latitude),
-              longitude:
-                raw.longitude !== undefined
-                  ? raw.longitude
-                  : parseFloat(row.longitude),
-            },
-
-            // bloco de UI vindo do Lambda, mas forçamos a location do banco
-            ui: {
-              ...(jsonS3.ui || {}),
-              location,
-            },
-
-            // blocos analíticos do Lambda 
-            risk_model: jsonS3.risk_model || null,
-            medianas: jsonS3.medianas || null,
-            regressao_risco: jsonS3.regressao_risco || null,
-            historico_7d: jsonS3.historico_7d || null,
-          };
+            console.log(`[MATCH] Encontrado dados S3 para ${chave}`);
+            const raw = jsonS3.raw_metrics || {};
+            return {
+                machine_id: jsonS3.machine_id,
+                company: jsonS3.company,
+                status: jsonS3.status,
+                last_update: jsonS3.last_update,
+                raw_metrics: raw, // Usa as métricas reais do JSON
+                ui: { location: row.location }, // Mantém local do banco
+                risk_model: jsonS3.risk_model,
+                medianas: jsonS3.medianas,
+                regressao_risco: jsonS3.regressao_risco,
+                historico_7d: jsonS3.historico_7d
+            };
+        } else {
+            // Fallback (apenas dados do banco, métricas zeradas)
+            // console.log(`[MISS] Sem dados S3 para ${chave}`);
+            return {
+                machine_id: codigoReal, // Exibe COD001 mesmo sem dados S3
+                company: row.empresa,
+                status: "ok",
+                location: row.location,
+                lat: parseFloat(row.latitude),
+                lng: parseFloat(row.longitude),
+                // Métricas zeradas para não quebrar o front
+                cpu: 0, ram: 0, disk: 0, temp: 0, uptime: 0
+            };
         }
-
-        // Se ainda NÃO existe JSON para essa máquina no S3,
-        // devolvemos um "cadastro básico" só pra já aparecer no mapa
-        return {
-          machine_id: machineId,
-          company: empresa,
-          status: "ok",
-          last_update: null,
-          raw_metrics: {
-            cpu: "0%",
-            ram: "0%",
-            disco: "0%",
-            temp: "0°C",
-            uptime: 0,
-            latitude: parseFloat(row.latitude),
-            longitude: parseFloat(row.longitude),
-          },
-          ui: {
-            severity: "INFO",
-            color: "green",
-            icon: "check-circle",
-            title: "Cadastrado no mapa",
-            message: "Aguardando primeiros dados de captura.",
-            action: "Nenhuma ação necessária no momento.",
-            location,
-          },
-          risk_model: null,
-          medianas: null,
-          regressao_risco: null,
-          historico_7d: null,
-        };
       });
 
-      console.log("[API] Enviando", listaFormatada.length, "dispositivos para o front.");
-      return res.status(200).json(listaFormatada);
+      res.status(200).json(listaFormatada);
     })
     .catch(function (erro) {
-      console.log("\nHouve um erro ao buscar os dados: ", erro.sqlMessage);
+      console.log(erro);
       res.status(500).json(erro.sqlMessage);
     });
 }
