@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventos Climáticos — Vizor</title>
+
+  <!-- <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" /> -->
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+</head>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+  * {
+    box-sizing: border-box;
+    font-family: "Akatab", sans-serif;
+  }
+
+  /* Área da direita (conteúdo) */
+ 
+  body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;   /* nav + conteúdo lado a lado continua */
+  min-height: 100vh;     /* deixa crescer pra baixo */
+  width: 100vw;
+  overflow-y: auto;      /* permite rolar vertical */
+  overflow-x: hidden;    /* continua sem scroll horizontal */
+  background: #061722;
+}
+
+
+
+  /* .dashMain {
+    display: flex;
+    flex-direction: row;
+    width: 94vw;
+    background: #0F172A;
+    background: linear-gradient(90deg, rgba(15, 23, 42, 1) 0%, rgba(30, 41, 59, 1) 100%);
+  } */
+
+  .dashContainer {
+  display: flex;
+  flex-direction: column;
+  width:calc(100vw-16vw);
+  margin-left: 16vw;
+  /* height: auto;              /* permite crescer */
+  /* overflow-y: auto;          permite rolar apenas o container */
+}
+
+.dashMain {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.secaoEstados {
+  padding: 20px;
+  background-color: rgba(30, 41, 59, 0.5);
+  border: solid 0.7px #334155;
+  border-radius: 10px;
+  margin: 30px;
+  color: #d6d6d6;
+}
+
+
+  .dashLeft {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 30px;
+    align-items: space-between;
+    justify-content: space-between;
+  }
+
+  .dashRight {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 30px;
+    height: 950px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .bloco {
+    padding: 20px;
+    width: 100%;
+    height: 30%;
+    background-color: rgba(30, 41, 59, 0.5);
+    border: solid 0.7px #334155;
+    border-radius: 10px;
+  }
+
+  .bloco h2 {
+    color: #d6d6d6;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+
+  .tempAtual {
+    display: flex;
+    flex-direction: column;
+    color: #d6d6d6;
+    font-weight: 800;
+    justify-content: center;
+  }
+
+
+  h2,
+  p {
+    margin: 0px;
+  }
+
+  .tempAtual h2 {
+    font-size: 30px;
+  }
+
+  .midAtual {
+    display: flex;
+    flex-direction: row;
+    color: #d6d6d6;
+    /* font-size: 40px; */
+    align-items: center;
+  }
+
+  .midAtual {
+    font-size: 70px;
+  }
+
+  .previsao {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .previsao h2 {
+    margin-bottom: 40px;
+  }
+
+  .previsoes {
+    display: flex;
+    justify-content: space-evenly;
+    height: fit-content;
+    width: 100%;
+  }
+
+  .blocoPrevisao {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 10%;
+    height: 100%;
+    padding: 15px;
+    background-color: #334155;
+    color: #d6d6d6;
+    font-size: fit-content;
+    font-weight: 900;
+  }
+
+  .blocoPrevisao img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* 
+  .listaDooh{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    border: solid 0.7px #334155;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+} */
+
+  .listaDooh {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    border: solid 0.7px #334155;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  #sessaoDooh {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px;
+  }
+  
+  .listaDooh input {
+    background-color: #334155;
+    margin-bottom: 10px;
+  }
+
+  .card-dooh {
+    width: 90%;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+  }
+
+  .card-dooh h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #f1f5f9;
+  }
+
+  .card-dooh .empresa {
+    margin: 2px 0 0 0;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+
+  .card-dooh .atualizacao {
+    margin: 4px 0 10px 0;
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .metricas {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .metric-row {
+    width: 100%;
+  }
+
+  .metric-row span {
+    font-size: 14px;
+    color: #cbd5e1;
+  }
+
+  .metric-bar {
+    width: 100%;
+    height: 10px;
+    background: #334155;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .metric-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+  }
+
+  .info-icon-simple {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .tooltip-simple {
+    position: absolute;
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    width: 230px;
+    display: none;
+    z-index: 999;
+  }
+
+
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 16vw;       /* largura real da sua navbar */
+  height: 100vh;     /* ocupa a tela inteira */
+  z-index: 1000;     /* fica por cima do resto */
+}
+
+
+</style>
+
+<body onload="verificarCargo()">
+  <nav class="navbar" id="navbarConstructor"></nav>
+  
+  <div class="dashContainer">
+    <div class="secaoEstados bloco">
+    <h2>Selecionar Região</h2>
+    <p style="margin-bottom: 10px;">Escolha o estado:</p>
+    
+    <select id="select_regiao" style="
+        width: 300px;
+        padding: 12px;
+        background: #334155;
+        color: #d6d6d6;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        font-size: 16px;
+      ">
+        <option value="">Selecione...</option>
+        <option value="SP">São Paulo (SP)</option>
+        <option value="RJ">Rio de Janeiro (RJ)</option>
+        <option value="MG">Minas Gerais (MG)</option>
+        <option value="PR">Paraná (PR)</option>
+        <option value="RS">Rio Grande do Sul (RS)</option>
+        <option value="SC">Santa Catarina (SC)</option>
+        <option value="BA">Bahia (BA)</option>
+    </select>
+    </div>
+    <div class="dashMain">
+      <div class="dashLeft">
+        <div class="tempAtual bloco">
+          <h2>Clima atual</h2>
+          <div class="midAtual">
+            <img src="" alt="" id="img_atual">
+            <p id="temp_atual"></p>
+          </div>
+          <p id="desc_atual"></p>
+        </div>
+
+        <div class="previsao bloco">
+          <h2>Previsão da próxima semana</h2>
+          <div class="previsoes">
+            <div class="blocoPrevisao bloco" id="prev_1">
+              <p id="prev_dia_1"></p>
+              <img src="" alt="" id="prev_img_1">
+              <p id="prev_temp_1"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_2">
+              <p id="prev_dia_2"></p>
+              <img src="" alt="" id="prev_img_2">
+              <p id="prev_temp_2"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_3">
+              <p id="prev_dia_3"></p>
+              <img src="" alt="" id="prev_img_3">
+              <p id="prev_temp_3"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_4">
+              <p id="prev_dia_4"></p>
+              <img src="" alt="" id="prev_img_4">
+              <p id="prev_temp_4"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_5">
+              <p id="prev_dia_5"></p>
+              <img src="" alt="" id="prev_img_5">
+              <p id="prev_temp_5"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_6">
+              <p id="prev_dia_6"></p>
+              <img src="" alt="" id="prev_img_6">
+              <p id="prev_temp_6"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_7">
+              <p id="prev_dia_7"></p>
+              <img src="" alt="" id="prev_img_7">
+              <p id="prev_temp_7"></p>
+            </div>
+          </div>
+        </div>
+        <div class="eventosExtremos bloco">
+          <div id="out_eventosExtremos"></div>
+        </div>
+      </div>
+      <div class="dashRight">
+        <div class="listaDooh">
+          <input type="text" id="ipt_buscaDooh" class="bloco" style="color: #d6d6d6; width: 90%; height: fit-content;">
+          <div id="sessaoDooh">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</body>
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  function criarCardDooh(dado) {
+
+    function barra(label, valorStr) {
+      const numero = parseFloat(valorStr.replace("%", "").replace("°C", ""));
+      const largura = Math.min(numero, 100);
+
+      let cor = "#22c55e";
+      if (numero >= 70) cor = "#f97316";
+      if (numero >= 85) cor = "#ef4444";
+
+      return `
+      <div class="metric-row">
+        <span>${label}: <b>${valorStr}</b></span>
+        <div class="metric-bar">
+          <div class="metric-fill" style="width: ${largura}%; background: ${cor};"></div>
+        </div>
+      </div>
+    `;
+    }
+
+    return `
+    <div class="card-dooh">
+      <h2>${dado.machine_id}</h2>
+      <p class="empresa">${dado.company}</p>
+      <p class="atualizacao">${dado.last_update}</p>
+
+      <div class="metricas">
+        ${barra("CPU", dado.raw_metrics.cpu)}
+        ${barra("RAM", dado.raw_metrics.ram)}
+        ${barra("Disco", dado.raw_metrics.disco)}
+        ${barra("Temperatura do DOOH", dado.raw_metrics.temp)}
+      </div>
+    </div>
+  `;
+  }
+
+  function limparSessao() {
+    sessionStorage.clear();
+  }
+
+  function extrairNumero(valorStr) {
+  if (!valorStr) return 0;
+  return parseFloat(
+    String(valorStr)
+      .replace("%", "")
+      .replace("°C", "")
+      .replace(",", ".")
+  );
+}
+  
+  function calcularRiscoClimatico(tempExterna) {
+    const t = tempExterna || 0;
+
+    if (t < 28) return 0;
+    if (t < 35) return 10;
+    if (t < 40) return 20;
+    if (t < 45) return 30;
+    return 40; 
+  }
+
+  function calcularRiscoOperacional(metrics) {
+    const cpu = extrairNumero(metrics.cpu);
+    const ram = extrairNumero(metrics.ram);
+    const disco = extrairNumero(metrics.disco);
+    const tempInt = extrairNumero(metrics.temp);
+
+    let risco = 0;
+
+    // CPU
+    if (cpu >= 60 && cpu <= 80) risco += 10;
+    else if (cpu > 80 && cpu <= 90) risco += 15;
+    else if (cpu > 90) risco += 20;
+
+    // RAM
+    if (ram >= 60 && ram <= 80) risco += 10;
+    else if (ram > 80) risco += 15;
+
+    // Disco
+    if (disco >= 70 && disco <= 85) risco += 10;
+    else if (disco > 85) risco += 15;
+
+    // Temperatura interna
+    if (tempInt >= 55 && tempInt <= 65) risco += 10;
+    else if (tempInt > 65 && tempInt <= 75) risco += 15;
+    else if (tempInt > 75) risco += 20;
+
+    return risco;
+  }
+
+  // junta clima + máquina
+  function calcularIndiceRiscoDooh(clima, metrics) {
+    const riscoClima = calcularRiscoClimatico(clima?.temp);
+    const riscoOper = calcularRiscoOperacional(metrics);
+    return Math.max(0, Math.min(100, riscoClima + riscoOper));
+  }
+
+  // traduz score pra status e cor
+  function classificarRisco(score) {
+    if (score <= 30) return { label: "Baixo", cor: "#22c55e" };       // verde
+    if (score <= 60) return { label: "Moderado", cor: "#eab308" };    // amarelo
+    if (score <= 85) return { label: "Alto", cor: "#f97316" };        // laranja
+    return { label: "Crítico", cor: "#ef4444" };                      // vermelho
+  }
+
+  function atualizarMetricaGlobal(resultados) {
+  const container = document.getElementById("out_eventosExtremos");
+  if (!container) return;
+
+  if (!climaAtual) {
+    container.innerHTML = `
+      <p style="color:#cbd5e1;">Aguardando dados climáticos...</p>
+    `;
+    return;
+  }
+
+  if (!resultados || resultados.length === 0) {
+    container.innerHTML = `
+      <p style="color:#cbd5e1;">Nenhuma máquina monitorada no momento.</p>
+    `;
+    return;
+  }
+
+  let soma = 0;
+  let maisCritico = null;
+
+  resultados.forEach((dooh) => {
+    const score = calcularIndiceRiscoDooh(climaAtual, dooh.raw_metrics);
+    soma += score;
+
+    if (!maisCritico || score > maisCritico.score) {
+      maisCritico = { score, dooh };
+    }
+  });
+
+  const media = Math.round(soma / resultados.length);
+  const { label, cor } = classificarRisco(media);
+
+  const tempExt = climaAtual?.temp;
+  const descClima = climaAtual?.descricao;
+
+  container.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:12px; color:#e2e8f0;">
+      <div>
+        <h3 style="margin:0; font-size:18px; display:flex; align-items:center; gap:6px;">
+          Índice de Risco Operacional
+          <img src="../assets/imgs/info-icon.png" class="info-icon-simple" alt="info">
+        </h3>
+
+        <p style="margin:2px 0 6px 0; font-size:13px; color:#94a3b8;">
+          Combinação do clima atual com o estresse médio das máquinas monitoradas.
+        </p>
+        <div style="font-size:32px; font-weight:700; color:${cor};">
+          ${media} <span style="font-size:16px; margin-left:8px;">(${label})</span>
+        </div>
+        <div style="margin-top:6px; background:#1e293b; border-radius:999px; height:10px; overflow:hidden;">
+          <div style="width:${media}%; height:100%; background:${cor};"></div>
+        </div>
+      </div>
+
+      <div style="font-size:19px; color:#cbd5e1;">
+        <p style="margin:0 0 4px 0;">
+          <b>Clima atual:</b> ${tempExt ?? "N/A"} °C • ${descClima ?? ""}
+        </p>
+        <p style="margin:0 0 4px 0;">
+          <b>Máquina mais crítica:</b> ${maisCritico.dooh.machine_id}  
+          (risco ${Math.round(maisCritico.score)})
+        </p>
+        <p style="margin:0;">
+          <b>Fatores de risco principais:</b> temperatura do DOOH e uso de CPU/RAM/Disco.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+
+  async function carregarDoohs() {
+    const prefix = 'clima-dash/';
+    const baseUrl = 'https://vizor-client.s3.us-east-1.amazonaws.com'
+    // meu bucket, caso algo de errado com a conta do aquino
+    // const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
+    const url = `${baseUrl}/?list-type=2&prefix=${encodeURIComponent(prefix)}`;
+
+    const resultados = [];
+    try {
+      const resp = await fetch(url);
+      const xmlText = await resp.text();
+      const xml = new DOMParser().parseFromString(xmlText, "application/xml");
+
+      const keyNodes = xml.getElementsByTagName("Key");
+
+      const keys = [...keyNodes]
+        .map(node => node.textContent?.trim())
+        .filter(k => k && !k.endsWith("/"));  
+
+      console.log("Arquivos encontrados:", keys);
+
+      for (const key of keys) {
+        try {
+          const respJson = await fetch(`${baseUrl}/${key}`);
+          const json = await respJson.json();
+          resultados.push(json);
+        } catch (e) {
+          console.error("Erro lendo", key, e);
+        }
+      }
+
+      console.log("Resultados finais:", resultados);
+
+    } catch (err) {
+      console.error("Erro geral:", err);
+    }
+
+    const container = document.getElementById("sessaoDooh");
+    if (!container) {
+      console.error("Elemento #sessaoDooh não encontrado");
+      return;
+    }
+
+    if (resultados.length === 0) {
+      container.innerHTML = `<p style="color:#d6d6d6;">Nenhum DOOH encontrado no bucket.</p>`;
+      return;
+    }
+
+    container.innerHTML = resultados
+      .map(dado => criarCardDooh(dado))
+      .join("");
+
+    atualizarMetricaGlobal(resultados);
+    ativarTooltip();
+  }
+
+  const inputBusca = document.getElementById("ipt_buscaDooh");
+  inputBusca.addEventListener("input", () => {
+    const termo = inputBusca.value.toLowerCase();
+    const cards = document.querySelectorAll(".card-dooh");
+    cards.forEach(card => {
+      const name = card.querySelector("h2").innerText.toLowerCase();
+      if (name.includes(termo)) {
+        card.style.display = ""; 
+      } else {
+        card.style.display = "none";  
+      }
+    });
+  });
+
+  function ativarTooltip() {
+  const icon = document.querySelector(".info-icon-simple");
+  if (!icon) return;
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip-simple";
+  tooltip.innerText =
+    "O índice é calculado combinando fatores climáticos (temperatura externa) e estresse do hardware (CPU, RAM, Disco, Temperatura interna). Valores altos indicam maior risco de falhas por calor ou uso excessivo.";
+
+
+  document.body.appendChild(tooltip);
+
+  icon.addEventListener("mouseenter", () => {
+    const rect = icon.getBoundingClientRect();
+    tooltip.style.left = rect.left + "px";
+    tooltip.style.top = rect.bottom + 8 + "px";
+    tooltip.style.display = "block";
+  });
+
+  icon.addEventListener("mouseleave", () => {
+    tooltip.style.display = "none";
+  });
+}
+
+setTimeout(ativarTooltip, 500);
+
+
+</script>
+<script src="../js/weatherbit.js">
+</script>
+
+</html>
