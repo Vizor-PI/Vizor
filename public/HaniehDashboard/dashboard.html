@@ -256,16 +256,7 @@ header {
 
   <div class="container-xl">
 
-    <header>
-        <h1>Comparação de Modelos/Lotes</h1>
-        <div id="date-filters">
-            <label>De: <input type="date" id="startDate" /></label>
-            <label>Até: <input type="date" id="endDate" /></label>
-            <button id="applyRange">Aplicar</button>
-            <button id="presetWeek">Semana passada</button>
-            <button id="presetMonth">Último mês</button>
-        </div>
-    </header>
+    
 
     <section class="alert-top-grid">
         <div id="kpi-total">Total de alertas: <span id="kpi-total-val">—</span></div>
@@ -277,28 +268,48 @@ header {
     </section>
 
     <section id="charts">
-        <h2>Top 5 — Modelos (alertas críticos)</h2>
-        <canvas id="barModels" width="600" height="200"></canvas>
+      <h2>Top 5 — Modelos (alertas críticos)</h2>
+      <div>
+        <label>De: <input type="date" id="barModelsStart"></label>
+        <label>Até: <input type="date" id="barModelsEnd"></label>
+        <button onclick="fetchTopBars()">Aplicar</button>
+      </div>
+      <canvas id="barModels"></canvas>
 
+      <h2>Top 5 — Lotes (alertas críticos)</h2>
+      <div>
+        <label>De: <input type="date" id="barLotesStart"></label>
+        <label>Até: <input type="date" id="barLotesEnd"></label>
+        <button onclick="fetchTopBars()">Aplicar</button>
+      </div>
+      <canvas id="barLotes"></canvas>
 
-        <h2>Top 5 — Lotes (alertas críticos)</h2>
-        <canvas id="barLotes" width="600" height="200"></canvas>
+      <h2>Comparação</h2>
+      <div>
+        <label>De: <input type="date" id="lineStart"></label>
+        <label>Até: <input type="date" id="lineEnd"></label>
+        <select id="compareEntityType">
+          <option value="modelo">Modelo</option>
+          <option value="lote">Lote</option>
+        </select>
+        <select id="compareEntity"></select>
+        <select id="alertTypeSelect">
+          <option value="all">Todos</option>
+          <option value="critico">Crítico</option>
+          <option value="atencao">Atenção</option>
+          <option value="normal">Normal</option>
+        </select>
+        <button onclick="fetchComparison()">Aplicar</button>
+      </div>
+      <canvas id="lineComparison"></canvas>
 
-
-        <h2>Comparação</h2>
-        <label>Tipo de alerta:
-            <select id="alertTypeSelect">
-                <option value="all">Todos</option>
-                <option value="typeA">ok</option>
-                <option value="typeB">médio</option>
-                <option value="typeC">crítico</option>
-            </select>
-        </label>
-        <canvas id="lineComparison" width="900" height="250"></canvas>
-
-
-        <h2>Mapa de calor — alertas críticos (semana padrão)</h2>
-        <div id="heatmapContainer">(o heatmap será desenhado em tabela)</div>
+      <h2>Mapa de calor</h2>
+      <div>
+        <label>De: <input type="date" id="heatmapStart"></label>
+        <label>Até: <input type="date" id="heatmapEnd"></label>
+        <button onclick="fetchHeatmap()">Aplicar</button>
+      </div>
+      <div id="heatmapContainer"></div>
     </section>
 
     <section id="list-section">
@@ -347,6 +358,35 @@ header {
         options: { responsive: true }
       });
 
+      async function populateCompareEntity() {
+        const entityType = document.getElementById('compareEntityType').value;
+        const userId = sessionStorage.ID_USUARIO;
+        if (!userId) return;
+        // Fetch allowed models or lotes for this user
+        const res = await fetch(`/dadosModelos/listarModelosELotes/${userId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const select = document.getElementById('compareEntity');
+        select.innerHTML = '';
+        if (entityType === 'modelo') {
+          [...new Set(data.map(d => d.modelo))].forEach(modelo => {
+            const opt = document.createElement('option');
+            opt.value = modelo;
+            opt.textContent = modelo;
+            select.appendChild(opt);
+          });
+        } else {
+          [...new Set(data.map(d => d.lote))].forEach(lote => {
+            const opt = document.createElement('option');
+            opt.value = lote;
+            opt.textContent = lote;
+            select.appendChild(opt);
+          });
+        }
+      }
+      document.getElementById('compareEntityType').addEventListener('change', populateCompareEntity);
+      window.addEventListener('DOMContentLoaded', populateCompareEntity);
+
 
       const ctxL = document.getElementById('barLotes').getContext('2d');
       barLotesChart = new Chart(ctxL, {
@@ -364,10 +404,11 @@ header {
       });
     }
 
-    function getDateRange() {
-      const start = document.getElementById('startDate').value;
-      const end = document.getElementById('endDate').value;
-      return { start: start || null, end: end || null };
+    function severityLabel(sev) {
+      if (sev === "critico") return "Crítico";
+      if (sev === "atencao") return "Atenção";
+      if (sev === "normal") return "Normal";
+      return sev || "—";
     }
 
     function setPresetWeek() {
@@ -376,8 +417,20 @@ header {
       lastMonday.setDate(today.getDate() - (today.getDay() + 6) % 7 - 7);
       const lastSunday = new Date(lastMonday);
       lastSunday.setDate(lastMonday.getDate() + 6);
-      document.getElementById('startDate').value = lastMonday.toISOString().slice(0,10);
-      document.getElementById('endDate').value = lastSunday.toISOString().slice(0,10);
+      const startStr = lastMonday.toISOString().slice(0,10);
+      const endStr = lastSunday.toISOString().slice(0,10);
+
+      // Para cada filtro de data existente:
+      const ids = [
+        'barModelsStart', 'barModelsEnd',
+        'barLotesStart', 'barLotesEnd',
+        'lineStart', 'lineEnd',
+        'heatmapStart', 'heatmapEnd'
+      ];
+      ids.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.value = (i % 2 === 0) ? startStr : endStr;
+      });
     }
 
     function setPresetMonth() {
@@ -389,13 +442,17 @@ header {
     }
 
     async function fetchKpis() {
-      const {start, end} = getDateRange();
-      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const userId = sessionStorage.ID_USUARIO;
+      if (!userId) {
+        console.error('Usuário não autenticado!');
+        return;
+      }
+      const q = new URLSearchParams({ userId });
       const res = await fetch(`${apiBase}/getKpis?${q}`);
       if (!res.ok) { console.error('Erro ao carregar KPIs'); return; }
       const data = await res.json();
       document.getElementById('kpi-total-val').textContent = data.totalAlerts ?? '—';
-      document.getElementById('kpi-critical-val').textContent = data.criticalAlerts ?? '—';
+      document.getElementById('kpi-critical-val').textContent = data.criticoAlerts ?? '—';
       document.getElementById('kpi-top-model-val').textContent = data.topModel ? `${data.topModel.name} (${data.topModel.count})` : '—';
       document.getElementById('kpi-top-lote-val').textContent = data.topLote ? `${data.topLote.name} (${data.topLote.count})` : '—';
       document.getElementById('kpi-model-growth-val').textContent = data.modelGrowth ? `${data.modelGrowth.name} (${data.modelGrowth.pct}%)` : '—';
@@ -403,10 +460,24 @@ header {
     }
 
     async function fetchTopBars() {
-      const {start, end} = getDateRange();
-      const q = new URLSearchParams({ start: start || '', end: end || '' });
-      const resM = await fetch(`${apiBase}/topModels?${q}`);
-      const resL = await fetch(`${apiBase}/topLotes?${q}`);
+      // For models
+      const startM = document.getElementById('barModelsStart').value;
+      const endM = document.getElementById('barModelsEnd').value;
+      // For lotes
+      const startL = document.getElementById('barLotesStart').value;
+      const endL = document.getElementById('barLotesEnd').value;
+      const userId = sessionStorage.ID_USUARIO;
+      if (!userId) {
+        console.error('Usuário não autenticado!');
+        return;
+      }
+      // Fetch models
+      const qM = new URLSearchParams({ start: startM || '', end: endM || '', userId });
+      const resM = await fetch(`${apiBase}/topModels?${qM}`);
+      // Fetch lotes
+      const qL = new URLSearchParams({ start: startL || '', end: endL || '', userId });
+      const resL = await fetch(`${apiBase}/topLotes?${qL}`);
+
       if (!resM.ok || !resL.ok) { console.error('Erro ao carregar top bars'); return; }
       const dataM = await resM.json();
       const dataL = await resL.json();
@@ -416,28 +487,41 @@ header {
       barLotesChart.data.labels = dataL.map(x=>x.name);
       barLotesChart.data.datasets[0].data = dataL.map(x=>x.count);
       barLotesChart.update();
-  }
+    }
 
-  async function fetchComparison() {
-  const {start, end} = getDateRange();
-  const alertType = document.getElementById('alertTypeSelect').value;
-  const q = new URLSearchParams({ start: start || '', end: end || '', type: alertType });
-  const res = await fetch(`${apiBase}/comparison?${q}`);
-  if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
-  const data = await res.json();
-  lineChart.data.labels = data.labels;
-  lineChart.data.datasets = data.datasets;
-  lineChart.update();
-  }
+    async function fetchComparison() {
+      const start = document.getElementById('lineStart').value;
+      const end = document.getElementById('lineEnd').value;
+      const alertType = document.getElementById('alertTypeSelect').value;
+      const entityType = document.getElementById('compareEntityType').value;
+      const entity = document.getElementById('compareEntity').value;
+      const userId = sessionStorage.ID_USUARIO;
+      if (!userId) return;
+      const q = new URLSearchParams({
+        start: start || '',
+        end: end || '',
+        type: alertType,
+        entityType,
+        entity,
+        userId
+      });
+      const res = await fetch(`${apiBase}/comparison?${q}`);
+      if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
+      const data = await res.json();
+      lineChart.data.labels = data.labels;
+      lineChart.data.datasets = data.datasets;
+      lineChart.update();
+    }
 
-  async function fetchHeatmap() {
-  const {start, end} = getDateRange();
-  const q = new URLSearchParams({ start: start || '', end: end || '' });
-  const res = await fetch(`${apiBase}/heatmap?${q}`);
-  if (!res.ok) { console.error('Erro ao carregar heatmap'); return; }
-  const data = await res.json();
-  renderHeatmap(data);
-  }
+    async function fetchHeatmap() {
+      const start = document.getElementById('heatmapStart').value;
+      const end = document.getElementById('heatmapEnd').value;
+      const q = new URLSearchParams({ start: start || '', end: end || '' });
+      const res = await fetch(`${apiBase}/heatmap?${q}`);
+      if (!res.ok) { console.error('Erro ao carregar heatmap'); return; }
+      const data = await res.json();
+      renderHeatmap(data);
+    }
 
   function renderHeatmap(data) {
     const container = document.getElementById('heatmapContainer');
@@ -467,11 +551,17 @@ header {
   }
 
   async function fetchList() {
-    const {start, end} = getDateRange();
+    const start = document.getElementById('barModelsStart').value;
+    const end = document.getElementById('barModelsEnd').value;
     const view = document.getElementById('viewSelect').value;
     const state = document.getElementById('stateSelect').value;
     const order = document.getElementById('orderSelect').value;
-    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order });
+    const userId = sessionStorage.ID_USUARIO;
+    if (!userId) {
+      console.error('Usuário não autenticado!');
+      return;
+    }
+    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order, userId });
     const res = await fetch(`${apiBase}/list?${q}`);
     if (!res.ok) { console.error('Erro ao carregar lista'); return; }
     const data = await res.json();
@@ -484,7 +574,7 @@ header {
     tbody.innerHTML = '';
     items.forEach(item => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${item.type}</td><td>${item.name}</td><td>${item.total}</td><td>${item.critical}</td><td>${item.state}</td><td><button data-id='${item.type}|${item.id}' class='detailBtn'>Detalhes</button></td>`;
+      tr.innerHTML = `<td>${item.type}</td><td>${item.name}</td><td>${item.total}</td><td>${item.critico}</td><td>${severityLabel(item.state)}</td><td><button data-id='${item.type}|${item.id}' class='detailBtn'>Detalhes</button></td>`;
       tbody.appendChild(tr);
     });
     document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
@@ -494,8 +584,14 @@ header {
   }
 
   async function fetchRecommendations() {
-    const {start, end} = getDateRange();
-    const q = new URLSearchParams({ start: start || '', end: end || '' });
+    const start = document.getElementById('barModelsStart').value;
+    const end = document.getElementById('barModelsEnd').value;
+    const userId = sessionStorage.ID_USUARIO;
+    if (!userId) {
+      console.error('Usuário não autenticado!');
+      return;
+    }
+    const q = new URLSearchParams({ start: start || '', end: end || '', userId });
     const res = await fetch(`${apiBase}/recommend?${q}`);
     if (!res.ok) { console.error('Erro ao carregar recomendações'); return; }
     const data = await res.json();
@@ -524,9 +620,6 @@ header {
     document.getElementById('detailModal').style.display = 'block';
   }
 
-  document.getElementById('applyRange').addEventListener('click', () => { refreshAll(); });
-  document.getElementById('presetWeek').addEventListener('click', () => { setPresetWeek(); refreshAll(); });
-  document.getElementById('presetMonth').addEventListener('click', () => { setPresetMonth(); refreshAll(); });
   document.getElementById('alertTypeSelect').addEventListener('change', () => fetchComparison());
   document.getElementById('viewSelect').addEventListener('change', () => fetchList());
   document.getElementById('stateSelect').addEventListener('change', () => fetchList());

@@ -13,27 +13,30 @@ const OUTPUT_KEY = "alertas-tratado.json";
 
 let cachedAlerts = [];
 
+const localAlerts = require("../tests/alerts.json");
+
 async function syncAlerts(req, res) {
     try {
-        const data = await s3.getObject({ Bucket: CLIENT_BUCKET, Key: OUTPUT_KEY }).promise();
-        cachedAlerts = JSON.parse(data.Body.toString("utf-8"));
-        return res.status(200).send("Alerts synchronized.");
-    } catch (error) {
-        console.error("Erro ao sincronizar alerts:", error);
-        return res.status(500).send("Erro ao sincronizar alerts");
+        // USE LOCAL JSON FOR NOW
+        const alerts = localAlerts;
+
+        req._alerts = alerts;
+
+        res.json({
+            message: "Test alerts loaded from JSON",
+            count: alerts.length
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load alerts" });
     }
 }
 
+
 async function getKpis(req, res) {
-    const { start, end } = req.query;
     const userId = req.query.userId || req.params.userId;
-
-    if (!start || !end) {
-        return res.status(400).send("Parâmetros de data ausentes!");
-    }
-
     try {
-        const resultado = await model.getKpis(start, end, userId);
+        const resultado = await model.getKpis(userId); // no start/end
         res.status(200).json(resultado);
     } catch (erro) {
         console.log("Erro ao obter KPIs:", erro);
@@ -50,7 +53,7 @@ async function topModels(req, res) {
     }
 
     try {
-        const resultado = await model.topModels(start, end, userId);
+        const resultado = await model.topModels(userId, start, end); // Passe start e end
         res.status(200).json(resultado);
     } catch (erro) {
         console.log("Erro ao obter modelos críticos:", erro);
@@ -67,7 +70,7 @@ async function topLotes(req, res) {
     }
 
     try {
-        const resultado = await model.topLotes(start, end, userId);
+        const resultado = await model.topLotes(userId, start, end); // <-- ORDEM CORRETA!
         res.status(200).json(resultado);
     } catch (erro) {
         console.log("Erro ao obter lotes críticos:", erro);
@@ -110,7 +113,7 @@ async function heatmap(req, res) {
 }
 
 async function list(req, res) {
-    const { start, end, tipo } = req.query;
+    const { start, end, view, state, order } = req.query;
     const userId = req.query.userId || req.params.userId;
 
     if ((start && !end) || (!start && end)) {
@@ -131,7 +134,7 @@ async function list(req, res) {
     }
 
     try {
-        const resultado = await model.list(start, end, tipo, userId);
+        const resultado = await model.list(start, end, view, state, order, userId);
         return res.status(200).json(resultado);
     } catch (erro) {
         console.log("Erro ao listar modelos e lotes:", erro);

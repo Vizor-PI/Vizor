@@ -41,8 +41,19 @@ function listarTodosModelos(req, res){
     });
 }
 
+async function listarModelosELotes(req, res) {
+  const id = req.params.id;
+  try {
+    const result = await dadosModeloModel.listarModelosELotes(id); // <-- ajuste aqui
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).send("Erro ao listar modelos e lotes");
+  }
+}
+
 module.exports = {
     listarDados,
     listarModelos,
-    listarTodosModelos
+    listarTodosModelos,
+    listarModelosELotes
 }

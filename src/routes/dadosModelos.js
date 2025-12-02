@@ -15,4 +15,8 @@ router.get("/listarTodos", function (req,res){
     dadosModeloController.listarTodosModelos(req,res);
 });
 
+router.get("/listarModelosELotes/:id",function(req,res){
+    dadosModeloController.listarModelosELotes(req,res);
+});
+
 module.exports = router;

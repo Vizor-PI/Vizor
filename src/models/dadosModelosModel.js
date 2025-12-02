@@ -65,10 +65,28 @@ GROUP BY m.id, l.dataFabricacao;
   return database.executar(instrucaoSql);
 }
 
+function listarModelosELotes(id) {
+  // Retorna modelos e lotes permitidos para o usuário
+  var instrucaoSql = `
+    SELECT 
+      m.nome AS modelo,
+      l.id AS lote
+    FROM usuario u
+    JOIN empresa e ON u.fkEmpresa = e.id
+    JOIN lote l ON l.fkEmpresa = e.id
+    JOIN modelo m ON l.fkModelo = m.id
+    WHERE u.id = ${id}
+    GROUP BY m.nome, l.id;
+  `;
+  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+  return database.executar(instrucaoSql);
+}
+
 
 module.exports = {
   listarDados,
   listarModelos,
-  listarTodosModelos
+  listarTodosModelos,
+  listarModelosELotes 
 }
 
