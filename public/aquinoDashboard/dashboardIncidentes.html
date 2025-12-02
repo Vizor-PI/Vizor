@@ -7,9 +7,7 @@
 
   <!-- 
      ___________________________________________________________________________________
-     IMPORTAÇÃO DE ESTILOS E BIBLIOTECAS
-     ___________________________________________________________________________________
-  -->
+     IMPORTAÇÃO DE ESTILOS E BIBLIOTECAS-->
   <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
   <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
   <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
@@ -18,40 +16,34 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
-  <!-- Chart.js (Para os Gráficos) -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
     /* ___________________________________________________________________________________
        ESTILOS GERAIS E LAYOUT
-       Definição do Grid principal e correções de posicionamento.
-       ___________________________________________________________________________________
-    */
+       Definição do Grid principal e correções de posicionamento.*/
     
-    /* ======== ESTILO BASE ======== */
+    /*  ESTILO BASE  */
     body {
       background-color: #061722;
       color: white;
       font-family: 'Akatab', sans-serif;
       margin: 0;
       padding: 0;
-      /* [CORREÇÃO] Flexbox para layout lateral robusto (Navbar na esquerda, Conteúdo na direita) */
       display: flex; 
       flex-direction: row;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* [CORREÇÃO CRÍTICA DA NAVBAR] 
-       Força a navbar a se comportar como uma coluna flexível e fixa, 
-       independentemente do que o CSS externo diga. */
+
     .navbar {
-        position: sticky !important; /* Fica fixa ao rolar a página */
+        position: sticky !important; 
         top: 0;
-        height: 100vh !important;    /* Ocupa a altura total da tela */
-        flex-shrink: 0;              /* Impede que a navbar encolha se o conteúdo for grande */
-        z-index: 999;                /* Garante que fique por cima de outros elementos */
-        /* Se o navbar.css original não tiver width, definimos um padrão */
+        height: 100vh !important;    
+        flex-shrink: 0;              
+        z-index: 999;               
         min-width: 250px;            
         display: flex;
         flex-direction: column;
@@ -79,22 +71,21 @@
         transform: translateY(-50%);
     }
 
-    /* Container Principal (Onde fica o conteúdo da dashboard) */
+    /* Container Principal  */
     .container-xl { 
       flex-grow: 1; 
       padding: 24px; 
       box-sizing: border-box;
-      width: 100%; /* Garante que ocupe o espaço restante */
-      max-width: calc(100vw - 250px); /* Evita overflow horizontal */
+      width: 100%; 
+      max-width: calc(100vw - 250px); 
       overflow-y: auto;
     }
 
     /* ___________________________________________________________________________________
-       COMPONENTES VISUAIS (KPIs, Cards, Alertas)
-       ___________________________________________________________________________________
-    */
 
-    /* ======== KPIs GERAIS (JIRA) ======== */
+       COMPONENTES VISUAIS (KPIs, Cards, Alertas)*/
+
+    /*  KPIs GERAIS (JIRA)  */
     .kpi-card {
       background: #072135;
       border-radius: 16px;
@@ -110,7 +101,7 @@
     .kpi-value { font-size: 32px; font-weight: 800; }
     .kpi-sub { opacity: 0.8; font-size: 13px; }
 
-    /* ======== CARDS PADRÃO ======== */
+    /*  CARDS PADRÃO  */
     .card {
       background-color: #072135;
       border-radius: 16px;
@@ -122,7 +113,7 @@
     .card-header { margin-bottom: 12px; }
     .card-title { color: aqua; font-weight: 700; font-size: 1.4rem; }
 
-    /* ======== ALERTAS: KPIs SUPERIORES ======== */
+    /*  ALERTAS: KPIs SUPERIORES  */
     .alert-top-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -156,7 +147,7 @@
     .alert-kpi .value { font-size: 28px; font-weight: 700; line-height: 1.2; }
     .alert-kpi .desc { font-size: 12px; opacity: .75; }
 
-    /* ======== ALERTAS: FILTROS E HEADER ======== */
+    /*  ALERTAS: FILTROS E HEADER  */
     .alerts-header {
       display: flex; flex-wrap: wrap; justify-content: space-between;
       align-items: flex-start; gap: 16px; margin-bottom: 16px;
@@ -169,7 +160,7 @@
       color: #fff; border-radius: 8px; padding: 8px 10px; min-width: 140px;
     }
 
-    /* ======== ALERTAS: LISTA DE CARDS ======== */
+    /*  ALERTAS: LISTA DE CARDS  */
     .alert-list { display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto; padding-right: 5px; }
     
     /* Customização da Scrollbar */
@@ -218,12 +209,12 @@
     }
     .alert-action { margin-top: 8px; color: aqua; font-weight: 600; }
 
-    /* ======== GRÁFICOS E MAPAS ======== */
+    /*  GRÁFICOS E MAPAS  */
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; margin-bottom: 24px; }
     .chart-box { height: 350px; }
     #vizor-map { width: 100%; height: 420px; border-radius: 12px; }
 
-    /* ======== BOTÕES ======== */
+    /*  BOTÕES  */
     .vizor-btn {
         background: #00bcd4; 
         color: #000; 
@@ -236,7 +227,7 @@
     }
     .vizor-btn:hover { background: #00acc1; }
 
-    /* ======== MODAL ======== */
+    /*  MODAL do Gerar Relatório  */
     .modal-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.7); z-index: 1000; display: none;
@@ -263,10 +254,9 @@
 
 <body>
     <!-- 
-       ___________________________________________________________________________________
-       NAVBAR
-       ___________________________________________________________________________________
-    -->
+       _______________________________________NAVBAR____________________________________________
+       -->
+
     <nav class="navbar">
       <!-- Logo -->
       <a href="#">
@@ -311,11 +301,9 @@
     </div>
 
     <!-- 
-       ___________________________________________________________________________________
-       SEÇÃO 1: KPIs GERAIS (JIRA)
-       Mostra os números consolidados de incidentes e SLA.
-       ___________________________________________________________________________________
-    -->
+       _______________________________KPIs GERAIS (JIRA) ____________________________________________________
+       -->
+
     <section class="card kpi-card">
       <header class="card-header">
         <h2 class="card-title">Status Geral dos Chamados (Jira)</h2>
@@ -341,9 +329,7 @@
     </section>
 
     <!-- 
-       ___________________________________________________________________________________
-       SEÇÃO 2: ALERTAS DE HARDWARE (TEMPO REAL - S3)
-       ___________________________________________________________________________________
+       _________________________________ALERTAS DE HARDWARE (S3)__________________________________________________  
     -->
     <section class="alert-top-grid">
       <div class="alert-kpi">
@@ -389,10 +375,7 @@
     </section>
 
     <!-- 
-       ___________________________________________________________________________________
-       SEÇÃO 3: GRÁFICOS (CHART.JS)
-       Visualizações de tendências e categorias.
-      
+       ___________________________________GRÁFICOS (CHART.JS)________________________________________________
     -->
     <section class="grid-2">
       <div class="card">
@@ -406,25 +389,19 @@
     </section>
 
     <!-- 
-       ___________________________________________________________________________________
-       SEÇÃO 4: MAPA DE CALOR (LEAFLET)
-       Distribuição geográfica dos incidentes.
-       ___________________________________________________________________________________
+       __________________________________________MAPA DE CALOR (LEAFLET)_________________________________________
     -->
     <section class="card" style="padding:16px; margin-bottom:16px;">
-      <header class="card-header"><h2 class="card-title">Mapa de Calor</h2><small style="opacity:.7;">Distribuição geográfica</small></header>
+      <header class="card-header"><h2 class="card-title">Distribuição Geografica dos Incidentes</h2><small style="opacity:.7;">Distribuição geográfica</small></header>
       <div id="vizor-map"></div>
     </section>
 
     <!-- 
-       ___________________________________________________________________________________
-       SEÇÃO 5: MODAL DE RELATÓRIO (PDF)
-       Configuração e geração de relatório para impressão.
-       ___________________________________________________________________________________
+       _____________________________________MODAL DE RELATÓRIO (PDF)______________________________________________
     -->
     <div id="modal-relatorio" class="modal-overlay">
         <div class="modal-content">
-            <!-- Passo 1: Seletor de Filtros -->
+            <!-- Seletor de Filtros -->
             <div id="step-selector">
                 <h2 style="margin-top:0; color:aqua;">Configurar Relatório</h2>
                 
@@ -441,7 +418,7 @@
                     <label class="vizor-label">Filtrar por Máquina:</label><br>
                     <select id="filtro-maquina-rel" class="ui-select" style="width: 100%; margin-top:8px;">
                         <option value="todas">Todas as Máquinas</option>
-                        <!-- Populated via JS -->
+                        <!-- via JS -->
                     </select>
                 </div>
 
@@ -451,7 +428,7 @@
                 </div>
             </div>
 
-            <!-- Passo 2: Relatório Gerado (Card para Impressão) -->
+            <!-- Relatório Gerado (Card para Impressão) -->
             <div id="step-result" style="display: none;">
                 <div id="printable-area" style="background: #072135; padding: 20px; border-radius: 8px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
@@ -511,7 +488,7 @@
     let dadosKpiCache = { aberto: 0, fechado: 0, tempoMedio: 0, sla: 0 };
     let listaMaquinasCache = new Set(); 
 
-    // Inicialização da página
+    // Inicialização da página (melhor do que usar onload)
     document.addEventListener("DOMContentLoaded", () => {
       inicializarMapa(); 
       atualizarKPIsJira();
@@ -519,13 +496,11 @@
       gerarGraficos(); 
     });
 
-    /* ___________________________________________________________________________________
-       FUNÇÕES DO MAPA (LEAFLET)
-       Inicialização e plotagem de marcadores dinâmicos.
-       ___________________________________________________________________________________
+    /* __________________________________FUNÇÕES DO MAPA (LEAFLET)_________________________________________________
     */
+
     function inicializarMapa() {
-      // Cria o mapa focado em São Paulo
+      // .map cria o mapa focado em São Paulo
       map = L.map('vizor-map').setView([-23.5614, -46.6559], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
         attribution: '&copy; OpenStreetMap' 
@@ -586,10 +561,7 @@
       }
     }
 
-    /* ___________________________________________________________________________________
-       FUNÇÕES DO JIRA (KPIs)
-       Busca dados do backend para preencher os cards de topo.
-       ___________________________________________________________________________________
+    /* ______________________________________FUNÇÕES DO JIRA (KPIs)_____________________________________________
     */
     async function atualizarKPIsJira() {
       try {
@@ -604,10 +576,7 @@
       } catch (err) { console.error("Erro KPIs Jira", err); }
     }
 
-    /* ___________________________________________________________________________________
-       FUNÇÕES DE ALERTAS (S3)
-       Busca JSONs do S3, calcula contagens e renderiza a lista de cards.
-       ___________________________________________________________________________________
+    /* __________________________________FUNÇÕES DE ALERTAS (S3)_________________________________________________
     */
     async function processarAvisos() {
       try {
@@ -701,11 +670,8 @@
     }
     document.getElementById("filtro-severidade").addEventListener("change", renderizarListaAvisos);
 
-    /* ___________________________________________________________________________________
-       FUNÇÕES DE GRÁFICOS (CHART.JS)
-       Gera os gráficos de barras (Áreas) e linha (Tendência).
-       ___________________________________________________________________________________
-    */
+    /* __________________________________FUNÇÕES DE GRÁFICOS (CHART.JS)_________________________________________________*/
+
     async function gerarGraficos() {
       try {
         const resposta = await fetch(`${API_BASE_URL}/issues`);
@@ -785,9 +751,8 @@
       } catch (erro) { console.error("Erro ao gerar gráficos:", erro); }
     }
 
-    /* ___________________________________________________________________________________
-       FUNÇÕES DE RELATÓRIO (MODAL & PDF)
-       ___________________________________________________________________________________
+    /* ___________________________________FUNÇÕES DE RELATÓRIO (MODAL & PDF)________________________________________________
+       
     */
     const modal = document.getElementById("modal-relatorio");
     const stepSelector = document.getElementById("step-selector");

@@ -26,12 +26,11 @@ async function listarAvisos() {
         }
 
         // Para cada arquivo encontrado, baixar e ler o JSON
-
         // Promise.all = baixa tudo em paralelo (rápido)
         const promises = listResponse.Contents
             .filter(item => item.Key.endsWith(".json")) // Garante que só pega JSON
 
-            // .map faz  
+            // .map aqui transforma cada item em uma Promise que baixa o arquivo
             .map(async (item) => {
                 const getCommand = new GetObjectCommand({
                     Bucket: BUCKET_NAME,
@@ -45,8 +44,7 @@ async function listarAvisos() {
 
         const resultados = await Promise.all(promises);
 
-        // Filtrar apenas os que não são "INFO" (Verdes)
-        // Se quiser mostrar todos na tela de avisos, remova o filter abaixo.
+        // Filtrar apenas os que não são "INFO" 
         const avisosRelevantes = resultados.filter(item => 
             item.ui.severity === "ALERTA" || item.ui.severity === "CRITICO"
         );
