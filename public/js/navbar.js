@@ -12,24 +12,24 @@ navbarConstructor.innerHTML += `
       <ul id="textosNavbar">
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
-        <a href="dashboard.html"> Dashboard </a>
+        <a href="dashboard.html"> Comparação de Modelos </a>
       </li>
       <li class="nav-item">
-        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
+        <img src="../assets/imgs/logosDash/reclamacoes.png" alt="" id="logoNavbarDash" />
         <a href="reclamacaoLote.html"> Reclamação </a>
       </li>
       </li>
       <li class="nav-item">
-        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
-        <a href="avisoDash.html"> Avisos </a>
+        <img src="../assets/imgs/logosDash/clima.png" alt="" id="logoNavbarDash" />
+        <a href="climaDash.html"> Painel Climático </a>
       </li>
       <li class="nav-item">
-        <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
-        <a href="Lotes.html">Lotes</a>
+        <img src="../assets/imgs/logosDash/incidentes.png" alt="" id="logoNavbarDash" />
+        <a href="dashboardIncidentes.html"> Incidentes </a>
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/manutencao.png" alt="" id="logoNavbarDash" />
+        <a href="pedroDashboard.html"> Manutenção </a>
       </li>
-      <li class="nav-item" id="adm-only">
-        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash" />
-        <a href="gestaoUsuarios.html"> Contas </a>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash" />
         <a href="alterarDados.html"> Alterar dados </a>

@@ -257,38 +257,10 @@
        _______________________________________NAVBAR____________________________________________
        -->
 
-    <nav class="navbar">
-      <!-- Logo -->
-      <a href="#">
-        <img src="../assets/imgs/logosDash/logoDashboard.png" alt="" class="imagemLogoDashboard">
-      </a>
-
-      <!-- Menu -->
-      <ul id="textosNavbar">
-      <li class="nav-item active">
-        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash">
-        <a href="dashboardIncidentes.html"> Incidentes </a>
-      </li>
     
-      <li class="nav-item" id="adm-only" style="display: none;">
-        <img src="../assets/imgs/logosDash/logoGestao.png" alt="" id="logoNavbarDash">
-        <a href="gestaoUsuarios.html"> Contas </a>
-      </li><li class="nav-item">
-        <img src="../assets/imgs/logosDash/mudarContaIcon.png" alt="" id="logoNavbarDash">
-        <a href="alterarDados.html"> Alterar dados </a>
-      </li>
-      <li class="nav-item" id="adm-only2" style="display: none;">
-        <img src="../assets/imgs/logosDash/configIcon.png" alt="" id="logoNavbarDash">
-        <a href="infoConta.html"> Info. da conta </a>
-      </li>
-    </ul>
+    <nav class="navbar" id="navbarConstructor"></nav>
 
-      <!-- Botão Sair -->
-      <div id="divSair">
-        <img src="../assets/imgs/logosDash/exitIcon.png" id="logoNavbarDash">
-        <a href="../index.html" onclick="limparSessao()"> Sair </a>
-      </div>
- </nav>
+
 
  <main class="container-xl">
     
@@ -471,6 +443,7 @@
  </main>
 
   <!-- SCRIPTS -->
+  <script src="../js/navbar.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
