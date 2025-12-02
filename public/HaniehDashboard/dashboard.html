@@ -10,46 +10,78 @@
   <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
   <style>
-    /* SEUS ESTILOS MANTIDOS */
+    body, .container-xl, header, section, label, th, td, h3, h4, h5, h6, p, span, select, input, div {
+      color: #fff !important;
+    }
     .container-xl { padding: 24px; max-width: 1400px; margin: auto; }
     h1, h2 { color: #00c8d2; font-weight: 600; margin-bottom: 12px; }
     header { background: #0f1f2b; border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; margin-bottom: 24px; }
-    #date-filters { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-    #date-filters label { font-size: 14px; opacity: .85; }
-    #date-filters input[type="date"] { background: #0a141d; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 8px; color: #fff; }
-    #date-filters button { background: #00c8d2; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; color: #000; }
-    #date-filters button:hover { filter: brightness(1.1); }
-    
+    .date-filters { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .date-filters label { font-size: 14px; opacity: .85; }
+    .date-filters input[type="date"] { background: #0a141d; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 8px; color: #fff; }
+    .date-filters button, .detailBtn {
+      background: #00c8d2;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      transition: filter 0.2s, box-shadow 0.2s;
+    }
+    .date-filters button:hover, .detailBtn:hover,
+    .date-filters button:focus, .detailBtn:focus {
+      filter: brightness(1.1);
+      box-shadow: 0 2px 8px rgba(0,200,210,0.12);
+      outline: none;
+    }
+    @media(max-width:700px){
+      .date-filters { flex-direction: column; align-items: flex-start; }
+    }
     .alert-top-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
     #kpi-total, #kpi-critical, #kpi-top-model, #kpi-top-lote, #kpi-model-growth, #kpi-lote-growth { background:#0f1f2b; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between; font-size:14px; font-weight:600; gap: 4px; }
     #kpi-total span, #kpi-critical span, #kpi-top-model span, #kpi-top-lote span, #kpi-model-growth span, #kpi-lote-growth span { display:block; font-size:28px; font-weight:700; margin-top:6px; }
-    
     #charts canvas { background: #0f1f2b; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.08); margin-bottom: 24px; }
-    #charts label select { background:#0f1f2b; border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:8px; padding:8px 10px; }
-    
-
-    
+    .date-filters select {
+      background: #0f1f2b;
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-right: 8px;
+    }
     #list-section { margin-top: 32px; }
     #list-section label select { background:#0f1f2b; border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:8px; padding:6px 10px; }
     #listTable { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; background:#0f1f2b; border-radius: 12px; overflow: hidden; border:1px solid rgba(255,255,255,.1); }
     #listTable th { background:#0a141d; padding: 10px; font-weight:600; border-bottom:1px solid rgba(255,255,255,.1); }
     #listTable td { padding: 10px; border-bottom:1px solid rgba(255,255,255,.05); }
     #listTable tr:hover { background: rgba(255,255,255,0.05); }
-    
+    #listTable tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+    #listTable th, #listTable td { border-bottom: 1px solid rgba(255,255,255,.08); }
     .detailBtn { background:#00c8d2; border:none; padding:6px 10px; border-radius:6px; font-weight:600; cursor:pointer; color:#000; }
-    
-    /* Estilo do Modal Corrigido */
-    .modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; }
+    /* Modal improvements */
+    .modal { 
+      display: none; 
+      position: fixed; 
+      z-index: 999; 
+      left: 0; top: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.6); 
+      justify-content: center; 
+      align-items: center; 
+    }
+    .modal.open { display: flex; }
     .modal-content { background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative; border:1px solid rgba(255,255,255,.2); }
-    .close { position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer; }
-    
+    .close { 
+      position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer; 
+      padding: 2px 8px; border-radius: 50%; transition: background 0.2s;
+    }
+    .close:hover { background: rgba(255,255,255,0.1); }
     #detailModal table { width:100%; margin-top:16px; border-collapse: collapse; }
     #detailModal th, #detailModal td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,.1); }
-
     @media(max-width:700px){
       #date-filters { flex-direction: column; align-items: flex-start; }
       #listTable { font-size: 12px; }
-      .modal-content { width: 94%; }
+      .modal-content { width: 98vw; max-width: 98vw; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -62,7 +94,7 @@
 
     <header>
         <h1>Comparação de Modelos/Lotes</h1>
-        <div id="date-filters">
+        <div class="date-filters">
             <label>De: <input type="date" id="startDate" /></label>
             <label>Até: <input type="date" id="endDate" /></label>
             <!-- [CORREÇÃO] Adicionada função onclick -->
@@ -83,7 +115,7 @@
 
     <section id="charts">
       <h2>Top 5 — Modelos (alertas críticos)</h2>
-      <div>
+      <div class="date-filters">
         <label>De: <input type="date" id="barModelsStart"></label>
         <label>Até: <input type="date" id="barModelsEnd"></label>
         <button onclick="fetchTopBars()">Aplicar</button>
@@ -91,7 +123,7 @@
       <canvas id="barModels"></canvas>
 
       <h2>Top 5 — Lotes (alertas críticos)</h2>
-      <div>
+      <div class="date-filters">
         <label>De: <input type="date" id="barLotesStart"></label>
         <label>Até: <input type="date" id="barLotesEnd"></label>
         <button onclick="fetchTopBars()">Aplicar</button>
@@ -99,7 +131,7 @@
       <canvas id="barLotes"></canvas>
 
       <h2>Comparação</h2>
-      <div>
+      <div class="date-filters">
         <label>De: <input type="date" id="lineStart"></label>
         <label>Até: <input type="date" id="lineEnd"></label>
         <select id="compareEntityType">
