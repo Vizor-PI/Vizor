@@ -8,7 +8,7 @@ const {
 
 // Bucket onde o Lambda grava os JSONs de dashboard
 const CLIENT_BUCKET = process.env.CLIENT_BUCKET || "vizor-client";
-const CLIENT_PREFIX = process.env.CLIENT_PREFIX || "pedro-client/";
+const CLIENT_PREFIX = process.env.CLIENT_PREFIX || "pedro-client/Tech_Solutions/";
 
 // cliente S3 – usa as credenciais definidas no .env 
 const s3 = new S3Client({
