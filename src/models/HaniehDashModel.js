@@ -223,7 +223,7 @@ module.exports = {
             .slice(0, limit);
     },
 
-    async comparison(start, end, type, userId) {
+    async comparison(start, end, entityType, entity, userId) {
         let alertas = await this.listarTodos(userId);
 
         if (start) {
@@ -235,38 +235,30 @@ module.exports = {
             alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
-        // Exemplo: retorna contagem por severidade
-        let result = {};
-        if (type === "all") {
-            result = {
-                labels: ["normal", "atencao", "critico"],
-                datasets: [
-                    {
-                        label: "Alertas",
-                        data: [
-                            alertas.filter(a => normalizeSeverity(a.severidade) === "normal").length,
-                            alertas.filter(a => normalizeSeverity(a.severidade) === "atencao").length,
-                            alertas.filter(a => normalizeSeverity(a.severidade) === "critico").length
-                        ]
-                    }
-                ]
-            };
-        } else {
-            // Filtro por tipo específico, se necessário
-            result = {
-                labels: [type],
-                datasets: [
-                    {
-                        label: "Alertas",
-                        data: [alertas.filter(a => normalizeSeverity(a.severidade) === type).length]
-                    }
-                ]
-            };
+        // Filtra pelo modelo ou lote selecionado
+        if (entityType === "modelo") {
+            alertas = alertas.filter(a => a.modelo == entity);
+        } else if (entityType === "lote") {
+            alertas = alertas.filter(a => String(a.lote) == String(entity));
         }
 
-        return [result];
-    },
+        // Conta por severidade
+        const severidades = ["normal", "atencao", "critico"];
+        const data = severidades.map(sev =>
+            alertas.filter(a => normalizeSeverity(a.severidade) === sev).length
+        );
 
+        return {
+            labels: severidades,
+            datasets: [
+                {
+                    label: "Alertas",
+                    data
+                }
+            ]
+        };
+    },
+    
     async heatmap(userId) {
         let alertas = await this.listarTodos(userId);
 
