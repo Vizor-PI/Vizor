@@ -379,58 +379,64 @@
     };
 
   //busca os dados no client
-    async function fetchDados() {
-      try {
-        const resp = await fetch(API_URL);
-        if (!resp.ok) throw new Error("Erro na API: " + resp.status);
-        const json = await resp.json();
+  async function fetchDados() {
+  try {
+    const resp = await fetch(API_URL);
+    if (!resp.ok) throw new Error("Erro na API: " + resp.status);
+    const json = await resp.json();
 
-        const lista = Array.isArray(json) ? json : (json.devices || []);
+    const lista = Array.isArray(json) ? json : (json.devices || []);
 
-        return lista.map((item, idx) => {
-          const raw  = item.raw_metrics     || {};
-          const ui   = item.ui              || {};
-          const risk = item.risk_model      || {};
-          const meds = item.medianas        || {};
-          const medDia = meds.dia           || {};
-          const hist = item.historico_7d    || {};
+    return lista.map((item, idx) => {
+      const raw  = item.raw_metrics     || {};
+      const ui   = item.ui              || {};
+      const risk = item.risk_model      || {};
+      const meds = item.medianas        || {};
+      const medDia = meds.dia           || {};
+      const hist = item.historico_7d    || {};
 
-          return {
-            //id
-            id: item.machine_id || item.id || `DOOH-${idx+1}`,
-            company: item.company || "N/A",
+      return {
+        //id
+        id: item.machine_id || item.id || `DOOH-${idx+1}`,
+        company: item.company || "N/A",
 
-            // status para mapa/
-            status: item.status || "ok",
+        // status para mapa/
+        status: item.status || "ok",
 
-            // localização
-            location: ui.location || item.location || "Local não informado",
+        // localização
+        location: ui.location || item.location || "Local não informado",
 
-            // coordenadas
-            lat: Number(raw.latitude  ?? item.latitude  ?? -23.56),
-            lng: Number(raw.longitude ?? item.longitude ?? -46.65),
+        // coordenadas
+        lat: Number(raw.latitude  ?? item.latitude  ?? -23.56),
+        lng: Number(raw.longitude ?? item.longitude ?? -46.65),
 
-            // métricas
-            cpu:  parseNumber(raw.cpu  ?? medDia.cpu),
-            ram:  parseNumber(raw.ram  ?? medDia.ram),
-            disk: parseNumber(raw.disco ?? raw.disk ?? medDia.disco),
-            temp: parseNumber(raw.temp ?? medDia.temp),
-            uptime: raw.uptime ?? item.uptime ?? 0,
+        // métricas
+        cpu:  parseNumber(raw.cpu  ?? medDia.cpu),
+        ram:  parseNumber(raw.ram  ?? medDia.ram),
+        disk: parseNumber(raw.disco ?? raw.disk ?? medDia.disco),
+        temp: parseNumber(raw.temp ?? medDia.temp),
 
-            // blocos vindos do Lambda
-            ui,
-            risk_model: risk,
-            medianas: meds,
-            regressao_risco: item.regressao_risco || null,
-            historico_7d: hist,
-            last_update: item.last_update || null
-          };
-        });
-      } catch (e) {
-        console.error("Erro ao buscar dados:", e);
-        return [];
-      }
-    }
+        // --- UPTIME CORRIGIDO (minutos → horas) ---
+        uptime: (() => {
+          const up = parseNumber(raw.uptime ?? item.uptime ?? 0);
+          return up ? Number((up / 60).toFixed(1)) : 0;
+        })(),
+        // ------------------------------------------
+
+        ui,
+        risk_model: risk,
+        medianas: meds,
+        regressao_risco: item.regressao_risco || null,
+        historico_7d: hist,
+        last_update: item.last_update || null
+      };
+    });
+  } catch (e) {
+    console.error("Erro ao buscar dados:", e);
+    return [];
+  }
+}
+
 
     // usa risk e mediana
     function openModal(d) {
