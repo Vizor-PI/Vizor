@@ -1,595 +1,822 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vizor — Suporte à Manutenção</title>
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Vizor — Suporte à Manutenção</title>
 
-  <!-- Links Originais do seu Projeto -->
-  <link rel="stylesheet" href="../assets/css/css-dashboard/pedroDash.css" />
-  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
-  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/pedroDash.css" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+    <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
-  <!-- Fonte Akatab -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  
-  <!-- Lucide Icons & ApexCharts -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 
-  <!-- CSS ADICIONAL (Necessário para as novas features de Modal e Gráfico) -->
-  <style>
-    /* Correção para o Select não ficar branco */
-    .vizor-select option { background-color: #061722; color: #fff; padding: 10px; }
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-    /* --- MODAL ESTILIZADO --- */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 2000; display: none; justify-content: center; align-items: center; }
-    .vizor-modal { background: #09141d; width: 750px; max-width: 95%; max-height: 90vh; border: 1px solid #0f344d; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow-y: auto; }
-    .modal-header { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: flex-start; }
-    .modal-title-group h3 { margin: 0; font-size: 20px; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .modal-subtitle { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
-    .btn-close { background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-    .btn-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .modal-body { padding: 24px; }
+    <style>
+      .vizor-select option { background-color: #061722; color: #fff; padding: 10px; }
 
-    /* Predição */
-    .prediction-section { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; background: rgba(255,255,255,0.02); margin-bottom: 24px; display: flex; gap: 24px; align-items: center; }
-    .pred-left { flex: 1; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.08); }
-    .pred-right { flex: 1.5; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
-    .pred-title { font-size: 14px; font-weight: 700; color: aqua; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .risk-percent { font-size: 48px; font-weight: 800; line-height: 1; margin-bottom: 8px; color: #fff; }
-    .risk-label { font-size: 12px; color: rgba(255,255,255,0.5); }
-    .progress-bg { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; width: 100%; margin-top: 12px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
-    .cause-box { font-size: 13px; }
-    .cause-label { color: rgba(255,255,255,0.4); font-size: 10px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-    .cause-text { color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-    .rec-text { color: aqua; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+      .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 2000; display: none; justify-content: center; align-items: center; }
+      .vizor-modal { background: #09141d; width: 750px; max-width: 95%; max-height: 90vh; border: 1px solid #0f344d; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow-y: auto; }
+      .modal-header { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: flex-start; }
+      .modal-title-group h3 { margin: 0; font-size: 20px; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+      .modal-subtitle { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+      .btn-close { background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+      .btn-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+      .modal-body { padding: 24px; }
 
-    /* Métricas */
-    .m-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 10px; text-transform: uppercase; font-weight: 700; }
-    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-    .metric-card { background: #0f1b26; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; text-align: center; }
-    .mc-title { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; text-transform: uppercase; }
-    .mc-val { font-size: 24px; font-weight: 700; }
-    .footer-row { display: flex; gap: 12px; margin-top: 16px; margin-bottom: 0; }
-    .info-pill { flex: 1; background: #0f1b26; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 13px; align-items: center; }
+      .prediction-section { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; background: rgba(255,255,255,0.02); margin-bottom: 24px; display: flex; gap: 24px; align-items: center; }
+      .pred-left { flex: 1; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.08); }
+      .pred-right { flex: 1.5; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+      .pred-title { font-size: 14px; font-weight: 700; color: aqua; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .risk-percent { font-size: 48px; font-weight: 800; line-height: 1; margin-bottom: 8px; color: #fff; }
+      .risk-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+      .progress-bg { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; width: 100%; margin-top: 12px; overflow: hidden; }
+      .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+      .cause-box { font-size: 13px; }
+      .cause-label { color: rgba(255,255,255,0.4); font-size: 10px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+      .cause-text { color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+      .rec-text { color: aqua; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
-    /* Gráficos Históricos */
-    .charts-container { display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); animation: slideIn 0.3s ease-out; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    .charts-title { font-size: 14px; font-weight: 700; color: aqua; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    
-    .chart-box { 
-      background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; 
-      padding: 12px; height: 200px; display: flex; flex-direction: column;
-      cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative;
-    }
-    .chart-box:hover { transform: translateY(-2px); border-color: rgba(0, 255, 255, 0.3); }
-    .chart-box::after {
-      content: '🔍 Ampliar'; position: absolute; top: 10px; right: 10px; font-size: 10px;
-      background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 4px; opacity: 0;
-      transition: opacity 0.2s; pointer-events: none;
-    }
-    .chart-box:hover::after { opacity: 1; }
+      .m-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 10px; text-transform: uppercase; font-weight: 700; }
+      .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+      .metric-card { background: #0f1b26; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; text-align: center; }
+      .mc-title { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; text-transform: uppercase; }
+      .mc-val { font-size: 24px; font-weight: 700; }
+      .footer-row { display: flex; gap: 12px; margin-top: 16px; margin-bottom: 0; }
+      .info-pill { flex: 1; background: #0f1b26; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 13px; align-items: center; }
 
-    .chart-label { font-size: 12px; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 4px; font-weight: 600; }
-    .chart-render { flex: 1; width: 100%; min-height: 0; }
+      .charts-container { display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); animation: slideIn 0.3s ease-out; }
+      @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+      .charts-title { font-size: 14px; font-weight: 700; color: aqua; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+      .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
-    .vizor-btn { padding: 8px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; border: none; transition: 0.2s; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; gap: 8px; }
-    .vizor-btn:hover { background: rgba(255,255,255,0.05); }
-    .vizor-btn.primary { background: #00b8d4; border-color: #00b8d4; color: #000; }
-    .vizor-btn.primary:hover { background: #00e5ff; border-color: #00e5ff; }
+      .chart-box {
+        background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;
+        padding: 12px; height: 200px; display: flex; flex-direction: column;
+        cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative;
+      }
+      .chart-box:hover { transform: translateY(-2px); border-color: rgba(0, 255, 255, 0.3); }
+      .chart-box::after {
+        content: '🔍 Ampliar'; position: absolute; top: 10px; right: 10px; font-size: 10px;
+        background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 4px; opacity: 0;
+        transition: opacity 0.2s; pointer-events: none;
+      }
+      .chart-box:hover::after { opacity: 1; }
 
-    /* --- MODAL EXPANDIDO (ZOOM) --- */
-    .expanded-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 3000; display: none; justify-content: center; align-items: center; animation: fadeIn 0.2s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .expanded-modal { background: #0b1821; width: 90%; max-width: 900px; height: 80vh; border: 1px solid #0f344d; border-radius: 16px; box-shadow: 0 0 60px rgba(0,255,255,0.1); display: flex; flex-direction: column; padding: 24px; }
-    .expanded-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; }
-    .expanded-title { font-size: 22px; color: aqua; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .expanded-body { flex: 1; width: 100%; display: flex; flex-direction: column; }
-    .btn-close-expanded { background: transparent; border: none; color: #fff; cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; }
-    .btn-close-expanded:hover { transform: scale(1.1); color: aqua; }
-  </style>
-</head>
+      .chart-label { font-size: 12px; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 4px; font-weight: 600; }
+      .chart-render { flex: 1; width: 100%; min-height: 0; }
 
-<body onload="verificarCargo()"> 
+      .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+      .vizor-btn { padding: 8px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; border: none; transition: 0.2s; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; gap: 8px; }
+      .vizor-btn:hover { background: rgba(255,255,255,0.05); }
+      .vizor-btn.primary { background: #00b8d4; border-color: #00b8d4; color: #000; }
+      .vizor-btn.primary:hover { background: #00e5ff; border-color: #00e5ff; }
 
-  <!-- Navbar -->
-  <nav class="navbar" id="navbarConstructor"></nav>
+      .expanded-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 3000; display: none; justify-content: center; align-items: center; animation: fadeIn 0.2s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .expanded-modal { background: #0b1821; width: 90%; max-width: 900px; height: 80vh; border: 1px solid #0f344d; border-radius: 16px; box-shadow: 0 0 60px rgba(0,255,255,0.1); display: flex; flex-direction: column; padding: 24px; }
+      .expanded-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; }
+      .expanded-title { font-size: 22px; color: aqua; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+      .expanded-body { flex: 1; width: 100%; display: flex; flex-direction: column; }
+      .btn-close-expanded { background: transparent; border: none; color: #fff; cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; }
+      .btn-close-expanded:hover { transform: scale(1.1); color: aqua; }
+    </style>
+  </head>
 
-  <!-- Conteúdo -->
-  <main class="main-content">
-    <div class="page-header">
-      <h1 class="page-title">Dashboard de Manutenção</h1>
-      <span class="page-sub">Visão geral do parque de dispositivos DOOH</span>
-    </div>
+  <body onload="verificarCargo()"> 
 
-    <!-- KPIs -->
-    <section class="kpi-grid">
-      <div class="card"><div class="card-header"><h2 class="card-title"><i data-lucide="shield-check" size="18" style="color:aqua"></i> Condição dos DOOHs</h2></div><div class="card-content"><div class="kpi-row"><div class="kpi-item"><div class="kpi-label">Players</div><div class="kpi-value" id="kpi-total">0</div></div><div class="kpi-item"><div class="kpi-label" style="color:#e74c3c">Crítico</div><div class="kpi-value" id="kpi-critico" style="color:#e74c3c">0</div></div><div class="kpi-item"><div class="kpi-label" style="color:#f1c40f">Alerta</div><div class="kpi-value" id="kpi-alerta" style="color:#f1c40f">0</div></div><div class="kpi-item"><div class="kpi-label" style="color:#2ecc71">OK</div><div class="kpi-value" id="kpi-ok" style="color:#2ecc71">0</div></div></div></div></div>
-      <div class="card"><div class="card-header"><h2 class="card-title"><i data-lucide="cpu" size="18" style="color:aqua"></i> Hardware (Mediana 24h)</h2></div><div class="card-content"><div class="kpi-row"><div class="kpi-item"><div class="kpi-label">CPU</div><div class="kpi-value" style="color:aqua" id="kpi-cpu-med">0%</div></div><div class="kpi-item"><div class="kpi-label">RAM</div><div class="kpi-value" style="color:#a29bfe" id="kpi-ram-med">0%</div></div><div class="kpi-item"><div class="kpi-label">Disco</div><div class="kpi-value" style="color:#ff7675" id="kpi-disk-med">0%</div></div><div class="kpi-item"><div class="kpi-label">Temp</div><div class="kpi-value" style="color:#fdcb6e" id="kpi-temp-med">0°C</div></div></div></div></div>
-    </section>
+    <nav class="navbar" id="navbarConstructor"></nav>
 
-    <!-- Mapa -->
-    <section class="card map-container">
-      <div class="map-controls">
-        <i data-lucide="search" size="16" style="color:rgba(255,255,255,0.5);"></i>
-        <input type="text" id="search-dooh" class="vizor-input" placeholder="Buscar DOOH..." style="width:160px; background:transparent; border:none; padding-left:8px;">
-        <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 8px;"></div>
-        <select id="filter-status" class="vizor-select" style="background:transparent; border:none;">
-          <option value="todos">Status: Todos</option>
-          <option value="critico">Crítico (Falha)</option>
-          <option value="alerta">Alerta (Atenção)</option>
-          <option value="ok">OK (Normal)</option>
-        </select>
-        <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 8px;"></div>
-        <button class="vizor-btn" id="btn-reset-map" style="padding:6px 12px; font-size:12px; border:1px solid rgba(255,255,255,0.1);">Limpar</button>
-      </div>
-      <div id="vizor-map"></div>
-    </section>
-
-    <!-- Lista -->
-    <section class="card">
-      <div class="card-header">
-        <h2 class="card-title"><i data-lucide="list" size="18" style="color:aqua"></i> Lista de Dispositivos</h2>
-        <div class="card-subtitle" style="margin:0; font-size:12px; color:rgba(255,255,255,0.5);">Total visível: <span id="list-count">0</span></div>
-      </div>
-      <div class="card-content">
-        <div class="device-grid" id="device-list"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL PRINCIPAL -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="vizor-modal">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <h3 id="modal-title">...</h3>
-          <div class="modal-subtitle"><i data-lucide="map-pin" size="12"></i> <span id="modal-loc">...</span></div>
-        </div>
-        <button class="btn-close" onclick="window.closeModal()" title="Fechar"><i data-lucide="x" size="24"></i></button>
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard de Manutenção</h1>
+        <span class="page-sub">Visão geral do parque de dispositivos DOOH</span>
       </div>
 
-      <div class="modal-body">
-        
-        <!-- Predição -->
-        <div class="pred-title"><i data-lucide="activity" size="16" style="color:aqua"></i> Análise Preditiva (Regressão Linear)</div>
-        
-        <div class="prediction-section">
-          <div class="pred-left">
-            <div class="risk-label">Risco de Hardware (Falha Física)</div>
-            <div class="risk-percent" id="modal-prob" style="color:#fff">0%</div>
-            <div class="risk-label" style="margin-top:-4px;">baseado em Temp + Disco</div>
-            <div class="progress-bg"><div class="progress-fill" id="modal-prog"></div></div>
+      <!-- KPIs -->
+      <section class="kpi-grid">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title"><i data-lucide="shield-check" size="18" style="color:aqua"></i> Condição dos DOOHs</h2>
           </div>
-          <div class="pred-right">
-            <div class="cause-box">
-              <div class="cause-label">Diagnóstico Principal</div>
-              <div class="cause-text"><i data-lucide="alert-triangle" size="14" style="color:#f1c40f"></i> <span id="modal-cause">...</span></div>
-            </div>
-            <div class="cause-box" style="margin-top:12px;">
-              <div class="cause-label">Ação Recomendada</div>
-              <div class="rec-text"><i data-lucide="wrench" size="14"></i> <span id="modal-rec">...</span></div>
+          <div class="card-content">
+            <div class="kpi-row">
+              <div class="kpi-item">
+                <div class="kpi-label">Players</div>
+                <div class="kpi-value" id="kpi-total">0</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-label" style="color:#e74c3c">Crítico</div>
+                <div class="kpi-value" id="kpi-critico" style="color:#e74c3c">0</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-label" style="color:#f1c40f">Alerta</div>
+                <div class="kpi-value" id="kpi-alerta" style="color:#f1c40f">0</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-label" style="color:#2ecc71">OK</div>
+                <div class="kpi-value" id="kpi-ok" style="color:#2ecc71">0</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Métricas -->
-        <div class="m-label">MÉTRICAS ATUAIS (MEDIANAS)</div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="mc-title">CPU</div><div class="mc-val" style="color:aqua" id="modal-cpu">0%</div></div>
-          <div class="metric-card"><div class="mc-title">Memória</div><div class="mc-val" style="color:#a29bfe" id="modal-ram">0%</div></div>
-          <div class="metric-card"><div class="mc-title">Temperatura</div><div class="mc-val" style="color:#fdcb6e" id="modal-temp">0°C</div></div>
-          <div class="metric-card"><div class="mc-title">Disco</div><div class="mc-val" style="color:#ff7675" id="modal-disk">0%</div></div>
-        </div>
-
-        <!-- Footer Corrigido -->
-        <div class="footer-row">
-          <div class="info-pill"><span>Uptime</span> <strong id="modal-uptime">0h</strong></div>
-          <div class="info-pill" title="Carga do Sistema (CPU + RAM)">
-             <span>Estresse (Carga)</span> 
-             <strong id="modal-stress" style="color:#fff">0%</strong>
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title"><i data-lucide="cpu" size="18" style="color:aqua"></i> Hardware (Mediana 24h)</h2>
           </div>
-          <div class="info-pill" title="Previsão baseada no risco atual">
-             <span>Prev. Manutenção</span> 
-             <strong id="modal-maint" style="color:aqua">--</strong>
+          <div class="card-content">
+            <div class="kpi-row">
+              <div class="kpi-item">
+                <div class="kpi-label">CPU</div>
+                <div class="kpi-value" style="color:aqua" id="kpi-cpu-med">0%</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-label">RAM</div>
+                <div class="kpi-value" style="color:#a29bfe" id="kpi-ram-med">0%</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-label">Disco</div>
+                <div class="kpi-value" style="color:#ff7675" id="kpi-disk-med">0%</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-label">Temp</div>
+                <div class="kpi-value" style="color:#fdcb6e" id="kpi-temp-med">0°C</div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <!-- GRÁFICOS HISTÓRICOS (Hidden) -->
-        <div id="charts-container" class="charts-container">
-           <div class="charts-title"><i data-lucide="bar-chart-2" size="16"></i> Histórico (Últimos 7 Dias) - Clique para Zoom</div>
-           <div class="charts-grid">
-              <div class="chart-box" id="box-cpu">
-                 <div class="chart-label">CPU (%)</div>
-                 <div id="chart-cpu-div" class="chart-render"></div>
-              </div>
-              <div class="chart-box" id="box-temp">
-                 <div class="chart-label">Temperatura (°C)</div>
-                 <div id="chart-temp-div" class="chart-render"></div>
-              </div>
-              <div class="chart-box" id="box-ram">
-                 <div class="chart-label">RAM (%)</div>
-                 <div id="chart-ram-div" class="chart-render"></div>
-              </div>
-              <div class="chart-box" id="box-disk">
-                 <div class="chart-label">Disco (%)</div>
-                 <div id="chart-disk-div" class="chart-render"></div>
-              </div>
-           </div>
+      <!-- Mapa -->
+      <section class="card map-container">
+        <div class="map-controls">
+          <i data-lucide="search" size="16" style="color:rgba(255,255,255,0.5);"></i>
+          <input type="text" id="search-dooh" class="vizor-input" placeholder="Buscar DOOH..." style="width:160px; background:transparent; border:none; padding-left:8px;">
+          <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 8px;"></div>
+          <select id="filter-status" class="vizor-select" style="background:transparent; border:none;">
+            <option value="todos">Status: Todos</option>
+            <option value="critico">Crítico (Falha)</option>
+            <option value="alerta">Alerta (Atenção)</option>
+            <option value="ok">OK (Normal)</option>
+          </select>
+          <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 8px;"></div>
+          <button class="vizor-btn" id="btn-reset-map" style="padding:6px 12px; font-size:12px; border:1px solid rgba(255,255,255,0.1);">Limpar</button>
         </div>
+        <div id="vizor-map"></div>
+      </section>
 
-        <div class="modal-actions">
-          <button class="vizor-btn" onclick="window.toggleCharts()">
-             <i data-lucide="bar-chart-2" size="16"></i> Ver Histórico
+      <!-- Lista -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title"><i data-lucide="list" size="18" style="color:aqua"></i> Lista de Dispositivos</h2>
+          <div class="card-subtitle" style="margin:0; font-size:12px; color:rgba(255,255,255,0.5);">
+            Total visível: <span id="list-count">0</span>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="device-grid" id="device-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="vizor-modal">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h3 id="modal-title">...</h3>
+            <div class="modal-subtitle">
+              <i data-lucide="map-pin" size="12"></i>
+              <span id="modal-loc">...</span>
+            </div>
+          </div>
+          <button class="btn-close" onclick="window.closeModal()" title="Fechar">
+            <i data-lucide="x" size="24"></i>
           </button>
-          <button class="vizor-btn primary" onclick="window.closeModal()">Fechar</button>
         </div>
 
-      </div>
-    </div>
-  </div>
+        <div class="modal-body">
+          <!-- Predição -->
+          <div class="pred-title">
+            <i data-lucide="activity" size="16" style="color:aqua"></i>
+            Análise Preditiva 
+          </div>
+          
+          <div class="prediction-section">
+            <div class="pred-left">
+              <div class="risk-label">Risco de Hardware (Falha Física)</div>
+              <div class="risk-percent" id="modal-prob" style="color:#fff">0%</div>
+              <div class="progress-bg">
+                <div class="progress-fill" id="modal-prog"></div>
+              </div>
+            </div>
+            <div class="pred-right">
+              <div class="cause-box">
+                <div class="cause-label">Diagnóstico Principal</div>
+                <div class="cause-text">
+                  <i data-lucide="alert-triangle" size="14" style="color:#f1c40f"></i>
+                  <span id="modal-cause">...</span>
+                </div>
+              </div>
+              <div class="cause-box" style="margin-top:12px;">
+                <div class="cause-label">Ação Recomendada</div>
+                <div class="rec-text">
+                  <i data-lucide="wrench" size="14"></i>
+                  <span id="modal-rec">...</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-  <!-- MODAL DE ZOOM (EXPANDIDO) -->
-  <div class="expanded-overlay" id="expanded-overlay">
-    <div class="expanded-modal">
-      <div class="expanded-header">
-        <div class="expanded-title" id="expanded-title">
-           <i data-lucide="maximize-2"></i> Detalhe do Gráfico
+          <!-- métricas -->
+          <div class="m-label">MÉTRICAS ATUAIS (MEDIANAS)</div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="mc-title">CPU</div>
+              <div class="mc-val" style="color:aqua" id="modal-cpu">0%</div>
+            </div>
+            <div class="metric-card">
+              <div class="mc-title">Memória</div>
+              <div class="mc-val" style="color:#a29bfe" id="modal-ram">0%</div>
+            </div>
+            <div class="metric-card">
+              <div class="mc-title">Temperatura</div>
+              <div class="mc-val" style="color:#fdcb6e" id="modal-temp">0°C</div>
+            </div>
+            <div class="metric-card">
+              <div class="mc-title">Disco</div>
+              <div class="mc-val" style="color:#ff7675" id="modal-disk">0%</div>
+            </div>
+          </div>
+
+          <!-- footer -->
+          <div class="footer-row">
+            <div class="info-pill">
+              <span>Uptime</span>
+              <strong id="modal-uptime">0h</strong>
+            </div>
+            <div class="info-pill" title="Carga do Sistema (CPU + RAM)">
+              <span>Estresse (Carga)</span> 
+              <strong id="modal-stress" style="color:#fff">0%</strong>
+            </div>
+            <div class="info-pill" title="Previsão baseada no risco atual">
+              <span>Prev. Manutenção</span> 
+              <strong id="modal-maint" style="color:aqua">--</strong>
+            </div>
+          </div>
+
+          <!-- gráficos  -->
+          <div id="charts-container" class="charts-container">
+            <div class="charts-title">
+              <i data-lucide="bar-chart-2" size="16"></i>
+              Histórico - Clique para Zoom
+            </div>
+            <div class="charts-grid">
+                <div class="chart-box" id="box-cpu">
+                  <div class="chart-label">CPU (%)</div>
+                  <div id="chart-cpu-div" class="chart-render"></div>
+                </div>
+                <div class="chart-box" id="box-temp">
+                  <div class="chart-label">Temperatura (°C)</div>
+                  <div id="chart-temp-div" class="chart-render"></div>
+                </div>
+                <div class="chart-box" id="box-ram">
+                  <div class="chart-label">RAM (%)</div>
+                  <div id="chart-ram-div" class="chart-render"></div>
+                </div>
+                <div class="chart-box" id="box-disk">
+                  <div class="chart-label">Disco (%)</div>
+                  <div id="chart-disk-div" class="chart-render"></div>
+                </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="vizor-btn" onclick="window.toggleCharts()">
+              <i data-lucide="bar-chart-2" size="16"></i> Ver Histórico
+            </button>
+            <button class="vizor-btn primary" onclick="window.closeModal()">Fechar</button>
+          </div>
+
         </div>
-        <button class="btn-close-expanded" onclick="window.closeExpandedChart()">
-            <i data-lucide="x" size="28"></i>
-        </button>
-      </div>
-      <div class="expanded-body">
-         <div id="expanded-chart-div" style="width: 100%; height: 100%;"></div>
       </div>
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="../js/verificadorCargo.js"></script>
-  <script src="../js/navbar.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  
+    <!-- modal com zoom -->
+    <div class="expanded-overlay" id="expanded-overlay">
+      <div class="expanded-modal">
+        <div class="expanded-header">
+          <div class="expanded-title" id="expanded-title">
+            <i data-lucide="maximize-2"></i> Detalhe do Gráfico
+          </div>
+          <button class="btn-close-expanded" onclick="window.closeExpandedChart()">
+              <i data-lucide="x" size="28"></i>
+          </button>
+        </div>
+        <div class="expanded-body">
+          <div id="expanded-chart-div" style="width: 100%; height: 100%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- script-->
+    <script src="../js/verificadorCargo.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    
   <script>
     window.lucide.createIcons();
 
-    let allDevices = [], mapInstance = null, markersLayer = null;
-    let chartInstances = {}; 
+  const API_URL = "http://localhost:3333/pedroDashboard/listar";
+
+
+    let allDevices = [];
+    let mapInstance = null;
+    let markersLayer = null;
+    let chartInstances = {};
     let expandedChartInstance = null;
     let currentDevice = null;
-    let chartsDataCache = {}; 
 
-    // --- FUNÇÕES GLOBAIS ---
-    window.closeModal = function() {
-      document.getElementById('modal-overlay').style.display = 'none';
+  // converte para numero
+    const parseNumber = (v) => {
+      if (v === null || v === undefined) return 0;
+      return Number(String(v).replace("%", "").replace("°C", "").replace(",", ".").trim()) || 0;
+    };
+  // calcula mediana
+    function median(arr) {
+      const nums = arr.map(Number).filter(v => !isNaN(v)).sort((a,b) => a-b);
+      if (!nums.length) return 0;
+      const mid = Math.floor(nums.length / 2);
+      if (nums.length % 2) return nums[mid];
+      return (nums[mid-1] + nums[mid]) / 2;
     }
 
+    //fechar modal
+    window.closeModal = function() {
+      document.getElementById("modal-overlay").style.display = "none";
+    };
+  //abrir modal
     window.toggleCharts = function() {
-      const container = document.getElementById('charts-container');
-      const isHidden = container.style.display === 'none' || container.style.display === '';
+      const container = document.getElementById("charts-container");
+      const isHidden = container.style.display === "none" || container.style.display === "";
       if (isHidden) {
-        container.style.display = 'block';
+        container.style.display = "block";
         setTimeout(() => initCharts(currentDevice), 50);
       } else {
-        container.style.display = 'none';
+        container.style.display = "none";
       }
-    }
+    };
 
     window.closeExpandedChart = function() {
-        document.getElementById('expanded-overlay').style.display = 'none';
-    }
+      document.getElementById("expanded-overlay").style.display = "none";
+    };
 
-    // --- FUNÇÃO GRÁFICO EXPANDIDO (SEM TOOLBAR) ---
-    function openExpandedChart(type, data, color, title) {
-        const overlay = document.getElementById('expanded-overlay');
-        const titleEl = document.getElementById('expanded-title');
-        titleEl.innerHTML = `<i data-lucide="maximize-2"></i> ${title}`;
-        window.lucide.createIcons();
-        overlay.style.display = 'flex';
-
-        if(expandedChartInstance) { expandedChartInstance.destroy(); }
-
-        const options = {
-            chart: { 
-                type: 'area', 
-                height: '100%', 
-                toolbar: { show: false }, // ÍCONES REMOVIDOS
-                background: 'transparent',
-                fontFamily: 'Akatab, sans-serif'
-            },
-            stroke: { curve: 'smooth', width: 3 },
-            fill: { opacity: 0.3, type: 'gradient' },
-            dataLabels: { enabled: true, style: { colors: ['#fff'] }, background: { enabled: true, foreColor: '#000' } },
-            series: [{ name: title, data: data }],
-            xaxis: { 
-                categories: ['Dia -6', 'Dia -5', 'Dia -4', 'Dia -3', 'Dia -2', 'Ontem', 'Hoje'], 
-                labels: { show: true, style: { colors: '#aaa', fontSize: '14px' } },
-                axisBorder: { show: true, color: '#333' }
-            },
-            yaxis: { 
-                show: true, 
-                labels: { style: { colors: '#aaa', fontSize: '14px' } },
-                min: 0, max: 100
-            },
-            grid: { show: true, borderColor: '#333', strokeDashArray: 4 },
-            colors: [color],
-            tooltip: { theme: 'dark', style: { fontSize: '14px' } }
-        };
-
-        const el = document.querySelector("#expanded-chart-div");
-        expandedChartInstance = new ApexCharts(el, options);
-        expandedChartInstance.render();
-    }
-
-    // --- CONEXÃO DINÂMICA AO BANCO ---
+  //busca os dados no client
     async function fetchDados() {
       try {
-        // Chama a rota do backend
-        const response = await fetch('http://localhost:3333/pedroDashboard/listar'); 
-        
-        if (!response.ok) throw new Error('Erro na API');
-        const dados = await response.json();
+        const resp = await fetch(API_URL);
+        if (!resp.ok) throw new Error("Erro na API: " + resp.status);
+        const json = await resp.json();
 
-        // Fallback para dados vazios se necessário
-        // Mapeia dados para garantir integridade visual (gera mocks se vier 0)
-        return dados.map(d => ({
-            ...d,
-            cpu: d.cpu || Math.floor(Math.random() * 60 + 30),
-            ram: d.ram || Math.floor(Math.random() * 50 + 20),
-            disk: d.disk || Math.floor(Math.random() * 80 + 10),
-            temp: d.temp || Math.floor(Math.random() * 40 + 40),
-            status: (d.cpu > 80 || d.temp > 75) ? 'critico' : (d.cpu > 60 ? 'alerta' : 'ok')
-        }));
+        const lista = Array.isArray(json) ? json : (json.devices || []);
 
+        return lista.map((item, idx) => {
+          const raw  = item.raw_metrics     || {};
+          const ui   = item.ui              || {};
+          const risk = item.risk_model      || {};
+          const meds = item.medianas        || {};
+          const medDia = meds.dia           || {};
+          const hist = item.historico_7d    || {};
+
+          return {
+            //id
+            id: item.machine_id || item.id || `DOOH-${idx+1}`,
+            company: item.company || "N/A",
+
+            // status para mapa/
+            status: item.status || "ok",
+
+            // localização
+            location: ui.location || item.location || "Local não informado",
+
+            // coordenadas
+            lat: Number(raw.latitude  ?? item.latitude  ?? -23.56),
+            lng: Number(raw.longitude ?? item.longitude ?? -46.65),
+
+            // métricas
+            cpu:  parseNumber(raw.cpu  ?? medDia.cpu),
+            ram:  parseNumber(raw.ram  ?? medDia.ram),
+            disk: parseNumber(raw.disco ?? raw.disk ?? medDia.disco),
+            temp: parseNumber(raw.temp ?? medDia.temp),
+            uptime: raw.uptime ?? item.uptime ?? 0,
+
+            // blocos vindos do Lambda
+            ui,
+            risk_model: risk,
+            medianas: meds,
+            regressao_risco: item.regressao_risco || null,
+            historico_7d: hist,
+            last_update: item.last_update || null
+          };
+        });
       } catch (e) {
-        console.error("Erro ao buscar dados, usando fallback local:", e);
+        console.error("Erro ao buscar dados:", e);
         return [];
       }
     }
 
-    // Lógica
-    function calculatePrediction(d) {
-      const hwScore = (d.temp * 0.7) + (d.disk * 0.3);
-      let probFailure = Math.min(99, Math.floor(hwScore));
-      const swScore = (d.cpu * 0.6) + (d.ram * 0.4);
-      let stressLevel = Math.floor(swScore);
-
-      let daysToMaint = "45+ dias";
-      if (d.status === 'critico' || probFailure > 80) daysToMaint = "IMEDIATA";
-      else if (probFailure > 60) daysToMaint = "7 dias";
-      else if (probFailure > 40) daysToMaint = "15 dias";
-
-      let cause = 'Desgaste Natural';
-      let rec = 'Monitoramento Padrão';
-      let riskLevel = 'low';
-
-      if (d.status === 'critico' || probFailure > 80) {
-        riskLevel = 'high';
-        if (d.temp > 80) { cause = 'Estresse Térmico (Perigo)'; rec = 'Verificar Arrefecimento'; }
-        else { cause = 'Falha de Hardware Iminente'; rec = 'Agendar Troca de Player'; }
-      } else if (d.status === 'alerta' || probFailure > 60) {
-        riskLevel = 'medium'; cause = 'Operação em Limite Térmico'; rec = 'Monitorar temperatura ambiente';
-      } else if (stressLevel > 85) {
-         cause = 'Sobrecarga de Software'; rec = 'Reiniciar ou Otimizar Conteúdo';
-      }
-      return { prob: probFailure, stress: stressLevel, days: daysToMaint, cause, rec, riskLevel };
-    }
-
+    // usa risk e mediana
     function openModal(d) {
       currentDevice = d;
-      const modal = document.getElementById('modal-overlay');
-      document.getElementById('charts-container').style.display = 'none';
+      const modal = document.getElementById("modal-overlay");
+      document.getElementById("charts-container").style.display = "none";
 
-      const pred = calculatePrediction(d); 
+      const rm = d.risk_model || {};
+      const medDia = (d.medianas && d.medianas.dia) || {};
 
-      const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-      const setHtml = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
+      const prob   = rm.prob       ?? 0;
+      const stress = rm.stress     ?? 0;
+      const days   = rm.days       || "--";
+      const cause  = rm.cause      || "Desgaste natural";
+      const rec    = rm.rec        || "Monitoramento padrão";
+      const level  = (rm.riskLevel || "low").toLowerCase();
 
-      setHtml('modal-title', `${d.id} <span class="badge ${d.status}" style="margin-left:10px; font-size:12px; vertical-align:middle;">${d.status.toUpperCase()}</span>`);
-      setHtml('modal-loc', d.location);
-      setText('modal-prob', pred.prob + '%');
-      
-      let color = '#2ecc71';
-      if (pred.riskLevel === 'high') color = '#e74c3c'; else if (pred.riskLevel === 'medium') color = '#f1c40f';
+      // helpers
+      const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+      const setHtml = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = val;
+      };
 
-      const prog = document.getElementById('modal-prog');
-      if(prog) { prog.style.width = pred.prob + '%'; prog.style.backgroundColor = color; }
-      
-      const probEl = document.getElementById('modal-prob');
-      if(probEl) probEl.style.color = color;
-      
-      setText('modal-cause', pred.cause);
-      const causeEl = document.getElementById('modal-cause');
-      if(causeEl) causeEl.style.color = color;
-      
-      setText('modal-rec', pred.rec);
+      // título + badge de status
+      setHtml(
+        "modal-title",
+        `${d.id} <span class="badge ${d.status}" style="margin-left:10px; font-size:12px; vertical-align:middle;">${d.status.toUpperCase()}</span>`
+      );
+      setHtml("modal-loc", d.location);
 
-      setText('modal-cpu', d.cpu + '%');
-      setText('modal-ram', d.ram + '%');
-      setText('modal-temp', d.temp + '°C');
-      setText('modal-disk', d.disk + '%');
-      setText('modal-uptime', d.uptime + 'h');
-      
-      setText('modal-stress', pred.stress + '%');
-      const stressEl = document.getElementById('modal-stress');
-      if(stressEl) stressEl.style.color = pred.stress > 80 ? '#f1c40f' : '#fff';
+      // risco (%)
+      setText("modal-prob", prob.toFixed(0) + "%");
 
-      setText('modal-maint', pred.days);
-      const maintEl = document.getElementById('modal-maint');
-      if(maintEl) maintEl.style.color = pred.days === 'IMEDIATA' ? '#e74c3c' : (pred.days === '7 dias' ? '#f1c40f' : '#2ecc71');
+      // cor por nível de risco
+      let color = "#2ecc71";
+      if (level === "high")   color = "#e74c3c";
+      if (level === "medium") color = "#f1c40f";
 
-      modal.style.display = 'flex';
+      const prog = document.getElementById("modal-prog");
+      if (prog) {
+        prog.style.width = prob + "%";
+        prog.style.backgroundColor = color;
+      }
+
+      const probEl = document.getElementById("modal-prob");
+      if (probEl) probEl.style.color = color;
+
+      // causa 
+      setText("modal-cause", cause);
+      const causeEl = document.getElementById("modal-cause");
+      if (causeEl) causeEl.style.color = color;
+
+      setText("modal-rec", rec);
+
+      // métricas (medianas do dia)
+      const cpuMed  = medDia.cpu   ?? d.cpu   ?? 0;
+      const ramMed  = medDia.ram   ?? d.ram   ?? 0;
+      const tempMed = medDia.temp  ?? d.temp  ?? 0;
+      const diskMed = medDia.disco ?? d.disk  ?? 0;
+
+      setText("modal-cpu",  cpuMed.toFixed(1)  + "%");
+      setText("modal-ram",  ramMed.toFixed(1)  + "%");
+      setText("modal-temp", tempMed.toFixed(1) + "°C");
+      setText("modal-disk", diskMed.toFixed(1) + "%");
+
+      // rodapé
+      setText("modal-uptime", (d.uptime ?? 0) + "h");
+      setText("modal-stress", stress.toFixed(0) + "%");
+
+      const stressEl = document.getElementById("modal-stress");
+      if (stressEl) stressEl.style.color = stress > 80 ? "#f1c40f" : "#fff";
+
+      setText("modal-maint", days);
+      const maintEl = document.getElementById("modal-maint");
+      if (maintEl) {
+        if (days === "IMEDIATA") maintEl.style.color = "#e74c3c";
+        else if (days === "7 dias") maintEl.style.color = "#f1c40f";
+        else maintEl.style.color = "#2ecc71";
+      }
+
+      modal.style.display = "flex";
       window.lucide.createIcons();
     }
 
-    function getMedian(values) {
-      if(!values.length) return 0;
-      values.sort((a,b)=>a-b);
-      const mid = Math.floor(values.length/2);
-      return values.length%2 ? values[mid] : (values[mid-1]+values[mid])/2;
-    }
-
+    // kpis globais
     function updateStats(list) {
-      document.getElementById('list-count').textContent = list.length;
-      document.getElementById('kpi-total').textContent = list.length;
-      document.getElementById('kpi-critico').textContent = list.filter(d=>d.status==='critico').length;
-      document.getElementById('kpi-alerta').textContent = list.filter(d=>d.status==='alerta').length;
-      document.getElementById('kpi-ok').textContent = list.filter(d=>d.status==='ok').length;
-      if (list.length > 0) {
-         const m = (arr) => arr.sort((a,b)=>a-b)[Math.floor(arr.length/2)];
-         document.getElementById('kpi-cpu-med').textContent = Math.floor(m(list.map(d=>d.cpu)))+'%';
-         document.getElementById('kpi-ram-med').textContent = Math.floor(m(list.map(d=>d.ram)))+'%';
-         document.getElementById('kpi-temp-med').textContent = Math.floor(m(list.map(d=>d.temp)))+'°C';
-         document.getElementById('kpi-disk-med').textContent = Math.floor(m(list.map(d=>d.disk)))+'%';
-      }
+      document.getElementById("list-count").textContent = list.length;
+      document.getElementById("kpi-total").textContent  = list.length;
+      document.getElementById("kpi-critico").textContent = list.filter(d => d.status === "critico").length;
+      document.getElementById("kpi-alerta").textContent  = list.filter(d => d.status === "alerta").length;
+      document.getElementById("kpi-ok").textContent      = list.filter(d => d.status === "ok").length;
+
+      if (!list.length) return;
+
+      const cpuVals  = list.map(d => (d.medianas?.dia?.cpu   ?? d.cpu));
+      const ramVals  = list.map(d => (d.medianas?.dia?.ram   ?? d.ram));
+      const tempVals = list.map(d => (d.medianas?.dia?.temp  ?? d.temp));
+      const diskVals = list.map(d => (d.medianas?.dia?.disco ?? d.disk));
+
+      document.getElementById("kpi-cpu-med").textContent  = Math.round(median(cpuVals))  + "%";
+      document.getElementById("kpi-ram-med").textContent  = Math.round(median(ramVals))  + "%";
+      document.getElementById("kpi-temp-med").textContent = Math.round(median(tempVals)) + "°C";
+      document.getElementById("kpi-disk-med").textContent = Math.round(median(diskVals)) + "%";
     }
 
+    // mapa
     function initMap() {
-      mapInstance = L.map('vizor-map', { zoomControl: false }).setView([-23.56, -46.65], 13);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap', maxZoom: 19 }).addTo(mapInstance);
-      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+      mapInstance = L.map("vizor-map", { zoomControl: false }).setView([-23.56, -46.65], 13);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        attribution: "&copy; OpenStreetMap",
+        maxZoom: 19
+      }).addTo(mapInstance);
+      L.control.zoom({ position: "bottomright" }).addTo(mapInstance);
       markersLayer = L.layerGroup().addTo(mapInstance);
     }
 
     function renderMap(list) {
       markersLayer.clearLayers();
       list.forEach(d => {
-        let color = d.status === 'critico' ? '#e74c3c' : (d.status === 'alerta' ? '#f1c40f' : '#2ecc71');
-        const marker = L.circleMarker([d.lat, d.lng], { radius: 8, fillColor: color, color: '#fff', weight: 2, opacity: 1, fillOpacity: 1 });
-        marker.on('click', () => { mapInstance.flyTo([d.lat, d.lng], 17, { duration: 1.5 }); openModal(d); });
-        marker.bindTooltip(`<b>${d.id}</b>`, { direction: 'top', offset: [0, -10] });
+        let color = "#2ecc71";
+        if (d.status === "critico") color = "#e74c3c";
+        else if (d.status === "alerta") color = "#f1c40f";
+
+        const marker = L.circleMarker([d.lat, d.lng], {
+          radius: 8,
+          fillColor: color,
+          color: "#fff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 1
+        });
+
+        marker.on("click", () => {
+          mapInstance.flyTo([d.lat, d.lng], 17, { duration: 1.5 });
+          openModal(d);
+        });
+
+        marker.bindTooltip(`<b>${d.id}</b>`, { direction: "top", offset: [0, -10] });
         marker.addTo(markersLayer);
       });
     }
 
+    // lista de doohs
     function renderList(list) {
-      const container = document.getElementById('device-list');
-      container.innerHTML = '';
-      const sorted = [...list].sort((a,b) => (a.status==='critico'?0:1) - (b.status==='critico'?0:1));
+      const container = document.getElementById("device-list");
+      container.innerHTML = "";
+
+      const weight = s => (s === "critico" ? 0 : s === "alerta" ? 1 : 2);
+      const sorted = [...list].sort((a, b) => weight(a.status) - weight(b.status));
+
       sorted.forEach(d => {
-        const el = document.createElement('div');
-        el.className = 'device-item';
-        el.onclick = () => { mapInstance.flyTo([d.lat, d.lng], 17, { duration: 1.5 }); openModal(d); };
-        let stLabel = d.status === 'critico' ? 'CRITICAL' : (d.status === 'alerta' ? 'WARNING' : 'OK');
-        let hlMetric = '', hlColor = '#fff';
-        if(d.status==='critico') { hlMetric = `Disco (${d.disk}%)`; hlColor='#e74c3c'; }
-        else if(d.status==='alerta') { hlMetric = `Temp (${d.temp}°C)`; hlColor='#f1c40f'; }
-        else { hlMetric = `Ping: ${d.ping}ms`; hlColor='#2ecc71'; }
-        let badgeClass = d.status;
-        el.innerHTML = `<div class="device-head"><div class="device-name">${d.id}</div><span class="badge ${badgeClass}">${stLabel}</span></div><div class="device-loc"><i data-lucide="map-pin" size="12"></i> ${d.location}</div><div class="device-stats"><span style="color:rgba(255,255,255,0.5)">Uptime: ${d.uptime}h</span><span class="hl-metric" style="color:${hlColor}">${hlMetric}</span></div>`;
+        const el = document.createElement("div");
+        el.className = "device-item";
+        el.onclick = () => {
+          mapInstance.flyTo([d.lat, d.lng], 17, { duration: 1.5 });
+          openModal(d);
+        };
+
+        let stLabel = "OK";
+        if (d.status === "critico") stLabel = "CRITICAL";
+        else if (d.status === "alerta") stLabel = "WARNING";
+
+        let hlMetric = "";
+        let hlColor = "#fff";
+        if (d.status === "critico") {
+          hlMetric = `Disco (${d.disk}%)`;
+          hlColor = "#e74c3c";
+        } else if (d.status === "alerta") {
+          hlMetric = `Temp (${d.temp}°C)`;
+          hlColor = "#f1c40f";
+        } else {
+          hlMetric = `CPU: ${d.cpu}%`;
+          hlColor = "#2ecc71";
+        }
+
+        el.innerHTML = `
+          <div class="device-head">
+            <div class="device-name">${d.id}</div>
+            <span class="badge ${d.status}">${stLabel}</span>
+          </div>
+          <div class="device-loc">
+            <i data-lucide="map-pin" size="12"></i> ${d.location}
+          </div>
+          <div class="device-stats">
+            <span style="color:rgba(255,255,255,0.5)">Uptime: ${d.uptime}h</span>
+            <span class="hl-metric" style="color:${hlColor}">${hlMetric}</span>
+          </div>
+        `;
+
         container.appendChild(el);
       });
+
       lucide.createIcons();
     }
 
+    //filtro de busca
     function applyFilters() {
-      const term = document.getElementById('search-dooh').value.toLowerCase();
-      const st = document.getElementById('filter-status').value;
-      const filtered = allDevices.filter(d => d.id.toLowerCase().includes(term) && (st==='todos' || d.status===st));
+      const term = document.getElementById("search-dooh").value.toLowerCase();
+      const st   = document.getElementById("filter-status").value;
+
+      const filtered = allDevices.filter(d => {
+        const matchId = d.id.toLowerCase().includes(term);
+        const matchStatus = (st === "todos") || (d.status === st);
+        return matchId && matchStatus;
+      });
+
       renderMap(filtered);
       renderList(filtered);
-      if(filtered.length === 1) {
-         mapInstance.flyTo([filtered[0].lat, filtered[0].lng], 18, { duration: 1.5 });
-         openModal(filtered[0]);
+
+      if (filtered.length === 1) {
+        mapInstance.flyTo([filtered[0].lat, filtered[0].lng], 18, { duration: 1.5 });
+        openModal(filtered[0]);
       } else if (filtered.length > 1) {
-         const group = L.featureGroup(filtered.map(d => L.circleMarker([d.lat, d.lng])));
-         mapInstance.fitBounds(group.getBounds(), { padding: [50, 50] });
+        const group = L.featureGroup(filtered.map(d => L.circleMarker([d.lat, d.lng])));
+        mapInstance.fitBounds(group.getBounds(), { padding: [50, 50] });
       }
     }
 
+    //gráfico semanais
     function initCharts(d) {
-        if(!d) return;
-        const days = ['D-6', 'D-5', 'D-4', 'D-3', 'D-2', 'Ontem', 'Hoje'];
-        const generateTrend = (base, volatility, isUp) => {
-           return days.map((_, i) => {
-              let val = base + (Math.random() * volatility - (volatility/2));
-              if(isUp) val += (i * 4); 
-              return Math.max(0, Math.min(100, Math.round(val)));
-           });
-        };
-        const isCrit = d.status === 'critico';
-        
-        chartsDataCache = {
-            cpu: generateTrend(isCrit ? 60 : 30, 15, isCrit),
-            temp: generateTrend(isCrit ? 70 : 45, 5, isCrit),
-            ram: generateTrend(d.ram, 5, false),
-            disk: generateTrend(d.disk, 2, false)
-        };
+      if (!d) return;
 
-        renderSingleChart('chart-cpu-div', 'CPU', chartsDataCache.cpu, '#00f2ff');
-        renderSingleChart('chart-temp-div', 'Temp', chartsDataCache.temp, '#fdcb6e');
-        renderSingleChart('chart-ram-div', 'RAM', chartsDataCache.ram, '#a29bfe');
-        renderSingleChart('chart-disk-div', 'Disco', chartsDataCache.disk, '#ff7675');
+      const hist = d.historico_7d || {};
+      let labels   = hist.labels || [];
+      let cpuData  = hist.cpu    || [];
+      let tempData = hist.temp   || [];
+      let ramData  = hist.ram    || [];
+      let diskData = hist.disco  || [];
 
-        document.getElementById('box-cpu').onclick = () => openExpandedChart('cpu', chartsDataCache.cpu, '#00f2ff', 'Histórico de CPU (%)');
-        document.getElementById('box-temp').onclick = () => openExpandedChart('temp', chartsDataCache.temp, '#fdcb6e', 'Histórico de Temperatura (°C)');
-        document.getElementById('box-ram').onclick = () => openExpandedChart('ram', chartsDataCache.ram, '#a29bfe', 'Histórico de Memória RAM (%)');
-        document.getElementById('box-disk').onclick = () => openExpandedChart('disk', chartsDataCache.disk, '#ff7675', 'Histórico de Disco (%)');
+      // fallback visual se algum dia vier vazio
+      if (!labels.length || !cpuData.length) {
+        labels = ["D-6","D-5","D-4","D-3","D-2","Ontem","Hoje"];
+        const gen = (base, vol) => labels.map(() => {
+          let v = base + (Math.random() * vol - vol/2);
+          return Math.max(0, Math.min(100, Math.round(v)));
+        });
+
+        cpuData  = gen(d.cpu,  15);
+        tempData = gen(d.temp,  5);
+        ramData  = gen(d.ram,   5);
+        diskData = gen(d.disk,  3);
+      }
+
+      renderSingleChart("chart-cpu-div",  "CPU",         cpuData,  labels, "#00f2ff");
+      renderSingleChart("chart-temp-div", "Temperatura", tempData, labels, "#fdcb6e");
+      renderSingleChart("chart-ram-div",  "RAM",         ramData,  labels, "#a29bfe");
+      renderSingleChart("chart-disk-div", "Disco",       diskData, labels, "#ff7675");
+
+      document.getElementById("box-cpu").onclick  =
+        () => openExpandedChart(labels, cpuData,  "#00f2ff", "Histórico de CPU (%)");
+      document.getElementById("box-temp").onclick =
+        () => openExpandedChart(labels, tempData, "#fdcb6e", "Histórico de Temperatura (°C)");
+      document.getElementById("box-ram").onclick  =
+        () => openExpandedChart(labels, ramData,  "#a29bfe", "Histórico de Memória RAM (%)");
+      document.getElementById("box-disk").onclick =
+        () => openExpandedChart(labels, diskData, "#ff7675", "Histórico de Disco (%)");
     }
 
-    function renderSingleChart(id, label, data, color) {
-       if(chartInstances[id]) { chartInstances[id].destroy(); }
-       const options = {
-          chart: { type: 'area', height: 150, sparkline: { enabled: false }, toolbar: { show: false }, background: 'transparent' },
-          stroke: { curve: 'smooth', width: 2 },
-          fill: { opacity: 0.2, type: 'gradient' },
-          dataLabels: { enabled: false },
-          series: [{ name: label, data: data }],
-          xaxis: { 
-              categories: ['-6', '-5', '-4', '-3', '-2', '-1', 'H'], 
-              labels: { show: true, style: { colors: '#666', fontSize: '10px' } },
-              axisBorder: { show: false }, axisTicks: { show: false }, tooltip: { enabled: false }
+    function renderSingleChart(id, label, data, labels, color) {
+      if (chartInstances[id]) chartInstances[id].destroy();
+
+      const options = {
+        chart: {
+          type: "area",
+          height: 150,
+          sparkline: { enabled: false },
+          toolbar: { show: false },
+          background: "transparent"
+        },
+        stroke: { curve: "smooth", width: 2 },
+        fill: { opacity: 0.2, type: "gradient" },
+        dataLabels: { enabled: false },
+        series: [{ name: label, data }],
+        xaxis: {
+          categories: labels,
+          labels: { show: true, style: { colors: "#666", fontSize: "10px" } },
+          axisBorder: { show: false },
+          axisTicks: { show: false }
+        },
+        yaxis: {
+          show: true,
+          labels: {
+            style: { colors: "#666", fontSize: "10px" },
+            formatter: v => v.toFixed(0)
           },
-          yaxis: { 
-              show: true, 
-              labels: { style: { colors: '#666', fontSize: '10px' }, formatter: (val) => val.toFixed(0) },
-              min: 0, max: 100
-          },
-          grid: { show: true, borderColor: '#333', strokeDashArray: 5, padding: { left: 10, right: 10, top: 0, bottom: 0 } },
-          colors: [color],
-          tooltip: { theme: 'dark', fixed: { enabled: false } }
-       };
-       const el = document.querySelector("#" + id);
-       if(el) {
-          const chart = new ApexCharts(el, options);
-          chart.render();
-          chartInstances[id] = chart;
-       }
+          min: 0,
+          max: 100
+        },
+        grid: {
+          show: true,
+          borderColor: "#333",
+          strokeDashArray: 5,
+          padding: { left: 10, right: 10, top: 0, bottom: 0 }
+        },
+        colors: [color],
+        tooltip: { theme: "dark" }
+      };
+
+      const el = document.querySelector("#" + id);
+      if (el) {
+        const chart = new ApexCharts(el, options);
+        chart.render();
+        chartInstances[id] = chart;
+      }
     }
 
+    function openExpandedChart(labels, data, color, title) {
+      const overlay = document.getElementById("expanded-overlay");
+      const titleEl = document.getElementById("expanded-title");
+      titleEl.innerHTML = `<i data-lucide="maximize-2"></i> ${title}`;
+      window.lucide.createIcons();
+      overlay.style.display = "flex";
+
+      if (expandedChartInstance) expandedChartInstance.destroy();
+
+      const options = {
+        chart: {
+          type: "area",
+          height: "100%",
+          toolbar: { show: false },
+          background: "transparent",
+          fontFamily: "Akatab, sans-serif"
+        },
+        stroke: { curve: "smooth", width: 3 },
+        fill: { opacity: 0.3, type: "gradient" },
+        dataLabels: {
+          enabled: true,
+          style: { colors: ["#fff"] },
+          background: { enabled: true, foreColor: "#000" }
+        },
+        series: [{ name: title, data }],
+        xaxis: {
+          categories: labels,
+          labels: { show: true, style: { colors: "#aaa", fontSize: "14px" } },
+          axisBorder: { show: true, color: "#333" }
+        },
+        yaxis: {
+          show: true,
+          labels: { style: { colors: "#aaa", fontSize: "14px" } },
+          min: 0, max: 100
+        },
+        grid: { show: true, borderColor: "#333", strokeDashArray: 4 },
+        colors: [color],
+        tooltip: { theme: "dark", style: { fontSize: "14px" } }
+      };
+
+      const el = document.querySelector("#expanded-chart-div");
+      expandedChartInstance = new ApexCharts(el, options);
+      expandedChartInstance.render();
+    }
+
+    // bootstrap
     window.onload = async () => {
+      // verificarCargo() já é chamado no body onload
       initMap();
+
       allDevices = await fetchDados();
+
       if (allDevices.length > 0) {
         renderMap(allDevices);
         renderList(allDevices);
         updateStats(allDevices);
+
         const group = L.featureGroup(allDevices.map(d => L.circleMarker([d.lat, d.lng])));
         mapInstance.fitBounds(group.getBounds(), { padding: [50, 50] });
       }
-      document.getElementById('search-dooh').addEventListener('input', applyFilters);
-      document.getElementById('filter-status').addEventListener('change', applyFilters);
-      document.getElementById('btn-reset-map').addEventListener('click', () => {
-        document.getElementById('search-dooh').value = '';
-        document.getElementById('filter-status').value = 'todos';
+
+      document.getElementById("search-dooh").addEventListener("input", applyFilters);
+      document.getElementById("filter-status").addEventListener("change", applyFilters);
+
+      document.getElementById("btn-reset-map").addEventListener("click", () => {
+        document.getElementById("search-dooh").value = "";
+        document.getElementById("filter-status").value = "todos";
         applyFilters();
         mapInstance.setView([-23.56, -46.65], 13);
       });
-      document.getElementById('modal-overlay').addEventListener('click', (e) => {
-        if(e.target.id === 'modal-overlay') window.closeModal();
+
+      document.getElementById("modal-overlay").addEventListener("click", (e) => {
+        if (e.target.id === "modal-overlay") window.closeModal();
       });
     };
   </script>
-</body>
-</html>
+
+  </body>
+  </html>
