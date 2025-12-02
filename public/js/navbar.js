@@ -14,6 +14,10 @@ navbarConstructor.innerHTML += `
         <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
         <a href="dashboard.html"> Dashboard </a>
       </li>
+      <li class="nav-item">
+        <img src="../assets/imgs/logosDash/dashboardIcon.png" alt="" id="logoNavbarDash" />
+        <a href="reclamacaoLote.html"> Reclamação </a>
+      </li>
       </li>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/avisos.png" alt="" id="logoNavbarDash" />
