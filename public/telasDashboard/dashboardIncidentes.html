@@ -267,9 +267,7 @@
     <!-- HEADER PRINCIPAL COM BOTÃO DE RELATÓRIO -->
     <div class="main-header">
         <h1>Dashboard de Incidentes - ITIL</h1>
-        <div class="header-actions">
-            <button id="btn-open-report" class="vizor-btn">Gerar Relatório</button>
-        </div>
+        
     </div>
 
     <!-- 
@@ -394,10 +392,7 @@
                     </select>
                 </div>
 
-                <div style="display:flex; justify-content: flex-end; gap: 10px;">
-                    <button id="btn-cancel-report" class="vizor-btn" style="background:#171a20; border:1px solid #555;">Cancelar</button>
-                    <button id="btn-generate-report" class="vizor-btn">Gerar Relatório</button>
-                </div>
+                
             </div>
 
             <!-- Relatório Gerado (Card para Impressão) -->
@@ -432,10 +427,7 @@
                     <p style="font-size: 0.9rem; color: #aaa;">* Dados extraídos do Jira Service Management.</p>
                 </div>
 
-                <div style="display:flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                    <button id="btn-back-report" class="vizor-btn" style="background:#171a20; border:1px solid #555;">Voltar</button>
-                    <button id="btn-print-report" class="vizor-btn" style="background:#2fbf71;">Baixar PDF</button>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -732,48 +724,48 @@
     const stepResult = document.getElementById("step-result");
 
     // Abrir Modal
-    document.getElementById("btn-open-report").onclick = () => {
-        modal.style.display = "flex";
-        stepSelector.style.display = "block";
-        stepResult.style.display = "none";
-    };
+    //document.getElementById("btn-open-report").onclick = () => {
+    //    modal.style.display = "flex";
+    //    stepSelector.style.display = "block";
+    //   stepResult.style.display = "none";
+    //};
 
     // Cancelar/Fechar
-    const fecharModal = () => { modal.style.display = "none"; };
-    document.getElementById("btn-cancel-report").onclick = fecharModal;
-    document.getElementById("btn-close-report").onclick = fecharModal;
+    //const fecharModal = () => { modal.style.display = "none"; };
+    //document.getElementById("btn-cancel-report").onclick = fecharModal;
+    //document.getElementById("btn-close-report").onclick = fecharModal;
     
     // Voltar
-    document.getElementById("btn-back-report").onclick = () => {
-        stepSelector.style.display = "block";
-        stepResult.style.display = "none";
-    };
+    // document.getElementById("btn-back-report").onclick = () => {
+    //     stepSelector.style.display = "block";
+    //     stepResult.style.display = "none";
+    // };
 
     // Gerar Relatório (Preencher dados)
-    document.getElementById("btn-generate-report").onclick = () => {
-        document.getElementById("rel-kpi-abertos").textContent = dadosKpiCache.aberto;
-        document.getElementById("rel-kpi-fechados").textContent = dadosKpiCache.fechado;
-        document.getElementById("rel-kpi-tempo").textContent = dadosKpiCache.tempoMedio + "h";
-        document.getElementById("rel-kpi-sla").textContent = dadosKpiCache.sla + "%";
-        document.getElementById("report-date-display").textContent = "Emissão: " + new Date().toLocaleDateString("pt-BR");
+    // document.getElementById("btn-generate-report").onclick = () => {
+    //     document.getElementById("rel-kpi-abertos").textContent = dadosKpiCache.aberto;
+    //     document.getElementById("rel-kpi-fechados").textContent = dadosKpiCache.fechado;
+    //     document.getElementById("rel-kpi-tempo").textContent = dadosKpiCache.tempoMedio + "h";
+    //     document.getElementById("rel-kpi-sla").textContent = dadosKpiCache.sla + "%";
+    //     document.getElementById("report-date-display").textContent = "Emissão: " + new Date().toLocaleDateString("pt-BR");
 
-        stepSelector.style.display = "none";
-        stepResult.style.display = "block";
-    };
+    //     stepSelector.style.display = "none";
+    //     stepResult.style.display = "block";
+    // };
 
     // Download do PDF
-    document.getElementById("btn-print-report").onclick = async () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
-        const element = document.getElementById("printable-area");
+    // document.getElementById("btn-print-report").onclick = async () => {
+    //     const { jsPDF } = window.jspdf;
+    //     const pdf = new jsPDF();
+    //     const element = document.getElementById("printable-area");
         
-        const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#072135" });
-        const imgData = canvas.toDataURL("image/png");
+    //     const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#072135" });
+    //     const imgData = canvas.toDataURL("image/png");
         
-        pdf.text("Relatório de Incidentes - Vizor", 10, 15);
-        pdf.addImage(imgData, "PNG", 10, 25, 190, 0);
-        pdf.save("Relatorio_Vizor.pdf");
-    };
+    //     pdf.text("Relatório de Incidentes - Vizor", 10, 15);
+    //     pdf.addImage(imgData, "PNG", 10, 25, 190, 0);
+    //     pdf.save("Relatorio_Vizor.pdf");
+    // };
 
     function limparSessao() { sessionStorage.clear(); }
   </script>
