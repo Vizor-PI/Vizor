@@ -19,27 +19,53 @@
   }
 
   /* Área da direita (conteúdo) */
+ 
   body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    /* sem scroll horizontal */
-    background: #061722;
-    /* fundo geral */
-  }
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;   /* nav + conteúdo lado a lado continua */
+  min-height: 100vh;     /* deixa crescer pra baixo */
+  width: 100vw;
+  overflow-y: auto;      /* permite rolar vertical */
+  overflow-x: hidden;    /* continua sem scroll horizontal */
+  background: #061722;
+}
 
 
-  .dashMain {
+
+  /* .dashMain {
     display: flex;
     flex-direction: row;
     width: 94vw;
     background: #0F172A;
     background: linear-gradient(90deg, rgba(15, 23, 42, 1) 0%, rgba(30, 41, 59, 1) 100%);
-  }
+  } */
+
+  .dashContainer {
+  display: flex;
+  flex-direction: column;
+  width:calc(100vw-16vw);
+  margin-left: 16vw;
+  /* height: auto;              /* permite crescer */
+  /* overflow-y: auto;          permite rolar apenas o container */
+}
+
+.dashMain {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.secaoEstados {
+  padding: 20px;
+  background-color: rgba(30, 41, 59, 0.5);
+  border: solid 0.7px #334155;
+  border-radius: 10px;
+  margin: 30px;
+  color: #d6d6d6;
+}
+
 
   .dashLeft {
     display: flex;
@@ -55,6 +81,9 @@
     flex-direction: column;
     width: 50%;
     padding: 30px;
+    height: 950px;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 
   .bloco {
@@ -255,80 +284,117 @@
   }
 
 
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 16vw;       /* largura real da sua navbar */
+  height: 100vh;     /* ocupa a tela inteira */
+  z-index: 1000;     /* fica por cima do resto */
+}
+
+
 </style>
 
 <body onload="verificarCargo()">
   <nav class="navbar" id="navbarConstructor"></nav>
-
-  <div class="dashMain">
-    <div class="dashLeft">
-      <div class="tempAtual bloco">
-        <h2>Clima atual</h2>
-        <div class="midAtual">
-          <img src="" alt="" id="img_atual">
-          <p id="temp_atual"></p>
-        </div>
-        <p id="desc_atual"></p>
-      </div>
-
-      <div class="previsao bloco">
-        <h2>Previsão da próxima semana</h2>
-        <div class="previsoes">
-          <div class="blocoPrevisao bloco" id="prev_1">
-            <p id="prev_dia_1"></p>
-            <img src="" alt="" id="prev_img_1">
-            <p id="prev_temp_1"></p>
-          </div>
-
-          <div class="blocoPrevisao bloco" id="prev_2">
-            <p id="prev_dia_2"></p>
-            <img src="" alt="" id="prev_img_2">
-            <p id="prev_temp_2"></p>
-          </div>
-
-          <div class="blocoPrevisao bloco" id="prev_3">
-            <p id="prev_dia_3"></p>
-            <img src="" alt="" id="prev_img_3">
-            <p id="prev_temp_3"></p>
-          </div>
-
-          <div class="blocoPrevisao bloco" id="prev_4">
-            <p id="prev_dia_4"></p>
-            <img src="" alt="" id="prev_img_4">
-            <p id="prev_temp_4"></p>
-          </div>
-
-          <div class="blocoPrevisao bloco" id="prev_5">
-            <p id="prev_dia_5"></p>
-            <img src="" alt="" id="prev_img_5">
-            <p id="prev_temp_5"></p>
-          </div>
-
-          <div class="blocoPrevisao bloco" id="prev_6">
-            <p id="prev_dia_6"></p>
-            <img src="" alt="" id="prev_img_6">
-            <p id="prev_temp_6"></p>
-          </div>
-
-          <div class="blocoPrevisao bloco" id="prev_7">
-            <p id="prev_dia_7"></p>
-            <img src="" alt="" id="prev_img_7">
-            <p id="prev_temp_7"></p>
-          </div>
-        </div>
-      </div>
-      <div class="eventosExtremos bloco">
-        <div id="out_eventosExtremos"></div>
-      </div>
+  
+  <div class="dashContainer">
+    <div class="secaoEstados bloco">
+    <h2>Selecionar Região</h2>
+    <p style="margin-bottom: 10px;">Escolha o estado:</p>
+    
+    <select id="select_regiao" style="
+        width: 300px;
+        padding: 12px;
+        background: #334155;
+        color: #d6d6d6;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        font-size: 16px;
+      ">
+        <option value="">Selecione...</option>
+        <option value="SP">São Paulo (SP)</option>
+        <option value="RJ">Rio de Janeiro (RJ)</option>
+        <option value="MG">Minas Gerais (MG)</option>
+        <option value="PR">Paraná (PR)</option>
+        <option value="RS">Rio Grande do Sul (RS)</option>
+        <option value="SC">Santa Catarina (SC)</option>
+        <option value="BA">Bahia (BA)</option>
+    </select>
     </div>
-    <div class="dashRight">
-      <div class="listaDooh">
-        <input type="text" id="ipt_buscaDooh" class="bloco" style="color: #d6d6d6; width: 90%; height: fit-content;">
-        <div id="sessaoDooh">
+    <div class="dashMain">
+      <div class="dashLeft">
+        <div class="tempAtual bloco">
+          <h2>Clima atual</h2>
+          <div class="midAtual">
+            <img src="" alt="" id="img_atual">
+            <p id="temp_atual"></p>
+          </div>
+          <p id="desc_atual"></p>
+        </div>
+
+        <div class="previsao bloco">
+          <h2>Previsão da próxima semana</h2>
+          <div class="previsoes">
+            <div class="blocoPrevisao bloco" id="prev_1">
+              <p id="prev_dia_1"></p>
+              <img src="" alt="" id="prev_img_1">
+              <p id="prev_temp_1"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_2">
+              <p id="prev_dia_2"></p>
+              <img src="" alt="" id="prev_img_2">
+              <p id="prev_temp_2"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_3">
+              <p id="prev_dia_3"></p>
+              <img src="" alt="" id="prev_img_3">
+              <p id="prev_temp_3"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_4">
+              <p id="prev_dia_4"></p>
+              <img src="" alt="" id="prev_img_4">
+              <p id="prev_temp_4"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_5">
+              <p id="prev_dia_5"></p>
+              <img src="" alt="" id="prev_img_5">
+              <p id="prev_temp_5"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_6">
+              <p id="prev_dia_6"></p>
+              <img src="" alt="" id="prev_img_6">
+              <p id="prev_temp_6"></p>
+            </div>
+
+            <div class="blocoPrevisao bloco" id="prev_7">
+              <p id="prev_dia_7"></p>
+              <img src="" alt="" id="prev_img_7">
+              <p id="prev_temp_7"></p>
+            </div>
+          </div>
+        </div>
+        <div class="eventosExtremos bloco">
+          <div id="out_eventosExtremos"></div>
+        </div>
+      </div>
+      <div class="dashRight">
+        <div class="listaDooh">
+          <input type="text" id="ipt_buscaDooh" class="bloco" style="color: #d6d6d6; width: 90%; height: fit-content;">
+          <div id="sessaoDooh">
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+
 
 
 </body>
@@ -513,7 +579,9 @@
 
   async function carregarDoohs() {
     const prefix = 'clima-dash/';
-    const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
+    const baseUrl = 'https://vizor-client.s3.us-east-1.amazonaws.com'
+    // meu bucket, caso algo de errado com a conta do aquino
+    // const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
     const url = `${baseUrl}/?list-type=2&prefix=${encodeURIComponent(prefix)}`;
 
     const resultados = [];

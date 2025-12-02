@@ -3,7 +3,7 @@ let eventosExtremos = null;
 let previsaoSemanal = null;
 
 async function pegarClimaAtual() {
-    const resp = await fetch("https://api.weatherbit.io//v2.0/current?city=Sao%20Paulo&country=BR&key=8e71021053ed4cb0b006ce4560638438&lang=pt")
+    const resp = await fetch("https://api.weatherbit.io//v2.0/current?city=Sao%20Paulo&country=BR&key=a20d4dd0235f48d4b781470ffafcd010&lang=pt")
     const json = await resp.json();
     
     const clima = json.data[0];
@@ -19,7 +19,7 @@ async function pegarClimaAtual() {
 
 
 async function pegarEventosExtremos() {
-    const resp = await fetch("https://api.weatherbit.io/v2.0/alerts?key=8e71021053ed4cb0b006ce4560638438&city=Sao%20Paulo&country=BR&lang=pt");
+    const resp = await fetch("https://api.weatherbit.io/v2.0/alerts?key=a20d4dd0235f48d4b781470ffafcd010&city=Sao%20Paulo&country=BR&lang=pt");
     const json = await resp.json();
 
     const cidade = json.city_name;
@@ -63,7 +63,7 @@ async function pegarEventosExtremos() {
 
 
 async function pegarPrevisaoSemanal() {
-    const resp = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?key=8e71021053ed4cb0b006ce4560638438&city=Sao%20Paulo&country=BR&days=7&lang=pt");
+    const resp = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?key=a20d4dd0235f48d4b781470ffafcd010&city=Sao%20Paulo&country=BR&days=7&lang=pt");
     const json = await resp.json();
 
     const previsoes = [];
