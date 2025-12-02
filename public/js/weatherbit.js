@@ -5,7 +5,7 @@ let previsaoSemanal = null;
 async function pegarClimaAtual() {
     const resp = await fetch("https://api.weatherbit.io//v2.0/current?city=Sao%20Paulo&country=BR&key=a20d4dd0235f48d4b781470ffafcd010&lang=pt")
     const json = await resp.json();
-    
+
     const clima = json.data[0];
 
     return {
@@ -47,7 +47,7 @@ async function pegarEventosExtremos() {
             severidade: a.severity,
             inicio_local: a.effective_local,
             fim_local: a.expires_local,
-            fonte: a.alerts, 
+            fonte: a.alerts,
             uri: a.uri
         });
     }
@@ -70,7 +70,7 @@ async function pegarPrevisaoSemanal() {
 
     for (let i = 0; i < json.data.length; i++) {
         const dia = json.data[i];
-        
+
         previsoes.push({
             datetime: dia.datetime,
             temp: dia.temp,
@@ -83,25 +83,42 @@ async function pegarPrevisaoSemanal() {
 }
 
 
+async function pegarClimaAtualPorCidade(cidade) {
+    const resp = await fetch(
+        `https://api.weatherbit.io/v2.0/current?city=${encodeURIComponent(cidade)}&country=BR&key=a20d4dd0235f48d4b781470ffafcd010&lang=pt`
+    );
+    const json = await resp.json();
+    return json.data[0];
+}
+
+async function pegarPrevisaoSemanalPorCidade(cidade) {
+    const resp = await fetch(
+        `https://api.weatherbit.io/v2.0/forecast/daily?city=${encodeURIComponent(cidade)}&country=BR&days=7&key=a20d4dd0235f48d4b781470ffafcd010&lang=pt`
+    );
+    const json = await resp.json();
+    return json.data;
+}
+
+
 function atualizarDash() {
     if (!climaAtual) return; // se a API ainda não carregou, não tenta usar
-   // CLIMA ATUAL 
-    document.getElementById("img_atual").src = "../assets/imgs/iconesClima/"+climaAtual.icone+".png";
+    // CLIMA ATUAL 
+    document.getElementById("img_atual").src = "../assets/imgs/iconesClima/" + climaAtual.icone + ".png";
     document.getElementById("temp_atual").innerHTML = climaAtual.temp + "°";
     document.getElementById("desc_atual").innerHTML = climaAtual.descricao;
 
     // CLIMA PREVISAO
-    for(let i = 0; i < 7; i++){
+    for (let i = 0; i < 7; i++) {
         // console.log("prev_dia_"+i)
         // console.log(previsaoSemanal[i])
 
         let data = previsaoSemanal[i].datetime
-        let [ano, mes, dia] = data.split("-") 
-        document.getElementById("prev_dia_"+(i+1)).textContent = `${dia}/${mes}`
+        let [ano, mes, dia] = data.split("-")
+        document.getElementById("prev_dia_" + (i + 1)).textContent = `${dia}/${mes}`
 
-        document.getElementById("prev_img_"+(i+1)).src = "../assets/imgs/iconesClima/"+previsaoSemanal[i].icone+".png"
+        document.getElementById("prev_img_" + (i + 1)).src = "../assets/imgs/iconesClima/" + previsaoSemanal[i].icone + ".png"
 
-        document.getElementById("prev_temp_"+(i+1)).textContent = previsaoSemanal[i].temp + "°"
+        document.getElementById("prev_temp_" + (i + 1)).textContent = previsaoSemanal[i].temp + "°"
     }
 
 
