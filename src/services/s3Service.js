@@ -9,7 +9,7 @@ const s3Client = new S3Client({
 });
 
 const BUCKET_NAME = "vizor-client";
-const PREFIX = "aquino-client/";
+const PREFIX = "aquino-client/Tech_Solutions/";
 
 async function listarAvisos() {
     try {
