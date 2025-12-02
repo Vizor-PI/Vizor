@@ -1,202 +1,105 @@
 const model = require("../models/HaniehDashModel");
-const model2 = require("../models/dadosModelosModel")
-const AWS = require("aws-sdk");
-
-const s3 = new AWS.S3({
-    region: "us-east-1",
-    accessKeyId: process.env.AWS_KEY,
-    secretAccessKey: process.env.AWS_SECRET
-});
-
-const CLIENT_BUCKET = "meu-bucket-client";
-const OUTPUT_KEY = "alertas-tratado.json";
-
-let cachedAlerts = [];
-
-const localAlerts = require("../tests/alerts.json");
 
 async function syncAlerts(req, res) {
-    try {
-        // USE LOCAL JSON FOR NOW
-        const alerts = localAlerts;
-
-        req._alerts = alerts;
-
-        res.json({
-            message: "Test alerts loaded from JSON",
-            count: alerts.length
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to load alerts" });
-    }
+    return res.status(200).json({ message: "Sync via S3 OK" });
 }
 
-
 async function getKpis(req, res) {
-    const userId = req.query.userId || req.params.userId;
+    const { userId, start, end } = req.query; // [CORREÇÃO] Pega start e end
+    const uid = userId || req.params.userId;
     try {
-        const resultado = await model.getKpis(userId); // no start/end
+        // [CORREÇÃO] Passa start e end para o model
+        const resultado = await model.getKpis(uid, start, end);
         res.status(200).json(resultado);
     } catch (erro) {
-        console.log("Erro ao obter KPIs:", erro);
+        console.error("Erro KPI:", erro);
         res.status(500).send("Erro ao obter KPIs");
     }
 }
 
 async function topModels(req, res) {
-    const { start, end } = req.query;
-    const userId = req.query.userId || req.params.userId;
-
-    if (!start || !end) {
-        return res.status(400).send("Parâmetros de data ausentes!");
-    }
-
+    const { start, end, userId } = req.query;
     try {
-        const resultado = await model.topModels(userId, start, end); // Passe start e end
+        const resultado = await model.topModels(userId, start, end);
         res.status(200).json(resultado);
     } catch (erro) {
-        console.log("Erro ao obter modelos críticos:", erro);
-        res.status(500).send("Erro ao obter dados");
+        console.error("Erro TopModels:", erro);
+        res.status(500).send("Erro");
     }
 }
 
 async function topLotes(req, res) {
-    const { start, end } = req.query;
-    const userId = req.query.userId || req.params.userId;
-
-    if (!start || !end) {
-        return res.status(400).send("Parâmetros de data ausentes!");
-    }
-
+    const { start, end, userId } = req.query;
     try {
-        const resultado = await model.topLotes(userId, start, end); // <-- ORDEM CORRETA!
+        const resultado = await model.topLotes(userId, start, end);
         res.status(200).json(resultado);
     } catch (erro) {
-        console.log("Erro ao obter lotes críticos:", erro);
-        res.status(500).send("Erro ao obter dados");
+        console.error("Erro TopLotes:", erro);
+        res.status(500).send("Erro");
     }
 }
 
 async function comparison(req, res) {
-    const { start, end, entityType, entity } = req.query;
-    const userId = req.query.userId || req.params.userId;
-
-    if (!entityType || !entity) return res.status(400).send("Entidade não selecionada!");
-    if (!start || !end) return res.status(400).send("O período está incompleto!");
-
+    const { start, end, entityType, entity, userId } = req.query;
     try {
         const result = await model.comparison(start, end, entityType, entity, userId);
-        return res.status(200).json(result);
+        res.status(200).json(result);
     } catch (erro) {
-        console.log("Erro ao buscar comparação:", erro);
-        return res.status(500).json(erro.sqlMessage || "Erro ao buscar comparação");
+        console.error("Erro Comparison:", erro);
+        res.status(500).send("Erro");
     }
 }
 
-
 async function heatmap(req, res) {
-    const { start, end } = req.query;
-    const userId = req.query.userId || req.params.userId;
-
-    if (!start || !end) {
-        return res.status(400).send("Parâmetros de data ausentes!");
-    }
-
+    const { start, end, userId } = req.query;
     try {
-        const resultado = await model.heatmap(start, end, userId);
-        res.status(200).json(resultado);
+        const result = await model.heatmap(start, end, userId);
+        res.status(200).json(result);
     } catch (erro) {
-        console.log("Erro ao gerar heatmap:", erro);
-        res.status(500).send("Erro ao gerar heatmap");
+        console.error("Erro Heatmap:", erro);
+        res.status(500).send("Erro");
     }
 }
 
 async function list(req, res) {
-    const { start, end, view, state, order } = req.query;
-    const userId = req.query.userId || req.params.userId;
-
-    if ((start && !end) || (!start && end)) {
-        return res.status(400).send("É necessário enviar start e end juntos.");
-    }
-
-    if (start && end) {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            return res.status(400).send("Datas inválidas! Use ISO YYYY-MM-DD.");
-        }
-
-        if (startDate > endDate) {
-            return res.status(400).send("A data inicial não pode ser maior que a final.");
-        }
-    }
-
+    const { start, end, view, state, order, userId } = req.query;
     try {
-        const resultado = await model.list(start, end, view, state, order, userId);
-        return res.status(200).json(resultado);
+        const result = await model.list(start, end, view, state, order, userId);
+        res.status(200).json(result);
     } catch (erro) {
-        console.log("Erro ao listar modelos e lotes:", erro);
-        return res.status(500).send("Erro ao listar dados");
+        console.error("Erro List:", erro);
+        res.status(500).send("Erro");
     }
 }
 
-
 async function recommend(req, res) {
-    const userId = req.query.userId || req.params.userId;
-
+    const { userId } = req.query;
     try {
-        const resultado = await model.recommend(userId);
-        res.status(200).json(resultado);
+        const result = await model.recommend(userId);
+        res.status(200).json(result);
     } catch (erro) {
-        console.log("Erro ao obter recomendações:", erro);
-        res.status(500).send("Erro ao obter recomendações");
+        console.error("Erro Recommend:", erro);
+        res.status(500).send("Erro");
     }
 }
 
 async function listAlerts(req, res) {
-    const { type, id } = req.params;  
-    const userId = req.query.userId;  
-    const alerts = cachedAlerts;
-
-    if (!type) return res.status(400).send("Tipo ausente!");
-    if (!id) return res.status(400).send("ID ausente!");
-    if (!userId) return res.status(400).send("userId ausente!");
-
+    const { type, id } = req.params;
+    const { userId } = req.query;
     try {
-        // modelos permitidos para este usuário
-        const allowedModels = await model2.listarModelos(userId);
-        const modelosPermitidos = allowedModels.map(m => m.modelo);
-
-        const filtrado = alerts.filter(alert => {
-            if (!modelosPermitidos.includes(alert.modelo)) return false;
-
-            if (type === "modelo") return alert.modelo === id;
-            if (type === "lote") return alert.lote === id;
-
+        const allAlerts = await model.listarTodos(userId);
+        const filtrado = allAlerts.filter(a => {
+            if (type === "modelo") return a.modelo === id;
+            if (type === "lote") return a.lote == id;
             return false;
         });
-
-        return res.status(200).json(filtrado);
-
+        res.status(200).json(filtrado);
     } catch (erro) {
-        console.log("Erro ao listar alertas:", erro);
-        return res.status(500).send("Erro ao listar alertas");
+        console.error("Erro listAlerts:", erro);
+        res.status(500).send("Erro");
     }
 }
 
-
-    
-
 module.exports = {
-    syncAlerts,
-    getKpis,
-    topModels,
-    topLotes,
-    comparison,
-    heatmap,
-    list,
-    recommend,
-    listAlerts
+    syncAlerts, getKpis, topModels, topLotes, comparison, heatmap, list, recommend, listAlerts
 };
