@@ -149,12 +149,23 @@
     <section id="list-section">
         <h2>Lista de modelos e lotes</h2>
         <label>Ver: <select id="viewSelect"><option value="both">Modelos + Lotes</option><option value="models">Modelos</option><option value="lotes">Lotes</option></select></label>
-        <label>Estado: <select id="stateSelect"><option value="all">Todos</option><option value="critical">Crítico</option><option value="high">Alto</option><option value="medium">Médio</option><option value="low">Baixo</option></select></label>
         <label>Ordenar: <select id="orderSelect"><option value="desc">Mais → Menos</option><option value="asc">Menos → Mais</option></select></label>
+        <div class="date-filters">
+          <label>De: <input type="date" id="listStart"></label>
+          <label>Até: <input type="date" id="listEnd"></label>
+          <button onclick="fetchList()">Aplicar</button>
+        </div>
 
         <table id="listTable" border="1">
             <thead>
-                <tr><th>Tipo</th><th>Nome</th><th>Alertas (total)</th><th>Alertas críticos</th><th>Estado</th><th>Ações</th></tr>
+              <tr>
+                <th>Tipo</th>
+                <th>Nome</th>
+                <th>Alertas (total)</th>
+                <th>Alertas críticos</th>
+                <th>Alertas atenção</th>
+                <th>Ações</th>
+              </tr>            
             </thead>
             <tbody></tbody>
         </table>
@@ -340,35 +351,50 @@
         
 
         async function fetchList() {
-            const start = document.getElementById('barModelsStart').value;
-            const end = document.getElementById('barModelsEnd').value;
-            const view = document.getElementById('viewSelect').value;
-            const state = document.getElementById('stateSelect').value;
-            const order = document.getElementById('orderSelect').value;
-            const userId = sessionStorage.ID_USUARIO;
-            if (!userId) return;
+          let start = document.getElementById('listStart').value;
+          let end = document.getElementById('listEnd').value;
+          const view = document.getElementById('viewSelect').value;
+          const order = document.getElementById('orderSelect').value;
+          const userId = sessionStorage.ID_USUARIO;
+          if (!userId) return;
 
-            const q = new URLSearchParams({ start: start||'', end: end||'', view, state, order, userId });
-            const res = await fetch(`${apiBase}/list?${q}`);
-            if (!res.ok) return;
-            const data = await res.json();
-            renderList(data);
+          // Default to last month if not specified
+          if (!start || !end) {
+            const today = new Date();
+            const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+            start = lastMonthStart.toISOString().slice(0, 10);
+            end = lastMonthEnd.toISOString().slice(0, 10);
+            document.getElementById('listStart').value = start;
+            document.getElementById('listEnd').value = end;
+          }
+
+          const q = new URLSearchParams({ start, end, view, order, userId });
+          const res = await fetch(`${apiBase}/list?${q}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          renderList(data);
         }
 
         function renderList(items) {
-            const tbody = document.querySelector('#listTable tbody');
-            tbody.innerHTML = '';
-            items.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${item.type}</td><td>${item.name}</td><td>${item.total}</td><td>${item.critico}</td><td>${severityLabel(item.state)}</td><td><button data-id='${item.type}|${item.id}' class='detailBtn'>Ver</button></td>`;
-                tbody.appendChild(tr);
-            });
-            document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
-                if(e.target.dataset.id) {
-                    const [type,id] = e.target.dataset.id.split('|');
-                    openDetails(type, id);
-                }
-            }));
+          const tbody = document.querySelector('#listTable tbody');
+          tbody.innerHTML = '';
+          items.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.type}</td>
+                <td>${item.name}</td>
+                <td>${item.total}</td>
+                <td>${item.critico}</td>
+                <td>${item.atencao ?? 0}</td>
+                <td><button data-id='${item.type}|${item.id}' class='detailBtn'>Ver</button></td>`;
+            tbody.appendChild(tr);
+          });
+          document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
+            if(e.target.dataset.id) {
+              const [type,id] = e.target.dataset.id.split('|');
+              openDetails(type, id);
+            }
+          }));
         }
 
         async function fetchRecommendations() {
@@ -402,7 +428,6 @@
         }
 
         document.getElementById('viewSelect').addEventListener('change', fetchList);
-        document.getElementById('stateSelect').addEventListener('change', fetchList);
         document.getElementById('orderSelect').addEventListener('change', fetchList);
         document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
 

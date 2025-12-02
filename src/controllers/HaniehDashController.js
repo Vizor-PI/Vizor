@@ -62,9 +62,9 @@ async function heatmap(req, res) {
 }
 
 async function list(req, res) {
-    const { start, end, view, state, order, userId } = req.query;
+    const { start, end, view, order, userId } = req.query;
     try {
-        const result = await model.list(start, end, view, state, order, userId);
+        const result = await model.list(start, end, view, order, userId);
         res.status(200).json(result);
     } catch (erro) {
         console.error("Erro List:", erro);

@@ -168,37 +168,7 @@ module.exports = {
         return { labels: sevs, datasets: [{ data }] };
     },
 
-    async heatmap(start, end, userId) {
-        let alertas = await this.listarTodos(userId);
-        if (start) alertas = alertas.filter(a => parseDate(a.timestamp) >= new Date(start));
-        if (end) alertas = alertas.filter(a => parseDate(a.timestamp) <= new Date(end));
-
-        const diasSet = new Set();
-        const horasSet = new Set();
-        alertas.forEach(a => {
-            const dt = parseDate(a.timestamp);
-            if(!isNaN(dt)) {
-                diasSet.add(dt.toISOString().slice(0, 10));
-                horasSet.add(dt.getHours());
-            }
-        });
-
-        const dias = Array.from(diasSet).sort();
-        const horas = Array.from(horasSet).sort((a, b) => a - b);
-
-        const matrix = horas.map(h =>
-            dias.map(d =>
-                alertas.filter(a => {
-                    const dt = parseDate(a.timestamp);
-                    return dt.toISOString().slice(0, 10) === d && dt.getHours() === h;
-                }).length
-            )
-        );
-        const horasFmt = horas.map(h => (h < 10 ? "0" : "") + h + ":00");
-        return { days: dias, hours: horasFmt, matrix };
-    },
-
-    async list(start, end, view, state, order, userId) {
+    async list(start, end, view, order, userId) {
         let alertas = await this.listarTodos(userId);
         if (start) alertas = alertas.filter(a => parseDate(a.timestamp) >= new Date(start));
         if (end) alertas = alertas.filter(a => parseDate(a.timestamp) <= new Date(end));
@@ -207,14 +177,13 @@ module.exports = {
         alertas.forEach(a => {
             const key = view === 'lotes' ? a.lote : a.modelo;
             if(!key) return;
-            if(!map[key]) map[key] = { type: view, name: key, total: 0, critico: 0, state: 'normal', id: key };
+            if(!map[key]) map[key] = { type: view, name: key, total: 0, critico: 0, atencao: 0, id: key };
             map[key].total++;
-            if(normalizeSeverity(a.severidade)==='critico') { map[key].critico++; map[key].state='critico'; }
-            else if(normalizeSeverity(a.severidade)==='atencao' && map[key].state!=='critico') map[key].state='atencao';
+            if(normalizeSeverity(a.severidade)==='critico') map[key].critico++;
+            if(normalizeSeverity(a.severidade)==='atencao') map[key].atencao++;
         });
-        
+
         let res = Object.values(map);
-        if(state && state !== 'all') res = res.filter(i => i.state === state);
         if(order === 'asc') res.sort((a,b)=>a.total-b.total); else res.sort((a,b)=>b.total-a.total);
         return res;
     },
