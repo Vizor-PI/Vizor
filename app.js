@@ -24,6 +24,7 @@ var dadosModeloRouter = require("./src/routes/dadosModelos");
 var loteRouter = require("./src/routes/lote");
 var pedroRoute = require("./src/routes/pedroRoute"); 
 var HaniehRouter = require("./src/routes/HaniehDash");
+var loteReclamacaoRouter = require("./src/routes/loteReclamacaoRoute");
 
 // Jira:
 var jiraRouter = require("./src/routes/jiraRoutes");
@@ -43,6 +44,7 @@ app.use("/dadosModelos", dadosModeloRouter);
 app.use("/lote", loteRouter);
 app.use("/pedroDashboard", pedroRoute); 
 app.use("/HaniehDash", HaniehRouter);
+app.use("/reclamacaoLote", loteReclamacaoRouter);
 
 // Jira:
 app.use("/api/jira", jiraRouter);

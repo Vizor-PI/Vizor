@@ -1,100 +1,83 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("reclamacao");
-
-    // Coloca no título
-    document.getElementById("titulo-reclamacao").innerText = `Detalhes da Reclamação #${id}`;
-
-    // EXEMPLO – depois trocamos pelo fetch real
-    const reclamacao = {
-        id: id,
-        player: "PLY-2024-001234",
-        lote: "LOTE-2024-A1",
-        data: "15/11/2025",
-        descricao: "Superaquecimento frequente da CPU",
-        gravidade: "Alta"
-    };
-
-    document.getElementById("rec-player").innerText = reclamacao.player;
-    document.getElementById("rec-lote").innerText = reclamacao.lote;
-    document.getElementById("rec-data").innerText = reclamacao.data;
-    document.getElementById("rec-descricao").innerText = reclamacao.descricao;
-
-    const gravidade = document.getElementById("rec-gravidade");
-    gravidade.innerText = reclamacao.gravidade;
-
-    if (reclamacao.gravidade === "Alta") gravidade.classList.add("gravidade-alta");
-    else if (reclamacao.gravidade === "Média") gravidade.classList.add("gravidade-media");
-    else gravidade.classList.add("gravidade-baixa");
-
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-
+document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const idRec = params.get("reclamacao");
+    const empresa = sessionStorage.NOME_EMPRESA;
 
-    const reclamacaoAtual = {
-        id: idRec,
-        player: "PLY-2024-001234",
-        lote: "LOTE-2024-A1",
-        data: "15/11/2025",
-        descricao: "Superaquecimento frequente da CPU",
-        gravidade: "Alta"
-    };
+    if (!idRec || !empresa) {
+        console.error("Erro: ID ou empresa não encontrados.");
+        return;
+    }
 
-    document.getElementById("titulo-reclamacao").innerText = `Detalhes da Reclamação #${idRec}`;
-    document.getElementById("rec-player").innerText = reclamacaoAtual.player;
-    document.getElementById("rec-lote").innerText = reclamacaoAtual.lote;
-    document.getElementById("rec-data").innerText = reclamacaoAtual.data;
-    document.getElementById("rec-descricao").innerText = reclamacaoAtual.descricao;
+    const resp = await fetch(`/reclamacaoLote/reclamacoes/${empresa}`);
+    const data = await resp.json();
+
+    const rec = data.reclamacoes.find(r => r.id == idRec);
+    if (!rec) {
+        console.error("Reclamação não encontrada.");
+        return;
+    }
+
+    document.getElementById("titulo-reclamacao").innerText =
+        `Detalhes da Reclamação #${idRec} — Lote ${rec.lote}`;
+
+    document.getElementById("rec-player").innerText = rec.player_id;
+    document.getElementById("rec-lote").innerText = rec.lote;
+    document.getElementById("rec-data").innerText = rec.data;
+    document.getElementById("rec-descricao").innerText = rec.descricao;
 
     const badge = document.getElementById("rec-gravidade");
-    badge.innerText = reclamacaoAtual.gravidade;
+    badge.innerText = rec.gravidade;
 
-    if (reclamacaoAtual.gravidade === "Alta") badge.classList.add("gravidade-alta");
-    else if (reclamacaoAtual.gravidade === "Média") badge.classList.add("gravidade-media");
+    if (rec.gravidade === "Crítica") badge.classList.add("gravidade-alta");
+    else if (rec.gravidade === "Média") badge.classList.add("gravidade-media");
     else badge.classList.add("gravidade-baixa");
 
-    const reclamacoesMesmoLote = [
-        { id: 6, player: "PLY-2024-001567", descricao: "RAM com falhas intermitentes", data: "16/11/2025", gravidade: "Alta" },
-        { id: 7, player: "PLY-2024-001890", descricao: "HD apresentando lentidão", data: "17/11/2025", gravidade: "Média" },
-        { id: 11, player: "PLY-2024-001999", descricao: "Superaquecimento frequente da CPU", data: "18/11/2025", gravidade: "Alta" }
-    ];
+    const reclamacoesMesmoLote = data.reclamacoes.filter(r => r.lote == rec.lote && r.id != rec.id);
 
-    document.getElementById("nome-lote-titulo").innerText = reclamacaoAtual.lote;
-
-
+    document.getElementById("nome-lote-titulo").innerText = rec.lote;
     document.getElementById("recl-lote-total").innerText = reclamacoesMesmoLote.length;
 
     const lista = document.getElementById("reclamacoes-lote-lista");
-
     lista.innerHTML = "";
 
-    reclamacoesMesmoLote.forEach(r => {
+    const peso = {
+        "Crítica": 3,
+        "Média": 2,
+        "Baixa": 1
+    };
 
+    reclamacoesMesmoLote.sort((a, b) => {
+        if (peso[b.gravidade] !== peso[a.gravidade]) {
+            return peso[b.gravidade] - peso[a.gravidade];
+        }
+
+        const parse = (d) => {
+            const [dia, mes, ano] = d.split("/").map(Number);
+            return new Date(ano, mes - 1, dia);
+        };
+
+        return parse(b.data) - parse(a.data);
+    });
+
+    reclamacoesMesmoLote.forEach(r => {
         let gravidadeClass =
-            r.gravidade === "Alta" ? "gravidade-alta" :
-            r.gravidade === "Média" ? "gravidade-media" :
-            "gravidade-baixa";
+            r.gravidade === "Crítica" ? "gravidade-alta" :
+                r.gravidade === "Média" ? "gravidade-media" :
+                    "gravidade-baixa";
 
         const item = `
             <div class="reclam-item" onclick="window.location.href='detalhesReclamacao.html?reclamacao=${r.id}'">
-                
                 <span class="badge gravidade-badge badge-na-lista ${gravidadeClass}">
                     ${r.gravidade}
                 </span>
 
-                <strong>#${r.id}  ${r.player}</strong>
+                <strong>#${r.id}  ${r.player_id}</strong>
 
                 <p class="desc">${r.descricao}</p>
 
                 <p class="data">📅 ${r.data}</p>
             </div>
         `;
-
         lista.innerHTML += item;
     });
-
 });
