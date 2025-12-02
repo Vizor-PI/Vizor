@@ -79,15 +79,15 @@ async function topLotes(req, res) {
 }
 
 async function comparison(req, res) {
-    const { start, end, type } = req.query;
+    const { start, end, entityType, entity } = req.query;
     const userId = req.query.userId || req.params.userId;
 
-    if (!type) return res.status(400).send("O tipo está vazio!");
+    if (!entityType || !entity) return res.status(400).send("Entidade não selecionada!");
     if (!start || !end) return res.status(400).send("O período está incompleto!");
 
     try {
-        const result = await model.comparison(start, end, type, userId);
-        return res.status(200).json(result[0]);
+        const result = await model.comparison(start, end, entityType, entity, userId);
+        return res.status(200).json(result);
     } catch (erro) {
         console.log("Erro ao buscar comparação:", erro);
         return res.status(500).json(erro.sqlMessage || "Erro ao buscar comparação");

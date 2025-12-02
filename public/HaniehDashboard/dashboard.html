@@ -293,12 +293,6 @@ header {
           <option value="lote">Lote</option>
         </select>
         <select id="compareEntity"></select>
-        <select id="alertTypeSelect">
-          <option value="all">Todos</option>
-          <option value="critico">Crítico</option>
-          <option value="atencao">Atenção</option>
-          <option value="normal">Normal</option>
-        </select>
         <button onclick="fetchComparison()">Aplicar</button>
       </div>
       <canvas id="lineComparison"></canvas>
@@ -350,6 +344,37 @@ header {
     const apiBase = '/HaniehDash';
     let barModelsChart, barLotesChart, lineChart;
 
+    async function populateCompareEntity() {
+      const entityType = document.getElementById('compareEntityType').value;
+      const userId = sessionStorage.ID_USUARIO;
+      if (!userId) return;
+      const res = await fetch(`/dadosModelos/listarModelosELotes/${userId}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const select = document.getElementById('compareEntity');
+      select.innerHTML = '';
+      if (entityType === 'modelo') {
+        [...new Set(data.map(d => d.modelo))].forEach(modelo => {
+          const opt = document.createElement('option');
+          opt.value = modelo;
+          opt.textContent = modelo;
+          select.appendChild(opt);
+        });
+      } else {
+        [...new Set(data.map(d => d.lote))].forEach(lote => {
+          const opt = document.createElement('option');
+          opt.value = lote;
+          opt.textContent = lote;
+          select.appendChild(opt);
+        });
+      }
+      // Select the first option if available
+      if (select.options.length > 0) {
+        select.selectedIndex = 0;
+      }
+      fetchComparison(); // Always call after populating
+    }
+
     function initCharts() {
       const ctxM = document.getElementById('barModels').getContext('2d');
         barModelsChart = new Chart(ctxM, {
@@ -358,32 +383,7 @@ header {
         options: { responsive: true }
       });
 
-      async function populateCompareEntity() {
-        const entityType = document.getElementById('compareEntityType').value;
-        const userId = sessionStorage.ID_USUARIO;
-        if (!userId) return;
-        // Fetch allowed models or lotes for this user
-        const res = await fetch(`/dadosModelos/listarModelosELotes/${userId}`);
-        if (!res.ok) return;
-        const data = await res.json();
-        const select = document.getElementById('compareEntity');
-        select.innerHTML = '';
-        if (entityType === 'modelo') {
-          [...new Set(data.map(d => d.modelo))].forEach(modelo => {
-            const opt = document.createElement('option');
-            opt.value = modelo;
-            opt.textContent = modelo;
-            select.appendChild(opt);
-          });
-        } else {
-          [...new Set(data.map(d => d.lote))].forEach(lote => {
-            const opt = document.createElement('option');
-            opt.value = lote;
-            opt.textContent = lote;
-            select.appendChild(opt);
-          });
-        }
-      }
+      
       document.getElementById('compareEntityType').addEventListener('change', populateCompareEntity);
       window.addEventListener('DOMContentLoaded', populateCompareEntity);
 
@@ -396,10 +396,10 @@ header {
       });
 
 
-      const ctxLine = document.getElementById('lineComparison').getContext('2d');
-      lineChart = new Chart(ctxLine, {
-        type: 'line',
-        data: { labels: [], datasets: [] },
+      const ctxPie = document.getElementById('lineComparison').getContext('2d');
+      comparisonChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00c8d2', '#f39c12', '#e74c3c'] }] },
         options: { responsive: true }
       });
     }
@@ -492,15 +492,20 @@ header {
     async function fetchComparison() {
       const start = document.getElementById('lineStart').value;
       const end = document.getElementById('lineEnd').value;
-      const alertType = document.getElementById('alertTypeSelect').value;
       const entityType = document.getElementById('compareEntityType').value;
       const entity = document.getElementById('compareEntity').value;
       const userId = sessionStorage.ID_USUARIO;
+      if (!entity) {
+        // Opcional: Limpe o gráfico ou mostre uma mensagem
+        comparisonChart.data.labels = [];
+        comparisonChart.data.datasets[0].data = [];
+        comparisonChart.update();
+        return;
+      }
       if (!userId) return;
       const q = new URLSearchParams({
         start: start || '',
         end: end || '',
-        type: alertType,
         entityType,
         entity,
         userId
@@ -508,9 +513,9 @@ header {
       const res = await fetch(`${apiBase}/comparison?${q}`);
       if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
       const data = await res.json();
-      lineChart.data.labels = data.labels;
-      lineChart.data.datasets = data.datasets;
-      lineChart.update();
+      comparisonChart.data.labels = data.labels;
+      comparisonChart.data.datasets[0].data = data.datasets[0].data;
+      comparisonChart.update();
     }
 
     async function fetchHeatmap() {
@@ -620,7 +625,6 @@ header {
     document.getElementById('detailModal').style.display = 'block';
   }
 
-  document.getElementById('alertTypeSelect').addEventListener('change', () => fetchComparison());
   document.getElementById('viewSelect').addEventListener('change', () => fetchList());
   document.getElementById('stateSelect').addEventListener('change', () => fetchList());
   document.getElementById('orderSelect').addEventListener('change', () => fetchList());
@@ -639,6 +643,13 @@ header {
   }
 
   initCharts();
+  document.getElementById('compareEntityType').addEventListener('change', () => {
+    populateCompareEntity();
+    fetchComparison();
+  });
+  document.getElementById('compareEntity').addEventListener('change', fetchComparison);
+  document.getElementById('lineStart').addEventListener('change', fetchComparison);
+  document.getElementById('lineEnd').addEventListener('change', fetchComparison);
   setPresetWeek(); 
   refreshAll();
 
