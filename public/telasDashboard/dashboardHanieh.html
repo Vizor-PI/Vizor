@@ -38,9 +38,55 @@
     @media(max-width:700px){
       .date-filters { flex-direction: column; align-items: flex-start; }
     }
-    .alert-top-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    #kpi-total, #kpi-critical, #kpi-top-model, #kpi-top-lote, #kpi-model-growth, #kpi-lote-growth { background:#0f1f2b; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between; font-size:14px; font-weight:600; gap: 4px; }
-    #kpi-total span, #kpi-critical span, #kpi-top-model span, #kpi-top-lote span, #kpi-model-growth span, #kpi-lote-growth span { display:block; font-size:28px; font-weight:700; margin-top:6px; }
+    .alert-top-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      justify-items: center;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: #16222c;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,200,210,0.08);
+      border: 1px solid rgba(0,200,210,0.12);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 160px;
+      height: 160px;           
+      width: 100%;             
+      box-sizing: border-box;  
+      transition: box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      box-shadow: 0 4px 24px rgba(0,200,210,0.18);
+    }
+
+    .kpi-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #00c8d2;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 13px;
+      color: #b2eaf3;
+      margin-top: 2px;  
+    }
     #charts canvas { background: #0f1f2b; padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.08); margin-bottom: 24px; }
     .date-filters select {
       background: #0f1f2b;
@@ -59,7 +105,7 @@
     #listTable tr:nth-child(even) { background: rgba(255,255,255,0.03); }
     #listTable th, #listTable td { border-bottom: 1px solid rgba(255,255,255,.08); }
     .detailBtn { background:#00c8d2; border:none; padding:6px 10px; border-radius:6px; font-weight:600; cursor:pointer; color:#000; }
-    /* Modal improvements */
+   
     .modal { 
       display: none; 
       position: fixed; 
@@ -97,20 +143,37 @@
         <div class="date-filters">
             <label>De: <input type="date" id="startDate" /></label>
             <label>Até: <input type="date" id="endDate" /></label>
-            <!-- [CORREÇÃO] Adicionada função onclick -->
             <button id="applyRange">Aplicar</button> 
-            <button id="presetWeek">Dados de Outubro</button> <!-- Renomeado para ficar claro -->
+            <button id="presetWeek">Dados de Outubro</button> 
             <button id="presetMonth">Último mês</button>
         </div>
     </header>
 
     <section class="alert-top-grid">
-        <div id="kpi-total">Total de alertas: <span id="kpi-total-val">—</span></div>
-        <div id="kpi-critical">Alertas críticos: <span id="kpi-critical-val">—</span></div>
-        <div id="kpi-top-model">Modelo com mais alertas: <span id="kpi-top-model-val">—</span></div>
-        <div id="kpi-top-lote">Lote com mais alertas: <span id="kpi-top-lote-val">—</span></div>
-        <div id="kpi-model-growth">Modelo com aumento crítico: <span id="kpi-model-growth-val">—</span></div>
-        <div id="kpi-lote-growth">Lote com aumento crítico: <span id="kpi-lote-growth-val">—</span></div>
+      <div class="kpi-card">
+        <div class="kpi-title">Total de alertas</div>
+        <div class="kpi-value" id="kpi-total-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Alertas críticos</div>
+        <div class="kpi-value" id="kpi-critical-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Modelo com mais alertas</div>
+        <div class="kpi-value" id="kpi-top-model-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Lote com mais alertas</div>
+        <div class="kpi-value" id="kpi-top-lote-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Modelo com aumento crítico</div>
+        <div class="kpi-value" id="kpi-model-growth-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Lote com aumento crítico</div>
+        <div class="kpi-value" id="kpi-lote-growth-val">—</div>
+      </div>
     </section>
 
     <section id="charts">
@@ -172,7 +235,6 @@
     </section>
 
 
-    <!-- Modal Único e Correto (Estilo gestao.css) -->
     <div id="detailModal" class="modal" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
         <div class="modal-content" style="background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative;">
             <span id="closeDetail" class="close" style="position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
@@ -181,7 +243,6 @@
     </div>
   </div> 
     
-  <!-- Scripts -->
   <script src="../js/verificadorCargo.js"></script>
   <script src="../js/navbar.js"></script>
 
@@ -221,29 +282,53 @@
         }
 
         function initCharts() {
-            const ctxM = document.getElementById('barModels').getContext('2d');
-            barModelsChart = new Chart(ctxM, {
-                type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [], backgroundColor: '#00c8d2' }] },
-                options: { responsive: true }
-            });
-
-            // [CORREÇÃO] Removido listener duplicado
-            document.getElementById('compareEntityType').addEventListener('change', populateCompareEntity);
-
-            const ctxL = document.getElementById('barLotes').getContext('2d');
-            barLotesChart = new Chart(ctxL, {
-                type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [], backgroundColor: '#9b59b6' }] },
-                options: { responsive: true }
-            });
-
-            const ctxPie = document.getElementById('lineComparison').getContext('2d');
-            comparisonChart = new Chart(ctxPie, {
-                type: 'pie',
-                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'] }] },
-                options: { responsive: true }
-            });
+          barModelsChart = new Chart(ctxM, {
+            type: 'bar',
+            data: { 
+              labels: [],
+              datasets: [{
+                label: 'Alertas críticos',
+                data: [],
+                backgroundColor: 'rgba(0,200,210,0.7)',
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: '#222',
+                  titleColor: '#00c8d2',
+                  bodyColor: '#fff'
+                }
+              },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 13 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#fff', font: { size: 13 } } }
+            },
+            layout: { padding: 20 }
+            }
+          });
+          comparisonChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+              labels: [],
+              datasets: [{
+                data: [],
+                backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c', '#00c8d2', '#9b59b6'],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+                plugins: {
+                  legend: { labels: { color: '#fff', font: { size: 14 } } },
+                  tooltip: { backgroundColor: '#222', titleColor: '#00c8d2', bodyColor: '#fff' }
+                },
+              layout: { padding: 20 }
+            }
+          });
         }
 
         function severityLabel(sev) {
@@ -254,17 +339,15 @@
         }
 
         function setPresetWeek() {
-            // [ATENÇÃO] Ajustado para pegar seus dados de OUTUBRO
-            // Se quiser "hoje", mude para new Date()
-            const today = new Date('2025-10-30'); // Força a data para Outubro para ver os dados
+            const today = new Date('2025-10-30'); 
             const lastMonday = new Date(today);
-            lastMonday.setDate(today.getDate() - 30); // Pega o mês inteiro
+            lastMonday.setDate(today.getDate() - 30); 
             
             const startStr = '2025-10-01';
             const endStr = '2025-10-31';
 
             const ids = [
-                'startDate', 'endDate', // [CORREÇÃO] Adicionado os campos do header
+                'startDate', 'endDate', 
                 'barModelsStart', 'barModelsEnd',
                 'barLotesStart', 'barLotesEnd',
                 'lineStart', 'lineEnd'
@@ -287,7 +370,6 @@
             const userId = sessionStorage.ID_USUARIO;
             if (!userId) { console.error('Usuário não autenticado!'); return; }
             
-            // [CORREÇÃO] Pega os valores dos inputs de data do header
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
 
@@ -358,7 +440,6 @@
           const userId = sessionStorage.ID_USUARIO;
           if (!userId) return;
 
-          // Default to last month if not specified
           if (!start || !end) {
             const today = new Date();
             const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
@@ -404,7 +485,6 @@
             const res = await fetch(`${apiBase}/recommend?${q}`);
             if (!res.ok) return;
             const data = await res.json();
-            // Preenche divs ocultas se necessário
         }
 
         async function openDetails(type, id) {
@@ -431,7 +511,6 @@
         document.getElementById('orderSelect').addEventListener('change', fetchList);
         document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
 
-        // [CORREÇÃO] Adicionada a ação ao botão Aplicar do header
         const btnApply = document.getElementById('applyRange');
         if(btnApply) {
             btnApply.addEventListener('click', () => {
@@ -443,7 +522,6 @@
             await Promise.all([ fetchKpis(), fetchTopBars(), fetchComparison(), fetchList(), fetchRecommendations() ]);
         }
 
-        // --- INICIALIZAÇÃO SEGURA ---
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
             
@@ -452,7 +530,6 @@
             document.getElementById('lineStart').addEventListener('change', fetchComparison);
             document.getElementById('lineEnd').addEventListener('change', fetchComparison);
             
-            // Verificação de segurança para o botão presetWeek
             const presetBtn = document.getElementById('presetWeek');
             if(presetBtn) {
                 presetBtn.onclick = () => { setPresetWeek(); refreshAll(); };
@@ -462,9 +539,8 @@
                 presetMonth.onclick = () => { setPresetMonth(); refreshAll(); };
             }
             
-            // Delay para garantir session
             setTimeout(() => {
-                populateCompareEntity(); // Carrega o select de comparação
+                populateCompareEntity(); 
                 setPresetWeek();
                 refreshAll();
             }, 500); 
