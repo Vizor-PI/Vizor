@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+
+    <link
+      rel="icon"
+      href="../assets/imgs/logosDash/home.png"
+      type="image/x-icon"
+    />
+  </head>
+
+  <body onload="verificarCargo()">
+    <nav class="navbar" id="navbarConstructor"></nav>
+    <div class="container-xl" id="imgEmBreve"></div>
+  </body>
+</html>
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  function limparSessao() {
+    sessionStorage.clear();
+  }
+</script>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lotes</title>
+  <link rel="stylesheet" href="../assets/css/css-dashboard/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+  <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../assets/css/css-dashboard/lotes.css" />
+  <style>
+    /* SweetAlert custom */
+    .alerta-custom {
+      width: 40vw;
+      max-width: 90%;
+      padding: 2rem;
+      border-radius: 1vw;
+      background-color: rgb(0, 0, 0, 0.9);
+    }
+
+    .alerta-titulo {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .alerta-icone {
+      width: 8vw;
+      height: auto;
+      display: block;
+      margin: 0 auto 1rem auto;
+    }
+  </style>
+</head>
+
+
+<body onload="dadosLote()" onload="verificarCargo()">
+  <nav class="navbar" id="navbarConstructor"></nav>
+
+  <div class="container">
+    <div class="container-xl">
+      <div class="cabecalho">
+        <h1>Lotes</h1>
+        <a href="criarLote.html"> Criar Lote </a>
+      </div>
+      <div class="tex">
+        <p class="idLote" style="width: 15%;">ID:</p> 
+        <p class="dataLote" style="width: 25%; margin-left: 2vw;">Data:</p>
+        <p class="qtdMaquinas" style="width: 20%;">Qtd Maquinas:</p>
+        <p class="modelo" style="width: 20%;">Modelo:</p>
+        </div>
+      <div class="listaDeLotes" id="listaDeLotes">
+      </div>
+</body>
+
+</html>
+
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+  function dadosLote() {
+    const id = sessionStorage.ID_USUARIO;
+
+    fetch(`/lote/buscar/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idUsuarioServer: id
+      }),
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          const text = await response.text();
+          return text ? JSON.parse(text) : null;
+        } else {
+          if (response.status === 204) {
+            console.log("Nenhum lote encontrado.");
+            document.getElementById("listaDeLotes").innerHTML = `<div style="color: white; padding: 20px;">Nenhum lote cadastrado para esta empresa.</div>`;
+            return null;
+          }
+          throw new Error("Erro na resposta do servidor: " + response.statusText);
+        }
+      })
+      .then((resposta) => {
+        const lista = document.getElementById("listaDeLotes");
+        lista.innerHTML = "";
+
+        if (resposta && resposta.length > 0) {
+
+          resposta.forEach((lote) => {
+            const dataFabricacao = new Date(lote.dataFabricacao);
+            const dataFormatada = dataFabricacao.toLocaleDateString('pt-BR');
+
+            lista.innerHTML += `
+                            <div class="linha">
+                                <div class="informacoes">
+                                    <div class="cabecalho-Infos" style="width: 15%;">${lote.idLote}</div>
+                                    <div class="dadosPessoais">
+                                        <div>${dataFormatada}</div> 
+                                        <div>${lote.qntMaquinas}</div>
+                                        <div>${lote.NomeModelo}</div> 
+                                    </div>
+                                </div>
+                                <div class="botoes-users">
+                                    <button class="excluir" onclick="excluirLote(${lote.idLote})">
+                                        <img src="../assets/imgs/logosDash/recycle-bin.png" alt="Excluir">
+                                    </button>
+                                    <button class="editar" onclick="">
+                                        <img src="../assets/imgs/logosDash/edit.png" alt="Ver detalhes">
+                                    </button>
+                                </div>
+                            </div>`;
+          });
+        }
+      })
+      .catch((erro) => {
+        console.error("Erro na requisição para buscar lotes:", erro);
+        document.getElementById("listaDeLotes").innerHTML = `<div style="color: red; padding: 20px;">Ocorreu um erro ao carregar os lotes. Verifique o console.</div>`;
+      });
+  }
+
+  function excluirLote(idLote) {
+
+      Swal.fire({
+        title: `Excluir o Lote ID ${idLote}?`,
+        text: "Digite o ID do lote para confirmar:",
+        input: "text",
+        inputPlaceholder: idLote,
+        showCancelButton: true,
+        confirmButtonText: "Excluir",
+        cancelButtonText: "Cancelar",
+        background: "rgb(0,0,0,0.9)",
+        color: "#f1f1f1",
+        heightAuto: false,
+        preConfirm: (valorDigitado) => {
+          if (valorDigitado !== String(idLote)) {
+            Swal.showValidationMessage(
+              "ID incorreto! Digite exatamente como aparece."
+            );
+            return false;
+          }
+          return true;
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/lote/deletarLote/${idLote}`, { method: "DELETE" }).then(
+            (res) => {
+              if (res.ok) {
+                Swal.fire({
+                  title: `Lote ID ${idLote} deletado com sucesso! ✅`,
+                  showConfirmButton: false,
+                  timer: 3000,
+                  background: "rgb(0,0,0,0.9)",
+                  color: "#f1f1f1",
+                  heightAuto: true,
+                  customClass: {
+                    popup: "alerta-custom",
+                    title: "alerta-titulo",
+                  },
+                });
+                dadosLote();
+              } else {
+                Swal.fire("Erro", `Não foi possível excluir o lote ID ${idLote}❌`);
+              }
+            }
+          );
+        }
+      });
+    }
+
+</script>

@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
+
+* {
+    box-sizing: border-box;
+    font-family: "Akatab", sans-serif;
+}
+
+body {
+    background: #061722;
+    color: #d7f0ff;
+    font-family: 'Inter', sans-serif;
+    padding: 20px 40px;
+}
+
+.header-voltar {
+    margin-bottom: 20px;
+}
+
+.voltar-btn {
+    color: #4dc9ff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.titulo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.titulo-area h1 {
+    font-size: 32px;
+    color: #45c7ff;
+}
+
+.icon-box {
+    font-size: 30px;
+}
+
+.card {
+    background: #04344e;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.card-reclamacao {
+    margin-top: 10px;
+}
+
+.linha {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.campo span {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.campo strong {
+    font-size: 18px;
+}
+
+.gravidade-badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: white;
+}
+
+.gravidade-alta {
+    background: #d44a57;
+}
+
+.gravidade-media {
+    background: #b7953a;
+}
+
+.gravidade-baixa {
+    background: #3fa66b;
+}
+
+.descricao-bloco {
+    margin-top: 20px;
+}
+
+.descricao-bloco span {
+    opacity: 0.7;
+}
+
+.descricao-bloco p {
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.card-reclamacoes-lote {
+    margin-top: 35px;
+    padding: 25px;
+    border-radius: 18px;
+    background: #04344e;
+}
+
+.reclam-lote-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.reclam-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+.reclam-item {
+    background: #072235;
+    padding: 18px;
+    border-radius: 14px;
+    position: relative;
+}
+
+.reclam-item:hover {
+    background: #0a2a45;
+    cursor: pointer;
+}
+
+.reclam-item .badge-na-lista {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+}
+
+.reclam-item strong {
+    color: #47caff;
+}
+
+.reclam-item .desc {
+    margin-top: 6px;
+    font-size: 15px;
+}
+
+.reclam-item .data {
+    margin-top: 10px;
+    opacity: 0.8;
+}

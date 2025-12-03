@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  font-family: "Akatab", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+/* Conteúdo principal */
+.container-xl {
+  flex: 1;
+  height: auto;
+  width: auto;
+  background-color: #030e17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  font-size: 1vw;
+}
+
+.alterarDadosContainer {
+  background-color: #072135;
+  opacity: 0.7;
+  border-radius: 1.5rem;
+  width: 70vw;
+  height: 90vh;
+  box-shadow: 30px 10px 80px rgba(0, 0, 0, 0.99);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.divCentralAlterarDados {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 80%;
+}
+
+.entradasAlterarDados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+  width: 100%;
+}
+
+p {
+  font-size: 0.8vw;
+}
+
+.textoInput {
+  color: aqua;
+  font-size: 1.2vw;
+}
+
+h1 {
+  color: aqua;
+  font-size: 2vw;
+}
+input {
+  width: 20vw;
+  height: 5vh;
+  border-radius: 0.6rem;
+  border: 1px solid white;
+  background-color: #072135;
+  color: white;
+  padding-left: 0.8vw;
+}
+
+input::placeholder {
+  color: white;
+}
+
+button {
+  background-color: red;
+  width: 25vw;
+  height: 6vh;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
+  color: white;
+  font-size: 1.2vw;
+  margin-top: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+#textoCadastro {
+  font-size: 0.9vw;
+}
+
+span {
+  color: white;
+}

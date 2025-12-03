@@ -1,0 +1,114 @@
+/* Sidebar */
+.navbar {
+  background-color: rgba(9, 41, 66, 1);
+  padding: 3.5vh;
+  width: 16vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+/* Logo */
+.imagemLogoDashboard {
+  height: 17vh;
+  width: auto;
+}
+
+/* Itens da navbar */
+#textosNavbar {
+  display: flex;
+  flex-direction: column;
+  gap: 5vh;
+  text-align: start;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 10vw;
+  justify-content: flex-start;
+  margin-right: 2vw;
+  text-align: start;
+}
+
+.nav-item a {
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.nav-item a:hover {
+  transform: scale(1.1);
+  color: rgba(10, 203, 227, 1);
+}
+
+#logoNavbarDash {
+  width: 2.5vw;
+  height: auto;
+  margin-right: 1rem;
+}
+
+/* Botão sair */
+#divSair {
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#divSair a {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+#divSair a:hover {
+  transform: scale(1.1);
+}
+
+.nav-item.active a {
+  color: rgba(10, 203, 227, 1);
+  font-weight: bold;
+}
+/* ====== LINKS DA SIDEBAR (conserto de cor/visited/underline) ====== */
+
+/* estado padrão e visitado: branco, sem sublinhado */
+.navbar a,
+.navbar a:link,
+.navbar a:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* hover: animação + cor ciano, sem sublinhado */
+.navbar a:hover {
+  color: rgba(10, 203, 227, 1);
+  text-decoration: none;
+}
+
+/* foco via teclado: deixa visível mas discreto */
+.navbar a:focus-visible {
+  outline: 2px solid rgba(10, 203, 227, .6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ativo/selecionado (já tinha, mas garantimos o visited também) */
+.nav-item.active a,
+.nav-item.active a:visited {
+  color: rgba(10, 203, 227, 1);
+  font-weight: 700;
+}
+
+/* mantém sua transição/scale, mas aqui centralizamos */
+.nav-item a {
+  transition: transform .2s ease, color .2s ease;
+  display: inline-block;
+}
+.nav-item a:hover {
+  transform: translateX(2px);
+}

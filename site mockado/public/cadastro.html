@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/css/cadastro.css" />
+  <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+
+  <title>Cadastro</title>
+</head>
+
+<body onload="buscarEmpresas()">
+  <div class="cadastroContainer">
+    <div class="divCentralCadastro">
+      <a href="index.html"><img src="./assets/imgs/Logo.png" id="logoVizor" /></a>
+      <h1>Cadastro</h1>
+      <div class="entradasCadastro">
+        <div class="input">
+          <p class="textoInput">Nome de usuário</p>
+          <input id="nome_input" placeholder="Usuário" />
+        </div>
+        <div class="input">
+          <p class="textoInput">CPF</p>
+          <input id="cpf_input" placeholder="XXX. XXX. XXX -XX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Email</p>
+          <input id="email_input" placeholder="usuario@email.com" />
+        </div>
+        <div class="input">
+          <p class="textoInput">numero de telefone</p>
+          <input id="telefone_input" placeholder="(XX) XXXXX-XXXX" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Senha</p>
+          <input id="senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input">
+          <p class="textoInput">Confirme a senha</p>
+          <input id="confirmacao_senha_input" placeholder="****************" type="password" />
+        </div>
+        <div class="input-Container" style="flex-direction: row; display: flex">
+          <p class="textoInput">Cargo</p>
+          <select disabled id="cargo_input">
+            <option value="1">Administrador</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="cadastrar()">Cadastrar</button>
+      <p style="color: white" id="textoCadastro">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoCadastro"><a href="login.html">Já tem uma
+            conta?</a></span>
+      </p>
+      <p style="color: white" id="textoInstrucao">
+        <span style="color: rgba(10, 203, 227, 1); cursor: pointer" id="textoInstrucao"
+          onclick="instrucoesSenha()">Instruções de cadastro
+        </span>
+      </p>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+
+  <div id="mensagem_erro"></div>
+  <div id="cardErro"></div>
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./js/alertasSW.js"></script>
+
+<script>
+  // Array para armazenar empresas cadastradas para validação de código de ativação
+  let listaEmpresasCadastradas = [];
+
+  function buscarEmpresas() {
+    fetch("/empresa/buscar", {
+      method: "GET",
+    })
+      .then(function (resposta) {
+        resposta.json().then((empresa) => {
+          empresa.forEach((empresa) => {
+            listaEmpresasCadastradas.push(empresa);
+
+            console.log("listaEmpresasCadastradas");
+            console.log(listaEmpresasCadastradas[0].Codigo);
+          });
+        });
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+      });
+  }
+
+  function instrucoesSenha() {
+    Swal.fire({
+      title: "Instruções de senha",
+      html: `
+      <b>Senha:</b><br>
+      • Deve ter no mínimo 6 caracteres.<br>
+      • Deve conter ao menos uma letra maiúscula.<br>
+      • Deve conter pelo menos um caractere especial (ex: @, #, !, %, etc).<br>
+      • A confirmação de senha deve ser idêntica à senha escolhida.<br><br>
+
+      <b>E-mail:</b><br>
+      • O e-mail informado deve conter o símbolo <b>@</b>.<br>
+      • O campo de confirmação de e-mail deve ser igual ao e-mail digitado.<br><br>
+
+      <b>CPF:</b><br>
+      • Deve conter exatamente 11 dígitos numéricos, sem pontos ou traços.
+    `,
+      icon: "question",
+      heightAuto: false,
+      background: "rgb(0,0,0,0.9)",
+      color: "#fff",
+      customClass: {
+        popup: "alerta-custom-senha", // caixa toda
+        title: "alerta-titulo", // só o título
+        icon: "alerta-icone", // só o ícone
+      },
+    });
+  }
+
+  function cadastrar() {
+    // aguardar();
+
+    //Recupere o valor da nova input pelo nome do id
+    // Agora vá para o método fetch logo abaixo
+    var nomeVar = nome_input.value;
+    var emailVar = email_input.value;
+    var senhaVar = senha_input.value;
+    var confirmacaoSenhaVar = confirmacao_senha_input.value;
+    var cpfVar = cpf_input.value;
+    var telefoneVar = telefone_input.value;
+    var cargoVar = document.getElementById("cargo_input").value;
+
+    // Funcoes de validação de Email e Senha
+    var textoComArroba = emailVar.indexOf("@");
+    // Se voltar -1 é porque não tem
+
+    const regex = /[!@#$%^&*(),.?":{}|<>]/;
+    const regexLetra = /[A-Z]/;
+    //O regex na verificação com ! traz um false.
+    //É true que ele não corresponde ao regex?
+    // Verificando se há algum campo em branco
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == "" ||
+      cpfVar == "" ||
+      telefoneVar == ""
+    ) {
+      alerta("warning", "Campos em branco");
+      return false;
+    } else if (nomeVar.length < 1 || senhaVar.length < 6) {
+      alerta("error", "Sua senha deve ter mais de 6 caracteres!");
+      return;
+    } else if (confirmacaoSenhaVar != senhaVar) {
+      alerta("error", "Suas senhas não correspondem!");
+      return;
+    } else if (textoComArroba < 0) {
+      alerta("error", "Seu email deve conter um @!");
+      return;
+    } else if (!regex.test(senhaVar)) {
+      alerta("error", "Sua senha deve ter um caractere especial!");
+      return;
+    } else if (!regexLetra.test(senhaVar)) {
+      alerta("error", "Você deve conter uma letra maiúscula na senha!");
+      return;
+    } else if (cpfVar.length < 11) {
+      alerta("error", "Seu cpf deve conter 11 digitos!");
+    } else if (telefoneVar < 11) {
+      alert("error", "Seu telefone deve conter 11 digitos, DDD + Número");
+    }
+    validarEmpresa(nomeVar, emailVar, senhaVar, cpfVar, telefoneVar, cargoVar);
+  }
+
+  function validarEmpresa(
+    nomeVar,
+    emailVar,
+    senhaVar,
+    cpfVar,
+    telefoneVar,
+    cargoVar
+  ) {
+    var codigoEmpresa;
+    Swal.fire({
+      title: "Insira o código da sua empresa",
+      input: "text",
+      heightAuto: false,
+      width: 600,
+      background: "rgb(0,0,0,0.9)",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      customClass: {
+        confirmButton: "meu-confirm-btn",
+        cancelButton: "meu-cancel-btn",
+        title: "meu-titulo",
+        popup: "alertaCodigo",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Enviar",
+      showLoaderOnConfirm: true,
+      preConfirm: (codigoDigitado) => {
+        const empresaValida = listaEmpresasCadastradas.find(function (empresa) {
+          return empresa.Codigo === codigoDigitado;
+        });
+
+        if (!empresaValida) {
+          Swal.showValidationMessage("Código inválido. Tente novamente!");
+        } else {
+          codigoEmpresaVar = empresaValida.Codigo;
+          return empresaValida;
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Empresa selecionada:", result.value);
+        Swal.fire(
+          "Código válido!",
+          `Você selecionou a empresa: ${result.value.NomeEmpresa}`,
+          "success"
+        );
+        fetch("/usuarios/cadastrar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            // crie um atributo que recebe o valor recuperado aqui
+            // Agora vá para o arquivo routes/usuario.js
+            // idEmpresaVincularServer: idEmpresaVincular
+
+            nomeServer: nomeVar,
+            emailServer: emailVar,
+            senhaServer: senhaVar,
+            cpfServer: cpfVar,
+            telefoneServer: telefoneVar,
+            codigoEmpresa: codigoEmpresaVar,
+            cargoServer: cargoVar,
+          }),
+        })
+          .then(function (resposta) {
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+              alerta("success", "Cadastro realizado com sucesso!");
+              setTimeout(() => {
+                window.location = "login.html";
+              }, "3000");
+            } else {
+              resposta.text().then(textoErro => {
+                alerta("error", `${textoErro}`)
+                return
+              })
+              alerta("error", "Erro ao realizar o cadastro");
+            }
+          })
+          .catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+          });
+      }
+    });
+  }
+</script>

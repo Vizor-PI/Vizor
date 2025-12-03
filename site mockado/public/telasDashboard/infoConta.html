@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alterar Dados</title>
+    <link rel="stylesheet" href="../assets/css/css-dashboard/infoConta.css" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+
+    <link
+      rel="icon"
+      href="../assets/imgs/logosDash/home.png"
+      type="image/x-icon"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body onload="dadosUsuario()" onload="verificarCargo()">
+    <nav class="navbar" id="navbarConstructor"></nav>
+
+    <!-- Conteúdo principal -->
+    <div class="container-xl">
+      <div class="alterarDadosContainer">
+        <div class="divCentralAlterarDados">
+          <h1>Informações da conta</h1>
+          <div class="entradasAlterarDados">
+            <div class="input">
+              <p class="textoInput">Nome</p>
+              <input placeholder disabled id="inputNome" />
+            </div>
+            <div class="input">
+              <p class="textoInput">Empresa</p>
+              <input placeholder id="inputEmpresa" disabled />
+            </div>
+            <div class="input">
+              <p class="textoInput">CPF</p>
+              <input placeholder id="inputCPF" disabled />
+            </div>
+            <div class="input">
+              <p class="textoInput">Telefone</p>
+              <input placeholder id="inputTelefone" disabled />
+            </div>
+          </div>
+
+          <button class="btn-delete" onclick="deletarConta()">
+            Deletar conta
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</html>
+<script src="../js/verificadorCargo.js"></script>
+<script src="../js/navbar.js"></script>
+<script>
+  function dadosUsuario() {
+    const id = sessionStorage.ID_USUARIO;
+
+    fetch(`/dadosUsuario/listar/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          const text = await response.text();
+          return text ? JSON.parse(text) : null;
+        } else {
+          console.error("Nenhum dado encontrado");
+          return null;
+        }
+        console.log(response);
+      })
+      .then((resposta) => {
+        if (resposta && resposta.length > 0) {
+          console.log(resposta);
+          document.getElementById("inputNome").placeholder =
+            resposta[0].NomeUsuario || "Nome não cadastrado";
+          document.getElementById("inputEmpresa").placeholder =
+            resposta[0].NomeEmpresa || "Empresa não cadastrada";
+          document.getElementById("inputTelefone").placeholder =
+            resposta[0].Telefone || "Telefone não cadastrado";
+          document.getElementById("inputCPF").placeholder =
+            resposta[0].CPF || "CPF não cadastrado";
+        }
+      })
+      .catch((erro) => {
+        console.error("Erro na requisição:", erro);
+      });
+  }
+
+  function deletarConta() {
+    const idUsuario = sessionStorage.ID_USUARIO;
+
+    Swal.fire({
+      title: "Você tem certeza?",
+      text: "Esta ação é irreversível e todos os seus dados serão perdidos!",
+      icon: "warning",
+      showCancelButton: true,
+      heightAuto: false,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sim, deletar minha conta!",
+      cancelButtonText: "Cancelar",
+      background: "rgb(20, 20, 20)",
+      color: "#f1f1f1",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        prosseguirComExclusao(idUsuario);
+      }
+    });
+  }
+
+  function prosseguirComExclusao(idUsuario) {
+    fetch(`/usuarios/deletarUsuario/${idUsuario}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(function (resposta) {
+        if (resposta.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "Deletado!",
+            text: "Sua conta foi deletada com sucesso. Redirecionando...",
+            background: "rgb(20, 20, 20)",
+            heightAuto: false,
+            color: "#f1f1f1",
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          }).then(() => {
+            sessionStorage.clear();
+            window.location.href = "../login.html";
+          });
+        }
+      })
+      .catch(function (erro) {
+        console.error("Falha na requisição:", erro);
+        alert(
+          "Falha de comunicação com o servidor. Tente novamente mais tarde."
+        );
+      });
+  }
+</script>

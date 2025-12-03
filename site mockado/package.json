@@ -1,0 +1,24 @@
+{
+  "name": "web-data-viz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon --exec node app.js"
+  },
+  "author": "Feito pelos desenvolvedores @ São Paulo Tech School / Bandtec Digital School",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.940.0",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.13.2",
+    "client-s3": "github:aws-sdk/client-s3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.17.1",
+    "mysql2": "^3.9.4",
+    "nodemon": "^2.0.22",
+    "path": "^0.12.7"
+  }
+}

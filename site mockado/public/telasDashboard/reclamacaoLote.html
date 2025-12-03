@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Correlação Reclamações por Lote</title>
+
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+    <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/reclamacaoLote.css">
+</head>
+
+<body onload="verificarCargo()">
+    <nav class="navbar" id="navbarConstructor"></nav>
+
+    <div class="container-xl">
+
+        <div class="titulo-dash">
+            <h1>Dashboard - Reclamações por Lotes</h1>
+        </div>
+        <section class="kpi-top-grid">
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Lotes Problemáticos</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-lote-problematico"></p>
+                </div>
+            </section>
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Lotes saudáveis</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-lote-saudavel"></p>
+                </div>
+            </section>
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Reclamações Críticas <br>(Últimos 7 dias)</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-reclamacoes-criticas"></p>
+                </div>
+            </section>
+
+            <section class="card kpi-card">
+                <header class="card-header" style="margin-bottom:8px;">
+                    <h2 class="card-title">Mediana do score dos Lotes</h2>
+                </header>
+                <div>
+                    <p class="kpi-value" id="kpi-mediana-score"></p>
+                </div>
+            </section>
+
+        </section>
+
+        <section class="rankings">
+
+            <div class="ranking-grid">
+
+                <section class="card ranking-card">
+                    <header class="card-header-ranking">
+                        <h2 class="card-title">Ranking dos Lotes Mais Problemáticos</h2>
+                    </header>
+
+                    <div class="card-content">
+                        <table class="ui-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Lote</th>
+                                    <th>Total de Falhas</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-ranking-lote">
+                                <tr>
+                                    <td colspan="6">Carregando ranking...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="card ranking-card">
+                    <header class="card-header-ranking">
+                        <h2 class="card-title">Reclamações Relacionadas</h2>
+                    </header>
+
+                    <div class="card-content">
+                        <table class="ui-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Lote</th>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-ranking-reclamacoes">
+                                <tr>
+                                    <td colspan="5">Carregando reclamações...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+        </section>
+
+        <section class="grafico-barra">
+
+            <section class="card grafico-card">
+                <header class="card-header-grafico">
+                    <h2 class="card-title">Componentes Críticos por Lote</h2>
+
+                    <select id="select-lote" class="grafico-select">
+                        <option value="2024-A1">LOTE-2024-A1</option>
+                        <option value="2024-B3">LOTE-2024-B3</option>
+                        <option value="2024-C2">LOTE-2024-C2</option>
+                        <option value="2024-D5">LOTE-2024-D5</option>
+                    </select>
+                </header>
+
+                <div class="card-content">
+                    <div id="grafico-componentes" class="chart-box"></div>
+                </div>
+            </section>
+
+        </section>
+
+    </div>
+
+    <script src="../js/verificadorCargo.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/reclamacaoLote.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+</body>
+
+<script>
+    let chartFalhas = null;
+
+    function criarGrafico() {
+        const options = {
+            chart: {
+                type: "bar",
+                height: 350,
+                toolbar: { show: false }
+            },
+            series: [{
+                name: "Falhas",
+                data: [0, 0, 0]
+            }],
+            xaxis: {
+                categories: ["CPU", "RAM", "DISCO"],
+                labels: { style: { colors: "#cce4ff" } }
+            },
+            yaxis: {
+                labels: { style: { colors: "#cce4ff" } }
+            },
+            plotOptions: {
+                bar: { borderRadius: 8, columnWidth: "45%" }
+            },
+            dataLabels: { enabled: false },
+            colors: ["#00aaff"],
+            grid: { borderColor: "rgba(255,255,255,0.08)" },
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                marker: { show: false },
+                x: { show: false },
+                y: {
+                    title: {
+                        formatter: function (_, opts) {
+                            const categoria = opts.w.globals.labels[opts.dataPointIndex];
+                            return categoria + ": ";
+                        }
+                    },
+                    formatter: function (val) {
+                        return val + "  falhas";
+                    }
+                }
+            }
+        };
+
+        chartFalhas = new ApexCharts(
+            document.querySelector("#grafico-componentes"),
+            options
+        );
+
+        chartFalhas.render();
+    }
+
+    function atualizarGrafico(falhas) {
+        const valores = [
+            falhas.cpu || 0,
+            falhas.ram || 0,
+            falhas.disco || 0
+        ];
+
+        chartFalhas.updateSeries([{ data: valores }]);
+    }
+
+
+    async function carregarLotesParaGrafico(empresa) {
+        try {
+            const resp = await fetch(`/reclamacaoLote/lotes/${encodeURIComponent(empresa)}`);
+            if (!resp.ok) throw new Error("Erro ao buscar lotes");
+
+            const lotes = await resp.json();
+
+            const select = document.getElementById("select-lote");
+            select.innerHTML = "";
+
+            lotes.forEach((lote) => {
+                const opt = document.createElement("option");
+                opt.value = lote.id_lote || lote.lote || lote.codigo || lote.cod_lote || "SEM_ID";
+                opt.textContent = `LOTE-${opt.value}`;
+                opt.dataset.falhas = JSON.stringify(lote.falhas_por_componente);
+                select.appendChild(opt);
+            });
+
+            if (lotes.length > 0) {
+                atualizarGrafico(lotes[0].falhas_por_componente);
+            }
+
+            select.addEventListener("change", function () {
+                const falhas = JSON.parse(select.selectedOptions[0].dataset.falhas);
+                atualizarGrafico(falhas);
+            });
+
+        } catch (err) {
+            console.error("Erro ao carregar lotes para gráfico:", err);
+        }
+    }
+</script>
+
+</html>

@@ -1,0 +1,137 @@
+[
+  {
+    "timestamp": "2025-01-01T08:00:00",
+    "modelo": "MiniPC X150",
+    "lote": 1008234,
+    "tipo": "cpu",
+    "valor": 55.2,
+    "severidade": "low",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-01T08:05:00",
+    "modelo": "MiniPC X150",
+    "lote": 1008234,
+    "tipo": "ram",
+    "valor": 72.4,
+    "severidade": "medium",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-01T08:10:00",
+    "modelo": "MiniPC X150",
+    "lote": 1008234,
+    "tipo": "disco",
+    "valor": 81.1,
+    "severidade": "high",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-01T08:15:00",
+    "modelo": "MiniPC X150",
+    "lote": 1008234,
+    "tipo": "temperatura",
+    "valor": 92.5,
+    "severidade": "critical",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-01T09:00:00",
+    "modelo": "MiniPC Z400",
+    "lote": 2204102,
+    "tipo": "cpu",
+    "valor": 68.3,
+    "severidade": "medium",
+    "indoor": true
+  },
+  {
+    "timestamp": "2025-01-01T09:05:00",
+    "modelo": "MiniPC Z400",
+    "lote": 2204102,
+    "tipo": "ram",
+    "valor": 88.9,
+    "severidade": "high",
+    "indoor": true
+  },
+  {
+    "timestamp": "2025-01-01T09:10:00",
+    "modelo": "MiniPC Z400",
+    "lote": 2204102,
+    "tipo": "temperatura",
+    "valor": 103.7,
+    "severidade": "critical",
+    "indoor": true
+  },
+  {
+    "timestamp": "2025-01-02T10:00:00",
+    "modelo": "MiniPC Pro 900",
+    "lote": 3001111,
+    "tipo": "cpu",
+    "valor": 45.5,
+    "severidade": "low",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-02T10:05:00",
+    "modelo": "MiniPC Pro 900",
+    "lote": 3001111,
+    "tipo": "disco",
+    "valor": 78.0,
+    "severidade": "medium",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-02T10:10:00",
+    "modelo": "MiniPC Pro 900",
+    "lote": 3001111,
+    "tipo": "temperatura",
+    "valor": 96.4,
+    "severidade": "critical",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-03T14:00:00",
+    "modelo": "MiniPC X150",
+    "lote": 1008234,
+    "tipo": "ram",
+    "valor": 91.2,
+    "severidade": "critical",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-03T14:05:00",
+    "modelo": "MiniPC X150",
+    "lote": 1008234,
+    "tipo": "temperatura",
+    "valor": 78.0,
+    "severidade": "medium",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-03T14:10:00",
+    "modelo": "MiniPC Z400",
+    "lote": 2204102,
+    "tipo": "disco",
+    "valor": 84.2,
+    "severidade": "high",
+    "indoor": true
+  },
+  {
+    "timestamp": "2025-01-04T11:00:00",
+    "modelo": "MiniPC Pro 900",
+    "lote": 3001111,
+    "tipo": "cpu",
+    "valor": 87.5,
+    "severidade": "high",
+    "indoor": false
+  },
+  {
+    "timestamp": "2025-01-04T11:05:00",
+    "modelo": "MiniPC Pro 900",
+    "lote": 3001111,
+    "tipo": "temperatura",
+    "valor": 100.1,
+    "severidade": "critical",
+    "indoor": false
+  }
+]

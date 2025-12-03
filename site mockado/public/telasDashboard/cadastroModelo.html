@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/navbar.css" />
+    <link rel="stylesheet" href="../assets/css/css-dashboard/criarLote.css" />
+    <link rel="icon" href="assets/imgs/logosDash/logoDashboard.png" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+</head>
+
+<body onload="buscarModelos()">
+    <div class="loteContainer">
+        <div class="divCentralLote">
+            <a href="./lotes.html"><img src="../assets/imgs/Logo.png" id="logoVizor" /></a>
+            <h1>Criar Modelo</h1>
+            <p>Nome do Modelo:</p>
+            <div class="entradasLote">
+                <div class="input">
+                    <p class="textoInput">Nome do Modelo</p>
+                    <input id="ipt_id" placeholder="Ex: MiniPC a400" />
+                </div>
+                <button onclick="adicionar()">Adicionar componentes</button>
+            </div>
+            <button onclick="salvarModelo()">Salvar Modelo</button>
+            <p style="color: white" id="textoInstrucao">
+                <span style="color: rgba(10, 203, 227, 1); cursor: pointer">O ID do Lote deve ser único.</span>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/alertasSW.js"></script>
+
+<script>
+    let listaModelos = [];
+
+    function alerta(icone, texto) {
+        Swal.fire({
+            position: "center",
+            icon: icone,
+            title: texto,
+            showConfirmButton: false,
+            timer: 4000,
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+            customClass: {
+                popup: "alerta-custom",
+                title: "alerta-titulo",
+                icon: "alerta-icone",
+            },
+        });
+    }
+
+    function buscarModelos() {
+        
+        fetch("/dadosModelos/listarTodos", {
+            method: "GET" 
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else if (res.status === 204) {
+                    throw new Error("Nenhum modelo cadastrado.");
+                } else {
+                    throw new Error("Erro ao buscar modelos.");
+                }
+            })
+            .then(modelos => {
+                listaModelos = modelos;
+                const select = document.getElementById("modelo_select");
+                select.innerHTML = '<option value="">-- Selecione o modelo --</option>';
+
+                modelos.forEach(modelo => {
+                    const option = document.createElement("option");
+                    option.value = modelo.id;
+                    option.textContent = modelo.modelo;
+                    select.appendChild(option);
+                });
+            })
+            .catch(erro => {
+                console.error("Erro ao carregar modelos:", erro);
+                const select = document.getElementById("modelo_select");
+                select.innerHTML = '<option value="">ERRO ao carregar modelos</option>';
+                alerta("error", "Não foi possível carregar os modelos.");
+            });
+    }
+
+    var cpu = null;
+    var ram = null;
+    var disco = null;
+
+
+    function adicionar() {
+        Swal.fire({
+            title: `Adicionar componente`,
+            html: `
+            <select name="" id="swal_componente">
+                <option value="#">COMPONENTE</option>
+                <option value="CPU">CPU</option>
+                <option value="RAM">RAM</option>
+                <option value="DISCO">DISCO</option>
+            </select>
+            <select name="" id="swal_medida">
+                <option value="#">UNIDADE MEDIDA</option>
+                <option value="GB">GB</option>
+                <option value="%">%</option>
+            </select>
+            <p>Valor para alerta</p>
+            <input id="swal_valorAlerta" class="swal2-input" type="number">
+            <p>Especificações</p>
+            <input id="swal_especificacoes" class="swal2-input">
+        `,
+            showCancelButton: true,
+            confirmButtonText: "Adicionar",
+            cancelButtonText: "Cancelar",
+            background: "rgb(0,0,0,0.9)",
+            color: "#f1f1f1",
+            heightAuto: false,
+
+            preConfirm: () => {
+                const componente = document.getElementById("swal_componente").value;
+                const medida = document.getElementById("swal_medida").value;
+                const alerta = document.getElementById("swal_valorAlerta").value;
+                const especificacao = document.getElementById("swal_especificacoes").value;
+
+                if (!componente || !medida || !alerta || !especificacao || componente == "#" || medida == "#") {
+                    Swal.showValidationMessage("Preencha todos os campos!");
+                    return false;
+                }
+
+                return { componente, medida, alerta, especificacao };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { componente, medida, alerta, especificacao } = result.value;
+
+                if (componente === "CPU") {
+                    cpu = { medida, alerta, especificacao };
+                } else if (componente === "RAM") {
+                    ram = { medida, alerta, especificacao };
+                } else if (componente === "DISCO") {
+                    disco = { medida, alerta, especificacao };
+                }
+
+                console.log("CPU:", cpu);
+                console.log("RAM:", ram);
+                console.log("DISCO:", disco);
+
+                Swal.fire("Adicionado!", "", "success");
+            }
+        });
+    }
+
+
+    function salvarModelo() {
+        const idVar = document.getElementById('ipt_id').value;
+        const dataVar = document.getElementById('ipt_data').value;
+        const qtdVar = document.getElementById('ipt_qtd_maquinas').value;
+        const modeloVar = document.getElementById('modelo_select').value;
+
+        const codigoEmpresa = sessionStorage.CODIGO;
+
+        if (idVar == "" || dataVar == "" || qtdVar == "" || modeloVar == "") {
+            alerta("warning", "Preencha todos os campos!");
+            return;
+        }
+
+        if (modeloVar === "") {
+            alerta("error", "Selecione um Modelo de Mini PC válido.");
+            return;
+        }
+
+        if (parseInt(qtdVar) <= 0) {
+            alerta("error", "A quantidade de máquinas deve ser positiva.");
+            return;
+        }
+        if (isNaN(new Date(dataVar).getTime())) {
+            alerta("error", "Formato de data inválido. Use AAAA-MM-DD.");
+            return;
+        }
+
+
+        fetch("/lote/cadastrar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                idLoteServer: idVar,
+                dataServer: dataVar,
+                qtdServer: qtdVar,
+                fkModelo: parseInt(modeloVar),
+                codigoEmpresa: codigoEmpresa
+            }),
+        })
+            .then(function (resposta) {
+                if (resposta.ok) {
+                    alerta("success", "Lote cadastrado com sucesso!");
+                    setTimeout(() => {
+                        window.location = "lotes.html";
+                    }, 1500);
+                } else {
+                    resposta.text().then(textoErro => {
+                        alerta("error", `Erro ao cadastrar lote: ${textoErro}`);
+                    });
+                }
+            })
+            .catch(function (erro) {
+                console.log(`#ERRO: ${erro}`);
+                alerta("error", "Ocorreu um erro de comunicação com o servidor.");
+            });
+    }
+</script>

@@ -1,0 +1,42 @@
+var database = require("../database/config");
+
+function listarDados(id) {
+  console.log("ACESSEI O AVISO  MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function listarDados()");
+  var instrucaoSql = `
+        SELECT us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, em.nome as NomeEmpresa,us.cpf as CPF, us.senha as SenhaUsuario
+        FROM usuario AS us
+        INNER JOIN empresa AS em on us.fkEmpresa = em.id WHERE us.id = '${id}';
+    `;
+  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+  return database.executar(instrucaoSql);
+}
+
+function listarUsuarios(codigo) {
+  console.log("Acessei o model listarUsuarios")
+  var instrucaoSql =
+    `
+   SELECT us.id, us.nome as NomeUsuario, us.email as EmailUsuario, us.telefone as Telefone, us.cpf as CPF, us.senha as SenhaUsuario , car.titulo 
+  FROM usuario us
+  INNER JOIN cargo car ON car.id = us.fkCargo
+  INNER JOIN empresa emp ON emp.id = us.fkEmpresa
+  WHERE us.fkcargo = car.id AND codigoAtivacao = '${codigo}';
+  `
+  console.log("Executando a instrução SQL")
+  return database.executar(instrucaoSql);
+}
+
+function listarCargos() {
+  console.log("Acessei o model listarCargos")
+  var instrucaoSql =
+    `
+SELECT id as idCargo, titulo FROM cargo;
+`
+  return database.executar(instrucaoSql);
+}
+
+module.exports = {
+  listarDados,
+  listarUsuarios,
+  listarCargos
+}
+

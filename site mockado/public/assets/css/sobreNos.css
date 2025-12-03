@@ -1,0 +1,801 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 481px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .nav {
+    background-color: black;
+    align-items: center;
+    display: flex;
+    height: 8vw;
+    width: 100vw;
+    justify-content: space-between;
+  }
+
+  .nav .logo {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2vw;
+  }
+
+  .nav .logo img {
+    height: 3vw;
+  }
+
+  .nav .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    margin-right: 5vw;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .nav .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1vw;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .nav .nav-links a:hover {
+    transform: scale(1.1);
+    color: #0acbe3;
+  }
+
+  .nav .nav-links button {
+    color: rgba(10, 203, 227, 1);
+    text-decoration: none;
+    font-size: 1vw;
+    border: 0.1vw solid;
+    border-radius: 0.2vw;
+    padding: 0.4vw;
+    width: auto;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: transparent;
+    cursor: pointer;
+    margin-right: 5vw;
+  }
+
+  .nav .nav-links button:hover {
+    background: linear-gradient(135deg, #6a00f4, #00c3ff);
+    transform: scale(1.1);
+    color: aqua;
+  }
+
+  .banner1 {
+    background-size: cover;
+    width: 100vw;
+    height: 40vw;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-family: "Epilogue";
+    background-image: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.68) 0%,
+        rgba(0, 0, 0, 0.68) 35%,
+        rgba(0, 0, 0, 0.68) 100%
+      ),
+      url(../imgs/banner-sobrenos.png);
+  }
+
+  .banner1 h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 3vw;
+    margin-left: 5vw;
+    margin-top: 28vw;
+  }
+
+  .banner1 h2 {
+    color: white;
+    font-weight: normal;
+    font-size: 1.8vw;
+    margin-left: 5vw;
+  }
+
+  .banner1 .btn-saiba {
+    text-decoration: none;
+    color: white;
+    border: 0.1vw solid;
+    width: 10vw;
+    padding: 0.35vw;
+    text-align: center;
+    border-radius: 0.2vw;
+    margin-left: 5vw;
+    font-size: 1.5vw;
+  }
+
+  .banner2 {
+    width: 100vw;
+    height: 60vw;
+    display: flex;
+    font-family: "Epilogue";
+    background-color: rgba(9, 41, 66, 1);
+    box-shadow: 0 0 4vw black;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .banner2 .card h1 {
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 4vw;
+    margin-left: 3vw;
+    margin-bottom: 2.5vw;
+  }
+
+  .banner2 .card {
+    width: 55vw;
+    align-items: center;
+    margin-left: 5vw;
+    margin-bottom: 6vw;
+  }
+
+  .banner2 .card p {
+    color: white;
+    font-weight: normal;
+    font-size: 1.5vw;
+    background-color: rgb(7, 25, 39);
+    padding: 2vw;
+    border-radius: 2vw;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
+  }
+
+  .nossa-historia-wrapper {
+    position: relative;
+    width: 35vw;
+    height: auto;
+    padding-right: 2%;
+  }
+
+  .nossa-historia-wrapper .nossa-historia {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .banner3 {
+    width: 100vw;
+    background-color: rgba(9, 41, 66, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5vw 0;
+    gap: 3vw;
+  }
+
+  .banner3 h1 {
+    font-size: 3vw;
+    color: rgba(10, 203, 227, 1);
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+  }
+
+  .banner3 .conju-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    width: 80vw;
+    counter-reset: valor-counter;
+  }
+
+  .banner3 .conju-card .card {
+    background-color: rgb(7, 25, 39);
+    border-radius: 0.5vw;
+    padding: 2vw;
+    box-shadow: 0.5vw 0.5vw 1vw rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: flex-start;
+    gap: 2vw;
+    position: relative;
+    counter-increment: valor-counter;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .banner3 .conju-card .card:hover {
+    transform: scale(1.05);
+  }
+
+  .banner3 .conju-card .card .texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .banner3 .conju-card .card .texto h1 {
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+    color: rgba(10, 203, 227, 1);
+    font-weight: bold;
+    margin-bottom: 0.5vw;
+  }
+
+  .banner3 .conju-card .card .texto p {
+    font-size: 1.2vw;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    margin: 0;
+  }
+
+  .banner4 {
+    background-size: cover;
+    width: 100vw;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: "Epilogue";
+    background-color: rgb(7, 25, 39);
+    display: none;
+  }
+
+  .banner4 h1 {
+    font-family: "Epilogue", sans-serif;
+    color: rgba(10, 203, 227, 1);
+    width: 50vw;
+    font-weight: normal;
+    font-size: 3vw;
+    margin-bottom: 5vw;
+    text-align: center;
+  }
+
+  .banner4 .text1 {
+    justify-content: center;
+    display: flex;
+    margin-top: 5vw;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .banner4 .text1 img {
+    max-width: 90vw;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .footer {
+    background-color: black;
+    height: 12vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1vw;
+    gap: 5vw;
+  }
+
+  .footer img {
+    width: 18vw;
+  }
+
+  .footer .info {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    gap: 1vw;
+  }
+
+  .footer .info-pai {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+  }
+
+  .footer .info-filho {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    gap: 1vw;
+  }
+
+  .footer .info-pai img {
+    width: 1.5vw;
+  }
+
+  /* CSS do Carrossel */
+
+  .slider {
+    width: 100vw;
+    height: 85vh;
+    overflow: hidden;
+    position: relative;
+    border-top: solid aqua;
+    border-bottom: solid aqua;
+  }
+
+  .slides {
+    width: 600%;
+    height: 86vh;
+    display: flex;
+  }
+
+  .slides input {
+    display: none;
+  }
+
+  .slide {
+    width: calc(100% / 6);
+    position: relative;
+    transition: 1s;
+  }
+
+  .slide-conteudo {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .textoEsquerda {
+    width: 60%;
+    height: 100%;
+    object-fit: cover;
+    background-color: rgb(7, 25, 39);
+    color: rgba(10, 203, 227, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2vw;
+    box-sizing: border-box;
+  }
+
+  .textoEsquerda h2 {
+    margin-top: 2vw;
+  }
+
+  .textoEsquerda p {
+    color: white;
+    text-align: center;
+    font-size: clamp(14px, 1.5vw, 18px);
+    padding: 2vw;
+  }
+
+  .img-direita {
+    width: 40%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .manual-navigation {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .manual-btn {
+    border: 2px solid aqua;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+  }
+
+  .manual-btn:not(:last-child) {
+    margin-right: 40px;
+  }
+
+  .manual-btn:hover {
+    background-color: aqua;
+  }
+
+  #radio1:checked ~ .first {
+    margin-left: 0;
+  }
+
+  #radio2:checked ~ .first {
+    margin-left: -16.6667%;
+  }
+
+  #radio3:checked ~ .first {
+    margin-left: -33.3333%;
+  }
+
+  #radio4:checked ~ .first {
+    margin-left: -50%;
+  }
+
+  #radio5:checked ~ .first {
+    margin-left: -66.6667%;
+  }
+
+  #radio6:checked ~ .first {
+    margin-left: -83.3333%;
+  }
+
+  .navigation-auto {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .navigation-auto div {
+    border: 2px solid aqua;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+  }
+
+  .navigation-auto div:not(:last-child) {
+    margin-right: 40px;
+  }
+
+  #radio1:checked ~ .navigation-auto .auto-btn1,
+  #radio2:checked ~ .navigation-auto .auto-btn2,
+  #radio3:checked ~ .navigation-auto .auto-btn3,
+  #radio4:checked ~ .navigation-auto .auto-btn4,
+  #radio5:checked ~ .navigation-auto .auto-btn5,
+  #radio6:checked ~ .navigation-auto .auto-btn6 {
+    background-color: aqua;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: black;
+    padding: 3.5vw 8.5vw;
+    color: white;
+    position: relative;
+    height: 12vw;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .nav .logo img {
+    height: 7.5vw;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 0.1vw;
+  }
+
+  .nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 3vw;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 0.6vw;
+    cursor: pointer;
+  }
+
+  .hamburger div {
+    width: 7vw;
+    height: 1.5vw;
+    background: white;
+    border-radius: 1vw;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 16vw;
+    left: 0;
+    width: 100vw;
+    background: black;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links li {
+    text-align: center;
+    padding: 2.5vw 0;
+    border: 0.05vw solid rgba(255, 255, 255, 0.068);
+  }
+
+  .nav-links.show button {
+    color: rgba(10, 203, 227, 1);
+    border: rgba(10, 203, 227, 1) solid 0.2vh;
+    border-radius: 0.7vh;
+    background-color: transparent;
+    padding: 1.5vw;
+    width: 15vw;
+  }
+
+  .banner1 {
+    background-size: cover;
+    width: 100vw;
+    height: 170vw;
+    background-position: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 5.5vw;
+    font-family: "Epilogue", sans-serif;
+    align-items: flex-start;
+    background-image: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.68) 0%,
+        rgba(0, 0, 0, 0.68) 35%,
+        rgba(0, 0, 0, 0.68) 100%
+      ),
+      url(../imgs/banner-sobrenos.png);
+  }
+
+  .banner1 h1 {
+    color: rgba(10, 203, 227, 1);
+    font-size: 10vw;
+    margin-bottom: 0;
+    margin-top: 110vw;
+  }
+
+  .banner1 h2 {
+    color: white;
+    margin-bottom: 2vw;
+    font-size: 5.5vw;
+    margin-top: 1vw;
+  }
+
+  .banner1 a {
+    text-decoration: none;
+    color: white;
+    border: white solid 0.2vw;
+    padding: 2.5vw;
+    width: 30vw;
+    margin-bottom: 2vw;
+    text-align: center;
+  }
+
+  .banner2 {
+    background-color: rgba(9, 41, 66, 1);
+    height: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .banner2 .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .banner2 .card h1 {
+    padding-top: 9vw;
+    margin-top: 0;
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 8vw;
+    margin-bottom: 1vw;
+  }
+
+  .banner2 .card p {
+    color: white;
+    text-align: left;
+    background-color: rgba(3, 14, 23, 1);
+    box-shadow: 0 0.5vw 0.1vw black;
+    padding: 5vw;
+    width: 80vw;
+    font-size: 3.5vw;
+    border-radius: 4vw;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .banner2 img {
+    display: none;
+  }
+
+  .banner3 {
+    background-color: rgba(9, 41, 66, 1);
+    height: 240vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .banner3 h1 {
+    padding-top: 4vw;
+    margin-top: 0;
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    margin-bottom: 0;
+    font-size: 8vw;
+  }
+
+  .banner3 .card img {
+    width: 95vw;
+    border-radius: 4vw;
+  }
+
+  .banner3 .card {
+    background-color: black;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 95vw;
+    border-radius: 4vw;
+    margin-top: 7vw;
+  }
+
+  .banner3 .card h1 {
+    color: white;
+    font-size: 5vw;
+    margin-top: 0;
+    padding-top: 2vw;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .banner3 .card .texto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .banner3 .card p {
+    color: white;
+    text-align: center;
+    width: 90vw;
+    font-family: "Poppins", sans-serif;
+    font-size: 4vw;
+    margin-bottom: 3vw;
+  }
+
+  .banner4 {
+    height: auto;
+    background-color: rgba(9, 41, 66, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15vw 0;
+  }
+
+  .banner4 h1 {
+    color: rgba(10, 203, 227, 1);
+    text-align: center;
+    font-family: "Fragment Mono", monospace;
+    font-weight: normal;
+    font-size: 8vw;
+    margin-bottom: 8vw;
+  }
+
+  .equipe-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 4vw;
+    width: 90vw;
+  }
+
+  .integrante {
+    background-color: rgb(7, 25, 39);
+    padding: 5vw;
+    border-radius: 4vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .integrante h3 {
+    color: rgba(10, 203, 227, 1);
+    font-family: "Poppins", sans-serif;
+    font-size: 5.5vw;
+    margin-bottom: 1.5vw;
+  }
+
+  .integrante p {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 4vw;
+  }
+
+  .slider {
+    display: none;
+  }
+
+  .slides {
+    display: none;
+  }
+
+  .footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "logo   logo"
+      "contatos links";
+    padding: 10vw 5vw;
+    gap: 8vw 4vw;
+    background-color: black;
+    height: auto;
+  }
+
+  .footer .info:first-child {
+    grid-area: logo;
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer .info:first-child img {
+    width: 35vw;
+    height: auto;
+  }
+
+  .footer .info:nth-child(2) {
+    grid-area: contatos;
+    display: flex;
+    flex-direction: column;
+    gap: 4vw;
+  }
+
+  .footer .info-pai {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer .info-pai img {
+    width: 6vw;
+    margin-right: 3vw;
+    flex-shrink: 0;
+  }
+
+  .footer .info-pai p {
+    color: white;
+    font-size: 3.5vw;
+    font-family: "Epilogue", sans-serif;
+    margin: 0;
+  }
+
+  .footer .info-filho {
+    grid-area: links;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3vw;
+  }
+
+  .footer .info-filho p {
+    color: white;
+    font-size: 3.5vw;
+    font-family: "Epilogue", sans-serif;
+    text-align: right;
+    margin: 0;
+  }
+
+  .footer .info-filho p strong {
+    font-size: 4vw;
+  }
+}
