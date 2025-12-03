@@ -19,18 +19,22 @@
   }
 
   /* Área da direita (conteúdo) */
- 
+
   body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: row;   /* nav + conteúdo lado a lado continua */
-  min-height: 100vh;     /* deixa crescer pra baixo */
-  width: 100vw;
-  overflow-y: auto;      /* permite rolar vertical */
-  overflow-x: hidden;    /* continua sem scroll horizontal */
-  background: #061722;
-}
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    /* nav + conteúdo lado a lado continua */
+    min-height: 100vh;
+    /* deixa crescer pra baixo */
+    width: 100vw;
+    overflow-y: auto;
+    /* permite rolar vertical */
+    overflow-x: hidden;
+    /* continua sem scroll horizontal */
+    background: #061722;
+  }
 
 
 
@@ -43,28 +47,28 @@
   } */
 
   .dashContainer {
-  display: flex;
-  flex-direction: column;
-  width:calc(100vw-16vw);
-  margin-left: 16vw;
-  /* height: auto;              /* permite crescer */
-  /* overflow-y: auto;          permite rolar apenas o container */
-}
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw-16vw);
+    margin-left: 16vw;
+    /* height: auto;              /* permite crescer */
+    /* overflow-y: auto;          permite rolar apenas o container */
+  }
 
-.dashMain {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
+  .dashMain {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
 
-.secaoEstados {
-  padding: 20px;
-  background-color: rgba(30, 41, 59, 0.5);
-  border: solid 0.7px #334155;
-  border-radius: 10px;
-  margin: 30px;
-  color: #d6d6d6;
-}
+  .secaoEstados {
+    padding: 20px;
+    background-color: rgba(30, 41, 59, 0.5);
+    border: solid 0.7px #334155;
+    border-radius: 10px;
+    margin: 30px;
+    color: #d6d6d6;
+  }
 
 
   .dashLeft {
@@ -96,6 +100,12 @@
   }
 
   .bloco h2 {
+    color: #d6d6d6;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+
+  h1 {
+    margin-left: 30px;
     color: #d6d6d6;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
@@ -191,7 +201,7 @@
     border-radius: 10px;
     overflow: hidden;
   }
-  
+
   #sessaoDooh {
     width: 100%;
     height: 100%;
@@ -199,7 +209,7 @@
     overflow-x: hidden;
     padding-right: 10px;
   }
-  
+
   .listaDooh input {
     background-color: #334155;
     margin-bottom: 10px;
@@ -284,27 +294,31 @@
   }
 
 
-.navbar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 16vw;       /* largura real da sua navbar */
-  height: 100vh;     /* ocupa a tela inteira */
-  z-index: 1000;     /* fica por cima do resto */
-}
-
-
+  .navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 16vw;
+    /* largura real da sua navbar */
+    height: 100vh;
+    /* ocupa a tela inteira */
+    z-index: 1000;
+    /* fica por cima do resto */
+  }
 </style>
 
 <body onload="verificarCargo()">
   <nav class="navbar" id="navbarConstructor"></nav>
-  
+
   <div class="dashContainer">
+
+    <h1 style="color: #f1f5f9;">Painel Climático</h1>
+
     <div class="secaoEstados bloco">
-    <h2>Selecionar Região</h2>
-    <p style="margin-bottom: 10px;">Escolha o estado:</p>
-    
-    <select id="select_regiao" style="
+      <h2>Selecionar Região</h2>
+      <p style="margin-bottom: 10px;">Escolha o estado:</p>
+
+      <select id="select_regiao" style="
         width: 300px;
         padding: 12px;
         background: #334155;
@@ -321,7 +335,7 @@
         <option value="RS">Rio Grande do Sul (RS)</option>
         <option value="SC">Santa Catarina (SC)</option>
         <option value="BA">Bahia (BA)</option>
-    </select>
+      </select>
     </div>
     <div class="dashMain">
       <div class="dashLeft">
@@ -401,6 +415,24 @@
 <script src="../js/verificadorCargo.js"></script>
 <script src="../js/navbar.js"></script>
 <script>
+  const capitais = {
+    "SP": "Sao Paulo",
+    "RJ": "Rio de Janeiro",
+    "MG": "Belo Horizonte",
+    "PR": "Curitiba",
+    "RS": "Porto Alegre",
+    "SC": "Florianopolis",
+    "BA": "Salvador",
+    "ES": "Vitoria",
+    "GO": "Goiania",
+    "PE": "Recife",
+    "CE": "Fortaleza",
+    "AM": "Manaus",
+    "PA": "Belem",
+    "DF": "Brasilia"
+  };
+
+
   function criarCardDooh(dado) {
 
     function barra(label, valorStr) {
@@ -442,24 +474,26 @@
   }
 
   function extrairNumero(valorStr) {
-  if (!valorStr) return 0;
-  return parseFloat(
-    String(valorStr)
-      .replace("%", "")
-      .replace("°C", "")
-      .replace(",", ".")
-  );
-}
-  
+    if (!valorStr) return 0;
+    return parseFloat(
+      String(valorStr)
+        .replace("%", "")
+        .replace("°C", "")
+        .replace(",", ".")
+    );
+  }
+
   function calcularRiscoClimatico(tempExterna) {
     const t = tempExterna || 0;
 
-    if (t < 28) return 0;
-    if (t < 35) return 10;
-    if (t < 40) return 20;
-    if (t < 45) return 30;
-    return 40; 
+    if (t <= 28) return 0;
+    if (t <= 35) return 8;
+    if (t <= 40) return 18;
+    if (t <= 45) return 30;
+
+    return 45;
   }
+
 
   function calcularRiscoOperacional(metrics) {
     const cpu = extrairNumero(metrics.cpu);
@@ -506,42 +540,42 @@
   }
 
   function atualizarMetricaGlobal(resultados) {
-  const container = document.getElementById("out_eventosExtremos");
-  if (!container) return;
+    const container = document.getElementById("out_eventosExtremos");
+    if (!container) return;
 
-  if (!climaAtual) {
-    container.innerHTML = `
+    if (!climaAtual) {
+      container.innerHTML = `
       <p style="color:#cbd5e1;">Aguardando dados climáticos...</p>
     `;
-    return;
-  }
+      return;
+    }
 
-  if (!resultados || resultados.length === 0) {
-    container.innerHTML = `
+    if (!resultados || resultados.length === 0) {
+      container.innerHTML = `
       <p style="color:#cbd5e1;">Nenhuma máquina monitorada no momento.</p>
     `;
-    return;
-  }
-
-  let soma = 0;
-  let maisCritico = null;
-
-  resultados.forEach((dooh) => {
-    const score = calcularIndiceRiscoDooh(climaAtual, dooh.raw_metrics);
-    soma += score;
-
-    if (!maisCritico || score > maisCritico.score) {
-      maisCritico = { score, dooh };
+      return;
     }
-  });
 
-  const media = Math.round(soma / resultados.length);
-  const { label, cor } = classificarRisco(media);
+    let soma = 0;
+    let maisCritico = null;
 
-  const tempExt = climaAtual?.temp;
-  const descClima = climaAtual?.descricao;
+    resultados.forEach((dooh) => {
+      const score = calcularIndiceRiscoDooh(climaAtual, dooh.raw_metrics);
+      soma += score;
 
-  container.innerHTML = `
+      if (!maisCritico || score > maisCritico.score) {
+        maisCritico = { score, dooh };
+      }
+    });
+
+    const media = Math.round(soma / resultados.length);
+    const { label, cor } = classificarRisco(media);
+
+    const tempExt = climaAtual?.temp;
+    const descClima = climaAtual?.descricao;
+
+    container.innerHTML = `
     <div style="display:flex; flex-direction:column; gap:12px; color:#e2e8f0;">
       <div>
         <h3 style="margin:0; font-size:18px; display:flex; align-items:center; gap:6px;">
@@ -574,7 +608,7 @@
       </div>
     </div>
   `;
-}
+  }
 
 
   async function carregarDoohs() {
@@ -594,7 +628,7 @@
 
       const keys = [...keyNodes]
         .map(node => node.textContent?.trim())
-        .filter(k => k && !k.endsWith("/"));  
+        .filter(k => k && !k.endsWith("/"));
 
       console.log("Arquivos encontrados:", keys);
 
@@ -629,6 +663,7 @@
       .map(dado => criarCardDooh(dado))
       .join("");
 
+    window.resultadosDooh = resultados;
     atualizarMetricaGlobal(resultados);
     ativarTooltip();
   }
@@ -640,38 +675,92 @@
     cards.forEach(card => {
       const name = card.querySelector("h2").innerText.toLowerCase();
       if (name.includes(termo)) {
-        card.style.display = ""; 
+        card.style.display = "";
       } else {
-        card.style.display = "none";  
+        card.style.display = "none";
       }
     });
   });
 
   function ativarTooltip() {
-  const icon = document.querySelector(".info-icon-simple");
-  if (!icon) return;
+    const icon = document.querySelector(".info-icon-simple");
+    if (!icon) return;
 
-  const tooltip = document.createElement("div");
-  tooltip.className = "tooltip-simple";
-  tooltip.innerText =
-    "O índice é calculado combinando fatores climáticos (temperatura externa) e estresse do hardware (CPU, RAM, Disco, Temperatura interna). Valores altos indicam maior risco de falhas por calor ou uso excessivo.";
+    const tooltip = document.createElement("div");
+    tooltip.className = "tooltip-simple";
+    tooltip.innerText =
+      "O índice é calculado combinando fatores climáticos (temperatura externa) e estresse do hardware (CPU, RAM, Disco, Temperatura interna). Valores altos indicam maior risco de falhas por calor ou uso excessivo.";
 
 
-  document.body.appendChild(tooltip);
+    document.body.appendChild(tooltip);
 
-  icon.addEventListener("mouseenter", () => {
-    const rect = icon.getBoundingClientRect();
-    tooltip.style.left = rect.left + "px";
-    tooltip.style.top = rect.bottom + 8 + "px";
-    tooltip.style.display = "block";
+    icon.addEventListener("mouseenter", () => {
+      const rect = icon.getBoundingClientRect();
+      tooltip.style.left = rect.left + "px";
+      tooltip.style.top = rect.bottom + 8 + "px";
+      tooltip.style.display = "block";
+    });
+
+    icon.addEventListener("mouseleave", () => {
+      tooltip.style.display = "none";
+    });
+  }
+
+  setTimeout(ativarTooltip, 500);
+
+
+  document.getElementById("select_regiao").addEventListener("change", async (event) => {
+    const estado = event.target.value;
+    if (!estado) return;
+
+    const cidade = capitais[estado];
+
+    const clima = await pegarClimaAtualPorCidade(cidade);
+
+    document.getElementById("temp_atual").textContent = clima.temp + "°C";
+    document.getElementById("desc_atual").textContent = clima.weather.description;
+    document.getElementById("img_atual").src =
+      `https://www.weatherbit.io/static/img/icons/${clima.weather.icon}.png`;
+
+    const previsao = await pegarPrevisaoSemanalPorCidade(cidade);
+
+
+    previsao.forEach((dia, idx) => {
+      const id = idx + 1;
+
+      const [ano, mes, diaNum] = dia.datetime.split("-");
+      document.getElementById(`prev_dia_${id}`).textContent = `${diaNum}/${mes}`;
+      document.getElementById(`prev_temp_${id}`).textContent = dia.temp + "°C";
+      document.getElementById(`prev_img_${id}`).src =
+        `https://www.weatherbit.io/static/img/icons/${dia.weather.icon}.png`;
+    });
+
+    // previsao.forEach((dia, idx) => {
+    //   previsao.forEach((dia, idx) => {
+    //     const id = idx + 1;
+
+    //     const [ano, mes, diaNum] = dia.datetime.split("-");
+    //     document.getElementById(`prev_dia_${id}`).textContent = `${diaNum}/${mes}`;
+
+    //     document.getElementById(`prev_temp_${id}`).textContent = dia.temp + "°C";
+    //     document.getElementById(`prev_img_${id}`).src =
+    //       `https://www.weatherbit.io/static/img/icons/${dia.weather.icon}.png`;
+    //   });
+
+    // });
+
+    climaAtual = {
+      temp: clima.temp,
+      descricao: clima.weather.description,
+      icone: clima.weather.icon
+    };
+
+
+    if (window.resultadosDooh) {
+      atualizarMetricaGlobal(window.resultadosDooh);
+    }
+
   });
-
-  icon.addEventListener("mouseleave", () => {
-    tooltip.style.display = "none";
-  });
-}
-
-setTimeout(ativarTooltip, 500);
 
 
 </script>

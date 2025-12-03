@@ -267,7 +267,9 @@
     <!-- HEADER PRINCIPAL COM BOTÃO DE RELATÓRIO -->
     <div class="main-header">
         <h1>Dashboard de Incidentes - ITIL</h1>
-        
+        <div class="header-actions">
+                <button id="btn-open-report" class="vizor-btn">Gerar Relatório</button>
+          </div>
     </div>
 
     <!-- 
@@ -370,67 +372,74 @@
        _____________________________________MODAL DE RELATÓRIO (PDF)______________________________________________
     -->
     <div id="modal-relatorio" class="modal-overlay">
-        <div class="modal-content">
-            <!-- Seletor de Filtros -->
-            <div id="step-selector">
-                <h2 style="margin-top:0; color:aqua;">Configurar Relatório</h2>
-                
-                <div style="margin-bottom: 16px;">
-                    <label class="vizor-label">Período:</label><br>
-                    <div style="margin-top: 8px; display: flex; gap: 15px;">
-                        <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Semanal</label>
-                        <label class="vizor-radio"><input type="radio" name="report-type" value="mensal"> Mensal</label>
-                        <label class="vizor-radio"><input type="radio" name="report-type" value="trimestral"> Trimestral</label>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label class="vizor-label">Filtrar por Máquina:</label><br>
-                    <select id="filtro-maquina-rel" class="ui-select" style="width: 100%; margin-top:8px;">
-                        <option value="todas">Todas as Máquinas</option>
-                        <!-- via JS -->
-                    </select>
-                </div>
-
-                
-            </div>
-
-            <!-- Relatório Gerado (Card para Impressão) -->
-            <div id="step-result" style="display: none;">
-                <div id="printable-area" style="background: #072135; padding: 20px; border-radius: 8px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
-                        <div>
-                            <h3 style="margin:0; color:aqua;">Relatório de Incidentes</h3>
-                            <small id="report-date-display" style="color:#ccc;">Emissão: 26/11/2025</small>
+            <div class="modal-content">
+                <!-- Passo 1: Seletor de Filtros -->
+                <div id="step-selector">
+                    <h2 style="margin-top:0; color:aqua;">Configurar Relatório</h2>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label class="vizor-label">Período:</label><br>
+                        <div style="margin-top: 8px; display: flex; gap: 15px;">
+                            <label class="vizor-radio"><input type="radio" name="report-type" value="semanal" checked> Semanal</label>
+                            <label class="vizor-radio"><input type="radio" name="report-type" value="mensal"> Mensal</label>
+                            <label class="vizor-radio"><input type="radio" name="report-type" value="trimestral"> Trimestral</label>
                         </div>
                     </div>
 
-                    <div class="kpi-row-4" style="margin-bottom: 20px;">
-                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
-                            <div style="font-size:0.8rem; opacity:0.8">Abertos</div>
-                            <div id="rel-kpi-abertos" style="font-size:1.4rem; font-weight:bold;">-</div>
-                        </div>
-                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
-                            <div style="font-size:0.8rem; opacity:0.8">Fechados</div>
-                            <div id="rel-kpi-fechados" style="font-size:1.4rem; font-weight:bold;">-</div>
-                        </div>
-                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
-                            <div style="font-size:0.8rem; opacity:0.8">Tempo Médio</div>
-                            <div id="rel-kpi-tempo" style="font-size:1.4rem; font-weight:bold;">-</div>
-                        </div>
-                        <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
-                            <div style="font-size:0.8rem; opacity:0.8">SLA</div>
-                            <div id="rel-kpi-sla" style="font-size:1.4rem; font-weight:bold;">-</div>
-                        </div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="vizor-label">Filtrar por Máquina:</label><br>
+                        <select id="filtro-maquina-rel" class="ui-select" style="width: 100%; margin-top:8px;">
+                            <option value="todas">Todas as Máquinas</option>
+                            <!-- Populado via JS -->
+                        </select>
                     </div>
 
-                    <p style="font-size: 0.9rem; color: #aaa;">* Dados extraídos do Jira Service Management.</p>
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button id="btn-cancel-report" class="vizor-btn" style="background: transparent; border: 1px solid #00bcd4; color: #00bcd4; margin-right: 10px;">Cancelar</button>
+                        <button id="btn-generate-report" class="vizor-btn">Gerar Relatório</button>
+                    </div>
                 </div>
 
-                
+                <!-- Passo 2: Resultado e Download -->
+                <div id="step-result" style="display: none;">
+                    <div id="printable-area" style="background: #072135; padding: 20px; border-radius: 8px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
+                            <div>
+                                <h3 style="margin:0; color:aqua;">Relatório de Incidentes</h3>
+                                <small id="report-date-display" style="color:#ccc;">Emissão: --</small>
+                            </div>
+                        </div>
+
+                        <div class="kpi-row-4" style="margin-bottom: 20px;">
+                            <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                                <div style="font-size:0.8rem; opacity:0.8">Abertos</div>
+                                <div id="rel-kpi-abertos" style="font-size:1.4rem; font-weight:bold;">-</div>
+                            </div>
+                            <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                                <div style="font-size:0.8rem; opacity:0.8">Fechados</div>
+                                <div id="rel-kpi-fechados" style="font-size:1.4rem; font-weight:bold;">-</div>
+                            </div>
+                            <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                                <div style="font-size:0.8rem; opacity:0.8">Tempo Médio</div>
+                                <div id="rel-kpi-tempo" style="font-size:1.4rem; font-weight:bold;">-</div>
+                            </div>
+                            <div style="text-align:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                                <div style="font-size:0.8rem; opacity:0.8">SLA</div>
+                                <div id="rel-kpi-sla" style="font-size:1.4rem; font-weight:bold;">-</div>
+                            </div>
+                        </div>
+
+                        <p style="font-size: 0.9rem; color: #aaa;">* Dados extraídos do Jira Service Management.</p>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button id="btn-back-report" class="vizor-btn" style="background: transparent; border: 1px solid #00bcd4; color: #00bcd4; margin-right: 10px;">Voltar</button>
+                        <button id="btn-print-report" class="vizor-btn">Baixar PDF</button>
+                        <button id="btn-close-report" class="vizor-btn" style="margin-left: 10px; background: #e74c3c; border:none; color:white;">Fechar</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
  </main>
 
@@ -723,49 +732,55 @@
     const stepSelector = document.getElementById("step-selector");
     const stepResult = document.getElementById("step-result");
 
-    // Abrir Modal
-    //document.getElementById("btn-open-report").onclick = () => {
-    //    modal.style.display = "flex";
-    //    stepSelector.style.display = "block";
-    //   stepResult.style.display = "none";
-    //};
+    // 1. Abrir Modal
+    document.getElementById("btn-open-report").onclick = () => {
+        modal.style.display = "flex";
+        stepSelector.style.display = "block";
+        stepResult.style.display = "none";
+    };
 
-    // Cancelar/Fechar
-    //const fecharModal = () => { modal.style.display = "none"; };
-    //document.getElementById("btn-cancel-report").onclick = fecharModal;
-    //document.getElementById("btn-close-report").onclick = fecharModal;
+    // 2. Fechar/Cancelar
+    const fecharModal = () => { modal.style.display = "none"; };
+    document.getElementById("btn-cancel-report").onclick = fecharModal;
+    document.getElementById("btn-close-report").onclick = fecharModal;
     
-    // Voltar
-    // document.getElementById("btn-back-report").onclick = () => {
-    //     stepSelector.style.display = "block";
-    //     stepResult.style.display = "none";
-    // };
+    // 3. Voltar para seleção
+    document.getElementById("btn-back-report").onclick = () => {
+        stepSelector.style.display = "block";
+        stepResult.style.display = "none";
+    };
 
-    // Gerar Relatório (Preencher dados)
-    // document.getElementById("btn-generate-report").onclick = () => {
-    //     document.getElementById("rel-kpi-abertos").textContent = dadosKpiCache.aberto;
-    //     document.getElementById("rel-kpi-fechados").textContent = dadosKpiCache.fechado;
-    //     document.getElementById("rel-kpi-tempo").textContent = dadosKpiCache.tempoMedio + "h";
-    //     document.getElementById("rel-kpi-sla").textContent = dadosKpiCache.sla + "%";
-    //     document.getElementById("report-date-display").textContent = "Emissão: " + new Date().toLocaleDateString("pt-BR");
-
-    //     stepSelector.style.display = "none";
-    //     stepResult.style.display = "block";
-    // };
-
-    // Download do PDF
-    // document.getElementById("btn-print-report").onclick = async () => {
-    //     const { jsPDF } = window.jspdf;
-    //     const pdf = new jsPDF();
-    //     const element = document.getElementById("printable-area");
+    // 4. Gerar Relatório (Preencher dados na tela)
+    document.getElementById("btn-generate-report").onclick = () => {
+        // Preenche com os dados reais do Jira
+        document.getElementById("rel-kpi-abertos").textContent = dadosKpiCache.aberto;
+        document.getElementById("rel-kpi-fechados").textContent = dadosKpiCache.fechado;
+        document.getElementById("rel-kpi-tempo").textContent = dadosKpiCache.tempoMedio + "h";
+        document.getElementById("rel-kpi-sla").textContent = dadosKpiCache.sla + "%";
         
-    //     const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#072135" });
-    //     const imgData = canvas.toDataURL("image/png");
+        // Data atual
+        const hoje = new Date().toLocaleDateString("pt-BR");
+        document.getElementById("report-date-display").textContent = "Emissão: " + hoje;
+
+        stepSelector.style.display = "none";
+        stepResult.style.display = "block";
+    };
+
+    // 5. Download do PDF (Client-Side)
+    document.getElementById("btn-print-report").onclick = async () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        const element = document.getElementById("printable-area");
         
-    //     pdf.text("Relatório de Incidentes - Vizor", 10, 15);
-    //     pdf.addImage(imgData, "PNG", 10, 25, 190, 0);
-    //     pdf.save("Relatorio_Vizor.pdf");
-    // };
+        // Usa html2canvas para tirar print da div
+        const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#072135" });
+        const imgData = canvas.toDataURL("image/png");
+        
+        // Adiciona ao PDF
+        pdf.text("Relatório de Incidentes - Vizor", 10, 15);
+        pdf.addImage(imgData, "PNG", 10, 25, 190, 0); // Ajusta largura para caber na A4
+        pdf.save("Relatorio_Vizor.pdf");
+    };
 
     function limparSessao() { sessionStorage.clear(); }
   </script>
