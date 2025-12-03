@@ -158,26 +158,33 @@ async function recommend(req, res) {
 async function listAlerts(req, res) {
     const { type, id } = req.params;  
     const userId = req.query.userId;  
-    const alerts = cachedAlerts;
+    const start = req.query.start;
+    const end = req.query.end;
+    const alerts = localAlerts;
 
     if (!type) return res.status(400).send("Tipo ausente!");
     if (!id) return res.status(400).send("ID ausente!");
     if (!userId) return res.status(400).send("userId ausente!");
 
     try {
-        // modelos permitidos para este usuário
-        const allowedModels = await model2.listarModelos(userId);
-        const modelosPermitidos = allowedModels.map(m => m.modelo);
+        let permittedAlerts = await model.filtrarPorUsuario(alerts, userId);
 
-        const filtrado = alerts.filter(alert => {
-            if (!modelosPermitidos.includes(alert.modelo)) return false;
+        // Apply date filter if present
+        if (start) {
+            const ini = new Date(start);
+            permittedAlerts = permittedAlerts.filter(a => new Date(a.timestamp) >= ini);
+        }
+        if (end) {
+            const fim = new Date(end);
+            permittedAlerts = permittedAlerts.filter(a => new Date(a.timestamp) <= fim);
+        }
 
-            if (type === "modelo") return alert.modelo === id;
-            if (type === "lote") return alert.lote === id;
-
+        // Now filter by type/id
+        const filtrado = permittedAlerts.filter(alert => {
+            if (type === "modelo") return alert.modelo && alert.modelo.trim() === id.trim();
+            if (type === "lote") return String(alert.lote).trim() === String(id).trim();
             return false;
         });
-
         return res.status(200).json(filtrado);
 
     } catch (erro) {

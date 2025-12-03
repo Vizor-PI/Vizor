@@ -33,19 +33,20 @@ function normalizeSeverity(sev) {
 }
 
 async function filtrarPorUsuario(alertas, userId) {
-    // pega os modelos e lotes permitidos ao usuário
     const dadosUsuario = await dadosModelosModel.listarModelosELotes(userId);
 
     const modelosPermitidos = dadosUsuario.map(d => d.modelo);
     const lotesPermitidos = dadosUsuario.map(d => d.lote);
 
     return alertas.filter(a =>
-        modelosPermitidos.includes(a.modelo) &&
+        modelosPermitidos.includes(a.modelo) ||
         lotesPermitidos.includes(a.lote)
     );
 }
 
 module.exports = {
+
+    filtrarPorUsuario,
     async listarTodos(userId) {
         let alertas = carregarAlertasDoArquivo();
         return await filtrarPorUsuario(alertas, userId);
@@ -196,8 +197,10 @@ module.exports = {
             .slice(0, limit);
     },
 
-    async topLotes(userId, start, end, limit = 5) {
+    async topLotes( userId, start, end,limit = 5) {
         let alertas = await this.listarTodos(userId);
+        console.log("Filtered critical alerts for lotes:", alertas.map(a => ({ lote: a.lote, timestamp: a.timestamp })));
+
 
         if (start) {
             const ini = parseDate(start);
@@ -209,7 +212,9 @@ module.exports = {
         }
 
         // Filter only critical alerts
-        alertas = alertas.filter(a => normalizeSeverity(a.severidade) === "critico");
+        console.log("After date filter:", alertas.length);
+alertas = alertas.filter(a => normalizeSeverity(a.severidade) === "critico");
+console.log("After severity filter:", alertas.length);
 
         const contador = {};
         alertas.forEach(a => {
@@ -340,20 +345,22 @@ module.exports = {
 
         // Função auxiliar para agrupar
         function agruparPor(alertas, campo) {
-            const map = {};
-            alertas.forEach(a => {
-                const key = a[campo];
-                if (!map[key]) {
-                    map[key] = { type: campo, name: key, total: 0, critico: 0, id: key };
-                }
-                map[key].total++;
-                if (normalizeSeverity(a.severidade) === "critico") map[key].critico++;
-                if (normalizeSeverity(a.severidade) === "critico") map[key].state = "critico";
-                else if (normalizeSeverity(a.severidade) === "atencao" && map[key].state !== "critico") map[key].state = "atencao";
-                else if (normalizeSeverity(a.severidade) === "normal" && !["critico", "atencao"].includes(map[key].state)) map[key].state = "normal";
-            });
-        return Object.values(map);
+    const map = {};
+    alertas.forEach(a => {
+        const key = a[campo];
+        if (!map[key]) {
+            map[key] = { type: campo, name: key, total: 0, critico: 0, atencao: 0, id: key };
         }
+        map[key].total++;
+        const sev = normalizeSeverity(a.severidade);
+        if (sev === "critico") map[key].critico++;
+        if (sev === "atencao") map[key].atencao++;
+        if (sev === "critico") map[key].state = "critico";
+        else if (sev === "atencao" && map[key].state !== "critico") map[key].state = "atencao";
+        else if (sev === "normal" && !["critico", "atencao"].includes(map[key].state)) map[key].state = "normal";
+    });
+    return Object.values(map);
+}
     },
 
     async recommend(userId) {
