@@ -613,9 +613,9 @@
 
   async function carregarDoohs() {
     const prefix = 'clima-dash/Tech_Solutions/';
-    const baseUrl = 'https://vizor-client.s3.us-east-1.amazonaws.com'
+    //const baseUrl = 'https://vizor-client.s3.us-east-1.amazonaws.com'
     // meu bucket, caso algo de errado com a conta do aquino
-    // const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
+    const baseUrl = 'http://client-vizor-vitorio.s3.amazonaws.com';
     const url = `${baseUrl}/?list-type=2&prefix=${encodeURIComponent(prefix)}`;
 
     const resultados = [];

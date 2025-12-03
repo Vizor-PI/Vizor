@@ -99,7 +99,7 @@
         <span class="page-sub">Visão geral do parque de dispositivos DOOH</span>
       </div>
 
-      <!-- KPIs -->
+      <!-- parte das kpis -->
       <section class="kpi-grid">
         <div class="card">
           <div class="card-header">
@@ -154,7 +154,7 @@
         </div>
       </section>
 
-      <!-- Mapa -->
+      <!-- parte do mapa -->
       <section class="card map-container">
         <div class="map-controls">
           <i data-lucide="search" size="16" style="color:rgba(255,255,255,0.5);"></i>
@@ -172,7 +172,7 @@
         <div id="vizor-map"></div>
       </section>
 
-      <!-- Lista -->
+      <!-- lista dispositivos -->
       <section class="card">
         <div class="card-header">
           <h2 class="card-title"><i data-lucide="list" size="18" style="color:aqua"></i> Lista de Dispositivos</h2>
@@ -203,7 +203,7 @@
         </div>
 
         <div class="modal-body">
-          <!-- Predição -->
+          <!-- regressao linear -->
           <div class="pred-title">
             <i data-lucide="activity" size="16" style="color:aqua"></i>
             Análise Preditiva 
@@ -235,7 +235,7 @@
             </div>
           </div>
 
-          <!-- métricas -->
+          <!-- metricas -->
           <div class="m-label">MÉTRICAS ATUAIS (MEDIANAS)</div>
           <div class="metrics-grid">
             <div class="metric-card">
@@ -272,7 +272,7 @@
             </div>
           </div>
 
-          <!-- gráficos  -->
+          <!-- gráficos do modal  -->
           <div id="charts-container" class="charts-container">
             <div class="charts-title">
               <i data-lucide="bar-chart-2" size="16"></i>
@@ -326,7 +326,7 @@
       </div>
     </div>
 
-    <!-- script-->
+    <!-- scripts -->
     <script src="../js/verificadorCargo.js"></script>
     <script src="../js/navbar.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -349,20 +349,19 @@
       if (v === null || v === undefined) return 0;
       return Number(String(v).replace("%", "").replace("°C", "").replace(",", ".").trim()) || 0;
     };
-  // calcula mediana
-    function median(arr) {
-      const nums = arr.map(Number).filter(v => !isNaN(v)).sort((a,b) => a-b);
-      if (!nums.length) return 0;
-      const mid = Math.floor(nums.length / 2);
-      if (nums.length % 2) return nums[mid];
-      return (nums[mid-1] + nums[mid]) / 2;
-    }
+//    function median(arr) {
+//      const nums = arr.map(Number).filter(v => !isNaN(v)).sort((a,b) => a-b);
+//      if (!nums.length) return 0;
+//      const mid = Math.floor(nums.length / 2);
+//      if (nums.length % 2) return nums[mid];
+//      return (nums[mid-1] + nums[mid]) / 2;
+//    }
 
-    //fechar modal
+    //fecha o modal
     window.closeModal = function() {
       document.getElementById("modal-overlay").style.display = "none";
     };
-  //abrir modal
+  //abre o modal
     window.toggleCharts = function() {
       const container = document.getElementById("charts-container");
       const isHidden = container.style.display === "none" || container.style.display === "";
@@ -416,12 +415,11 @@
         disk: parseNumber(raw.disco ?? raw.disk ?? medDia.disco),
         temp: parseNumber(raw.temp ?? medDia.temp),
 
-        // --- UPTIME CORRIGIDO (minutos → horas) ---
+        // uptime formatado
         uptime: (() => {
           const up = parseNumber(raw.uptime ?? item.uptime ?? 0);
           return up ? Number((up / 60).toFixed(1)) : 0;
         })(),
-        // ------------------------------------------
 
         ui,
         risk_model: risk,
@@ -464,7 +462,7 @@
         if (el) el.innerHTML = val;
       };
 
-      // título + badge de status
+        // título + badge de status
       setHtml(
         "modal-title",
         `${d.id} <span class="badge ${d.status}" style="margin-left:10px; font-size:12px; vertical-align:middle;">${d.status.toUpperCase()}</span>`
