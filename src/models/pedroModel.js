@@ -1,7 +1,6 @@
 var database = require("../database/config");
 
 function listar() {
-    // [CORREÇÃO] Adicionei mc.codigo na query
     var instrucao = `
         SELECT 
             mc.id,
