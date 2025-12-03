@@ -10,243 +10,205 @@
   <link rel="icon" href="../assets/imgs/logosDash/home.png" type="image/x-icon" />
 
   <style>
+    body, .container-xl, header, section, label, th, td, h3, h4, h5, h6, p, span, select, input, div {
+      color: #fff !important;
+    }
+    .container-xl { padding: 24px; max-width: 1400px; margin: auto; }
+    h1, h2 { color: #00c8d2; font-weight: 600; margin-bottom: 12px; }
+    header { background: #0f1f2b; border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; margin-bottom: 24px; }
+    .date-filters { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .date-filters label { font-size: 14px; opacity: .85; }
+    .date-filters input[type="date"] { background: #0a141d; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 8px; color: #fff; }
+    .date-filters button, .detailBtn {
+      background: #00c8d2;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      transition: filter 0.2s, box-shadow 0.2s;
+    }
+    .date-filters button:hover, .detailBtn:hover,
+    .date-filters button:focus, .detailBtn:focus {
+      filter: brightness(1.1);
+      box-shadow: 0 2px 8px rgba(0,200,210,0.12);
+      outline: none;
+    }
+    @media(max-width:700px){
+      .date-filters { flex-direction: column; align-items: flex-start; }
+    }
+    .alert-top-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      justify-items: center;
+      margin-bottom: 32px;
+    }
 
+    .kpi-card {
+      background: #16222c;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,200,210,0.08);
+      border: 1px solid rgba(0,200,210,0.12);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 160px;
+      height: 160px;           
+      width: 100%;             
+      box-sizing: border-box;  
+      transition: box-shadow 0.2s;
+    }
 
-.container-xl {
-  padding: 24px;
-  max-width: 1400px;
-  margin: auto;
-}
+    .kpi-card:hover {
+      box-shadow: 0 4px 24px rgba(0,200,210,0.18);
+    }
 
-h1, h2 {
-  color: #00c8d2;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
+    .kpi-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #00c8d2;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
 
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
 
-
-header {
-  background: #0f1f2b;
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-}
-
-#date-filters {
-  margin-top: 12px;
+    .kpi-sub {
+      font-size: 13px;
+      color: #b2eaf3;
+      margin-top: 2px;  
+    }
+    .charts-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 32px;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  background: #16222c;
+  border-radius: 12px;
+  padding: 18px 12px;
+  flex: 1 1 0;
+  min-width: 550px;
+  max-width: 550px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-#date-filters label {
-  font-size: 14px;
-  opacity: .85;
+.chart-card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
 }
 
-#date-filters input[type="date"] {
-  background: #0a141d;
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 6px 10px;
-  border-radius: 8px;
-  color: #fff;
-}
-
-#date-filters button {
-  background: #00c8d2;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  color: #000;
-}
-
-#date-filters button:hover {
-  filter: brightness(1.1);
-}
-
-
-
-.alert-top-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-#kpi-total, #kpi-critical, #kpi-top-model, #kpi-top-lote, 
-#kpi-model-growth, #kpi-lote-growth {
-  background:#0f1f2b;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  padding:16px;
-  min-height:110px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  font-size:14px;
-  font-weight:600;
-  gap: 4px;
-}
-
-#kpi-total span,
-#kpi-critical span,
-#kpi-top-model span,
-#kpi-top-lote span,
-#kpi-model-growth span,
-#kpi-lote-growth span {
-  display:block;
-  font-size:28px;
-  font-weight:700;
-  margin-top:6px;
-}
-
-
-
-#charts canvas {
+.chart-card canvas {
+  width: 100% !important;
+  max-width: 450px;
+  height: 350px !important;
+  margin-top: 10px;
   background: #0f1f2b;
-  padding: 16px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid rgba(255,255,255,.08);
-  margin-bottom: 24px;
 }
 
-#charts label select {
-  background:#0f1f2b;
-  border:1px solid rgba(255,255,255,.15);
-  color:#fff;
-  border-radius:8px;
-  padding:8px 10px;
+.chart-pie {
+  margin: 0 auto;
+  max-width: 700px;
+  height: 600px;
 }
 
-
-
-#heatmapContainer table {
-  width: 100%;
-  border-collapse: collapse;
-  background:#0f1f2b;
-  border:1px solid rgba(255,255,255,.1);
-  margin-bottom: 24px;
-  border-radius: 12px;
-  overflow: hidden;
+.chart-pie canvas {
+  height: 450px !important;
+  max-width: 450px;
 }
-
-#heatmapContainer th, 
-#heatmapContainer td {
-  padding: 6px;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,.05);
-}
-
-#heatmapContainer td[data-value] {
-  background: rgba(0,200,210, calc(var(--val) * 0.03));
-}
-
-
-
-#list-section {
-  margin-top: 32px;
-}
-
-#list-section label select {
-  background:#0f1f2b;
-  border:1px solid rgba(255,255,255,.15);
-  color:#fff;
-  border-radius:8px;
-  padding:6px 10px;
-}
-
-#listTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-  font-size: 14px;
-  background:#0f1f2b;
-  border-radius: 12px;
-  overflow: hidden;
-  border:1px solid rgba(255,255,255,.1);
-}
-
-#listTable th {
-  background:#0a141d;
-  padding: 10px;
-  font-weight:600;
-  border-bottom:1px solid rgba(255,255,255,.1);
-}
-
-#listTable td {
-  padding: 10px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-#listTable tr:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-.detailBtn {
-  background:#00c8d2;
-  border:none;
-  padding:6px 10px;
-  border-radius:6px;
-  font-weight:600;
-  cursor:pointer;
-  color:#000;
-}
-
-
-
-#detailModal {
-  background:#0f1f2b;
-  border:1px solid rgba(255,255,255,.2) !important;
-  color:#fff;
-  border-radius:12px;
-  padding:16px;
-}
-
-#detailModal button {
-  background:#e74c3c;
-  border:none;
-  padding:6px 10px;
-  border-radius:6px;
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-}
-
-#detailModal table {
-  width:100%;
-  margin-top:16px;
-  border-collapse: collapse;
-}
-
-#detailModal th, 
-#detailModal td {
-  padding: 8px;
-  border-bottom: 1px solid rgba(255,255,255,.1);
-}
-
-
-
-@media(max-width:700px){
-  #date-filters {
+@media (max-width: 900px) {
+  .charts-row {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 16px;
+    align-items: center;
   }
-
-  #listTable {
-    font-size: 12px;
-  }
-
-  #detailModal {
-    width: 94%;
-    left: 3% !important;
+  .chart-card {
+    max-width: 98vw;
   }
 }
+#compareEntityType, #compareEntity {
+  background: #0f1f2b;
+  border: 1px solid rgba(255,255,255,.15);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
 
+#compareEntityType:focus, #compareEntity:focus {
+  border-color: #00c8d2;
+}
+
+    #list-section { margin-top: 32px; }
+    #list-section label select { background:#0f1f2b; border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:8px; padding:6px 10px; }
+    #listTable { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; background:#0f1f2b; border-radius: 12px; overflow: hidden; border:1px solid rgba(255,255,255,.1); }
+    #listTable th { background:#0a141d; padding: 10px; font-weight:600; border-bottom:1px solid rgba(255,255,255,.1); }
+    #listTable td { padding: 10px; border-bottom:1px solid rgba(255,255,255,.05); }
+    #listTable tr:hover { background: rgba(255,255,255,0.05); }
+    #listTable tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+    #listTable th, #listTable td { border-bottom: 1px solid rgba(255,255,255,.08); }
+    .detailBtn { background:#00c8d2; border:none; padding:6px 10px; border-radius:6px; font-weight:600; cursor:pointer; color:#000; }
+   
+    .modal { 
+      display: none; 
+      position: fixed; 
+      z-index: 999; 
+      left: 0; top: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.6); 
+      justify-content: center; 
+      align-items: center; 
+    }
+    .modal.open { display: flex; }
+    .modal-content { background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative; border:1px solid rgba(255,255,255,.2); }
+    .close { 
+      position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer; 
+      padding: 2px 8px; border-radius: 50%; transition: background 0.2s;
+    }
+    .close:hover { background: rgba(255,255,255,0.1); }
+  #detailModal table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  background: #0f1f2b;
+}
+#detailModal th, #detailModal td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  text-align: left;
+}
+#detailModal th {
+  background: #0a141d;
+  font-weight: 600;
+  color: #00c8d2;
+}
+#detailModal tr:nth-child(even) {
+  background: rgba(255,255,255,0.03);
+}
+    @media(max-width:700px){
+      #date-filters { flex-direction: column; align-items: flex-start; }
+      #listTable { font-size: 12px; }
+      .modal-content { width: 98vw; max-width: 98vw; }
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -256,417 +218,486 @@ header {
 
   <div class="container-xl">
 
-    
+    <header>
+        <h1>Comparação de Modelos/Lotes</h1>
+    </header>
 
     <section class="alert-top-grid">
-        <div id="kpi-total">Total de alertas: <span id="kpi-total-val">—</span></div>
-        <div id="kpi-critical">Alertas críticos: <span id="kpi-critical-val">—</span></div>
-        <div id="kpi-top-model">Modelo com mais alertas: <span id="kpi-top-model-val">—</span></div>
-        <div id="kpi-top-lote">Lote com mais alertas: <span id="kpi-top-lote-val">—</span></div>
-        <div id="kpi-model-growth">Modelo com aumento crítico: <span id="kpi-model-growth-val">—</span></div>
-        <div id="kpi-lote-growth">Lote com aumento crítico: <span id="kpi-lote-growth-val">—</span></div>
+      <div class="kpi-card">
+        <div class="kpi-title">Total de alertas</div>
+        <div class="kpi-value" id="kpi-total-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Alertas críticos</div>
+        <div class="kpi-value" id="kpi-critical-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Modelo com mais alertas</div>
+        <div class="kpi-value" id="kpi-top-model-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Lote com mais alertas</div>
+        <div class="kpi-value" id="kpi-top-lote-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Modelo com aumento crítico</div>
+        <div class="kpi-value" id="kpi-model-growth-val">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Lote com aumento crítico</div>
+        <div class="kpi-value" id="kpi-lote-growth-val">—</div>
+      </div>
     </section>
 
-    <section id="charts">
+   <section id="charts">
+  <div class="charts-row">
+    <div class="chart-card">
       <h2>Top 5 — Modelos (alertas críticos)</h2>
-      <div>
+      <div class="date-filters">
         <label>De: <input type="date" id="barModelsStart"></label>
         <label>Até: <input type="date" id="barModelsEnd"></label>
         <button onclick="fetchTopBars()">Aplicar</button>
       </div>
       <canvas id="barModels"></canvas>
-
+    </div>
+    <div class="chart-card">
       <h2>Top 5 — Lotes (alertas críticos)</h2>
-      <div>
+      <div class="date-filters">
         <label>De: <input type="date" id="barLotesStart"></label>
         <label>Até: <input type="date" id="barLotesEnd"></label>
         <button onclick="fetchTopBars()">Aplicar</button>
       </div>
       <canvas id="barLotes"></canvas>
-
-      <h2>Comparação</h2>
-      <div>
-        <label>De: <input type="date" id="lineStart"></label>
-        <label>Até: <input type="date" id="lineEnd"></label>
-        <select id="compareEntityType">
-          <option value="modelo">Modelo</option>
-          <option value="lote">Lote</option>
-        </select>
-        <select id="compareEntity"></select>
-        <button onclick="fetchComparison()">Aplicar</button>
-      </div>
-      <canvas id="lineComparison"></canvas>
-
-      <h2>Mapa de calor</h2>
-      <div>
-        <label>De: <input type="date" id="heatmapStart"></label>
-        <label>Até: <input type="date" id="heatmapEnd"></label>
-        <button onclick="fetchHeatmap()">Aplicar</button>
-      </div>
-      <div id="heatmapContainer"></div>
-    </section>
+    </div>
+  </div>
+  <div class="chart-card chart-pie">
+    <h2>Comparação</h2>
+    <div class="date-filters">
+      <label>De: <input type="date" id="lineStart"></label>
+      <label>Até: <input type="date" id="lineEnd"></label>
+      <select id="compareEntityType">
+        <option value="modelo">Modelo</option>
+        <option value="lote">Lote</option>
+      </select>
+      <select id="compareEntity"></select>
+    </div>
+    <canvas id="lineComparison"></canvas>
+  </div>
+</section>
 
     <section id="list-section">
         <h2>Lista de modelos e lotes</h2>
         <label>Ver: <select id="viewSelect"><option value="both">Modelos + Lotes</option><option value="models">Modelos</option><option value="lotes">Lotes</option></select></label>
-        <label>Estado: <select id="stateSelect"><option value="all">Todos</option><option value="critical">Crítico</option><option value="high">Alto</option><option value="medium">Médio</option><option value="low">Baixo</option></select></label>
         <label>Ordenar: <select id="orderSelect"><option value="desc">Mais → Menos</option><option value="asc">Menos → Mais</option></select></label>
-
+        <div class="date-filters">
+          <label>De: <input type="date" id="listStart"></label>
+          <label>Até: <input type="date" id="listEnd"></label>
+          <button onclick="fetchList()">Aplicar</button>
+        </div>
 
         <table id="listTable" border="1">
             <thead>
-                <tr><th>Tipo</th><th>Nome</th><th>Alertas (total)</th><th>Alertas críticos</th><th>Estado</th><th>Ações</th></tr>
+              <tr>
+                <th>Tipo</th>
+                <th>Nome</th>
+                <th>Alertas (total)</th>
+                <th>Alertas críticos</th>
+                <th>Alertas atenção</th>
+                <th>Ações</th>
+              </tr>            
             </thead>
             <tbody></tbody>
         </table>
     </section>
 
-    <section id="recommendations">
-      <h2>Recomendações</h2>
-      <div id="rec-investigate-content"></div>
-      <div id="rec-keep-content"></div>
-      <div id="rec-emerging-content"></div>
-    </section>
 
-    <div id="detailModal"
-     style="display:none;position:fixed;left:10%;top:10%;width:80%;height:80%;overflow:auto;">
-      <button id="closeDetail">Fechar</button>
-      <div id="detailContent"></div>
+    <div id="detailModal" class="modal" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+        <div class="modal-content" style="background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative;">
+            <span id="closeDetail" class="close" style="position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
+            <div id="detailContent"></div>
+        </div>
     </div>
-    </div>
+  </div> 
     
-  
-
   <script src="../js/verificadorCargo.js"></script>
   <script src="../js/navbar.js"></script>
 
   <script>
-    const apiBase = '/HaniehDash';
-    let barModelsChart, barLotesChart, lineChart;
+        const apiBase = '/HaniehDash';
+        let barModelsChart, barLotesChart, comparisonChart;
 
-    async function populateCompareEntity() {
-      const entityType = document.getElementById('compareEntityType').value;
-      const userId = sessionStorage.ID_USUARIO;
-      if (!userId) return;
-      const res = await fetch(`/dadosModelos/listarModelosELotes/${userId}`);
-      if (!res.ok) return;
-      const data = await res.json();
-      const select = document.getElementById('compareEntity');
-      select.innerHTML = '';
-      if (entityType === 'modelo') {
-        [...new Set(data.map(d => d.modelo))].forEach(modelo => {
-          const opt = document.createElement('option');
-          opt.value = modelo;
-          opt.textContent = modelo;
-          select.appendChild(opt);
-        });
-      } else {
-        [...new Set(data.map(d => d.lote))].forEach(lote => {
-          const opt = document.createElement('option');
-          opt.value = lote;
-          opt.textContent = lote;
-          select.appendChild(opt);
-        });
-      }
-      // Select the first option if available
-      if (select.options.length > 0) {
-        select.selectedIndex = 0;
-      }
-      fetchComparison(); // Always call after populating
-    }
+        async function populateCompareEntity() {
+            const entityType = document.getElementById('compareEntityType').value;
+            const userId = sessionStorage.ID_USUARIO;
+            if (!userId) return;
+            
+            const res = await fetch(`/dadosModelos/listarModelosELotes/${userId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            const select = document.getElementById('compareEntity');
+            select.innerHTML = '';
+            if (entityType === 'modelo') {
+                [...new Set(data.map(d => d.modelo))].forEach(modelo => {
+                    const opt = document.createElement('option');
+                    opt.value = modelo;
+                    opt.textContent = modelo;
+                    select.appendChild(opt);
+                });
+            } else {
+                [...new Set(data.map(d => d.lote))].forEach(lote => {
+                    const opt = document.createElement('option');
+                    opt.value = lote;
+                    opt.textContent = lote;
+                    select.appendChild(opt);
+                });
+            }
+            if (select.options.length > 0) {
+                select.selectedIndex = 0;
+            }
+            fetchComparison();
+        }
+        function getLastWeekMondayRange() {
+    const today = new Date();
+    // Find last Monday
+    const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+    const lastMonday = new Date(today);
+    lastMonday.setDate(today.getDate() - ((dayOfWeek + 6) % 7) - 7);
+    lastMonday.setHours(0,0,0,0);
+    // Next Monday after lastMonday
+    const nextMonday = new Date(lastMonday);
+    nextMonday.setDate(lastMonday.getDate() + 7);
+    nextMonday.setHours(0,0,0,0);
+    return {
+        start: lastMonday.toISOString().slice(0,10),
+        end: nextMonday.toISOString().slice(0,10)
+    };
+}
+        
+        const ctxM = document.getElementById('barModels').getContext('2d');
+        const ctxPie = document.getElementById('lineComparison').getContext('2d');
+        const ctxL = document.getElementById('barLotes').getContext('2d');
+        function initCharts() {
+          barModelsChart = new Chart(ctxM, {
+            type: 'bar',
+            data: { 
+              labels: [],
+              datasets: [{
+                label: 'Alertas críticos',
+                data: [],
+                backgroundColor: 'rgba(0,200,210,0.7)',
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: '#222',
+                  titleColor: '#00c8d2',
+                  bodyColor: '#fff'
+                }
+              },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 13 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#fff', font: { size: 13 } } }
+            },
+            layout: { padding: 20 }
+            }
+          });
+          barLotesChart = new Chart(ctxL, {
+            type: 'bar',
+            data: { 
+              labels: [],
+              datasets: [{
+                label: 'Alertas críticos',
+                data: [],
+                backgroundColor: 'rgba(0,200,210,0.7)',
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: '#222',
+                  titleColor: '#00c8d2',
+                  bodyColor: '#fff'
+                }
+              },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 13 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#fff', font: { size: 13 } } }
+            },
+            layout: { padding: 20 }
+            }
+          });
+          comparisonChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+              labels: [],
+              datasets: [{
+                data: [],
+                backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c', '#00c8d2', '#9b59b6'],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+                plugins: {
+                  legend: { labels: { color: '#fff', font: { size: 14 } } },
+                  tooltip: { backgroundColor: '#222', titleColor: '#00c8d2', bodyColor: '#fff' }
+                },
+              layout: { padding: 20 }
+            }
+          });
+        }
 
-    function initCharts() {
-      const ctxM = document.getElementById('barModels').getContext('2d');
-        barModelsChart = new Chart(ctxM, {
-        type: 'bar',
-        data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [] }] },
-        options: { responsive: true }
-      });
+        function severityLabel(sev) {
+            if (sev === "critico") return "Crítico";
+            if (sev === "atencao") return "Atenção";
+            if (sev === "normal") return "Normal";
+            return sev || "—";
+        }
 
-      
-      document.getElementById('compareEntityType').addEventListener('change', populateCompareEntity);
-      window.addEventListener('DOMContentLoaded', populateCompareEntity);
+        function setPresetWeek() {
+            const today = new Date('2025-10-30'); 
+            const lastMonday = new Date(today);
+            lastMonday.setDate(today.getDate() - 30); 
+            
+            const startStr = '2025-10-01';
+            const endStr = '2025-10-31';
 
+            const ids = [
+                'startDate', 'endDate', 
+                'barModelsStart', 'barModelsEnd',
+                'barLotesStart', 'barLotesEnd',
+                'lineStart', 'lineEnd'
+            ];
+            ids.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (el) el.value = (i % 2 === 0) ? startStr : endStr;
+            });
+        }
 
-      const ctxL = document.getElementById('barLotes').getContext('2d');
-      barLotesChart = new Chart(ctxL, {
-        type: 'bar',
-        data: { labels: [], datasets: [{ label: 'Alertas críticos', data: [] }] },
-        options: { responsive: true }
-      });
+        function setPresetMonth() {
+            const today = new Date();
+            const lastMonthStart = new Date(today.getFullYear(), today.getMonth()-1, 1);
+            const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+            document.getElementById('startDate').value = lastMonthStart.toISOString().slice(0,10);
+            document.getElementById('endDate').value = lastMonthEnd.toISOString().slice(0,10);
+        }
 
-
-      const ctxPie = document.getElementById('lineComparison').getContext('2d');
-      comparisonChart = new Chart(ctxPie, {
-        type: 'pie',
-        data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00c8d2', '#f39c12', '#e74c3c'] }] },
-        options: { responsive: true }
-      });
-    }
-
-    function severityLabel(sev) {
-      if (sev === "critico") return "Crítico";
-      if (sev === "atencao") return "Atenção";
-      if (sev === "normal") return "Normal";
-      return sev || "—";
-    }
-
-    function setPresetWeek() {
-      const today = new Date();
-      const lastMonday = new Date();
-      lastMonday.setDate(today.getDate() - (today.getDay() + 6) % 7 - 7);
-      const lastSunday = new Date(lastMonday);
-      lastSunday.setDate(lastMonday.getDate() + 6);
-      const startStr = lastMonday.toISOString().slice(0,10);
-      const endStr = lastSunday.toISOString().slice(0,10);
-
-      // Para cada filtro de data existente:
-      const ids = [
-        'barModelsStart', 'barModelsEnd',
-        'barLotesStart', 'barLotesEnd',
-        'lineStart', 'lineEnd',
-        'heatmapStart', 'heatmapEnd'
-      ];
-      ids.forEach((id, i) => {
-        const el = document.getElementById(id);
-        if (el) el.value = (i % 2 === 0) ? startStr : endStr;
-      });
-    }
-
-    function setPresetMonth() {
-      const today = new Date();
-      const lastMonthStart = new Date(today.getFullYear(), today.getMonth()-1, 1);
-      const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-      document.getElementById('startDate').value = lastMonthStart.toISOString().slice(0,10);
-      document.getElementById('endDate').value = lastMonthEnd.toISOString().slice(0,10);
-    }
-
-    async function fetchKpis() {
-      const userId = sessionStorage.ID_USUARIO;
-      if (!userId) {
-        console.error('Usuário não autenticado!');
-        return;
-      }
-      const q = new URLSearchParams({ userId });
-      const res = await fetch(`${apiBase}/getKpis?${q}`);
-      if (!res.ok) { console.error('Erro ao carregar KPIs'); return; }
-      const data = await res.json();
-      document.getElementById('kpi-total-val').textContent = data.totalAlerts ?? '—';
-      document.getElementById('kpi-critical-val').textContent = data.criticoAlerts ?? '—';
-      document.getElementById('kpi-top-model-val').textContent = data.topModel ? `${data.topModel.name} (${data.topModel.count})` : '—';
-      document.getElementById('kpi-top-lote-val').textContent = data.topLote ? `${data.topLote.name} (${data.topLote.count})` : '—';
-      document.getElementById('kpi-model-growth-val').textContent = data.modelGrowth ? `${data.modelGrowth.name} (${data.modelGrowth.pct}%)` : '—';
-      document.getElementById('kpi-lote-growth-val').textContent = data.loteGrowth ? `${data.loteGrowth.name} (${data.loteGrowth.pct}%)` : '—';
-    }
-
-    async function fetchTopBars() {
-      // For models
-      const startM = document.getElementById('barModelsStart').value;
-      const endM = document.getElementById('barModelsEnd').value;
-      // For lotes
-      const startL = document.getElementById('barLotesStart').value;
-      const endL = document.getElementById('barLotesEnd').value;
-      const userId = sessionStorage.ID_USUARIO;
-      if (!userId) {
-        console.error('Usuário não autenticado!');
-        return;
-      }
-      // Fetch models
-      const qM = new URLSearchParams({ start: startM || '', end: endM || '', userId });
-      const resM = await fetch(`${apiBase}/topModels?${qM}`);
-      // Fetch lotes
-      const qL = new URLSearchParams({ start: startL || '', end: endL || '', userId });
-      const resL = await fetch(`${apiBase}/topLotes?${qL}`);
-
-      if (!resM.ok || !resL.ok) { console.error('Erro ao carregar top bars'); return; }
-      const dataM = await resM.json();
-      const dataL = await resL.json();
-      barModelsChart.data.labels = dataM.map(x=>x.name);
-      barModelsChart.data.datasets[0].data = dataM.map(x=>x.count);
-      barModelsChart.update();
-      barLotesChart.data.labels = dataL.map(x=>x.name);
-      barLotesChart.data.datasets[0].data = dataL.map(x=>x.count);
-      barLotesChart.update();
-    }
-
-    async function fetchComparison() {
-      const start = document.getElementById('lineStart').value;
-      const end = document.getElementById('lineEnd').value;
-      const entityType = document.getElementById('compareEntityType').value;
-      const entity = document.getElementById('compareEntity').value;
-      const userId = sessionStorage.ID_USUARIO;
-      if (!entity) {
-        // Opcional: Limpe o gráfico ou mostre uma mensagem
-        comparisonChart.data.labels = [];
-        comparisonChart.data.datasets[0].data = [];
-        comparisonChart.update();
-        return;
-      }
-      if (!userId) return;
-      const q = new URLSearchParams({
-        start: start || '',
-        end: end || '',
-        entityType,
-        entity,
-        userId
-      });
-      const res = await fetch(`${apiBase}/comparison?${q}`);
-      if (!res.ok) { console.error('Erro ao carregar comparação'); return; }
-      const data = await res.json();
-      comparisonChart.data.labels = data.labels;
-      comparisonChart.data.datasets[0].data = data.datasets[0].data;
-      comparisonChart.update();
-    }
-
-    async function fetchHeatmap() {
-      const start = document.getElementById('heatmapStart').value;
-      const end = document.getElementById('heatmapEnd').value;
-      const q = new URLSearchParams({ start: start || '', end: end || '' });
-      const res = await fetch(`${apiBase}/heatmap?${q}`);
-      if (!res.ok) { console.error('Erro ao carregar heatmap'); return; }
-      const data = await res.json();
-      renderHeatmap(data);
-    }
-
-  function renderHeatmap(data) {
-    const container = document.getElementById('heatmapContainer');
-    container.innerHTML = '';
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const trHead = document.createElement('tr');
-    trHead.appendChild(document.createElement('th'));
-    data.days.forEach(d => { const th = document.createElement('th'); th.textContent = d; trHead.appendChild(th); });
-    thead.appendChild(trHead);
-    table.appendChild(thead);
-    const tbody = document.createElement('tbody');
-    data.hours.forEach((h, i) => {
-      const tr = document.createElement('tr');
-      const th = document.createElement('th'); th.textContent = h; tr.appendChild(th);
-      data.days.forEach((_, j) => {
-        const td = document.createElement('td');
-        const val = data.matrix[i] && data.matrix[i][j] ? data.matrix[i][j] : 0;
-        td.textContent = val;
-        td.style.setProperty('--val', val);
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    container.appendChild(table);
-  }
-
-  async function fetchList() {
-    const start = document.getElementById('barModelsStart').value;
-    const end = document.getElementById('barModelsEnd').value;
-    const view = document.getElementById('viewSelect').value;
-    const state = document.getElementById('stateSelect').value;
-    const order = document.getElementById('orderSelect').value;
+        async function fetchKpis() {
     const userId = sessionStorage.ID_USUARIO;
-    if (!userId) {
-      console.error('Usuário não autenticado!');
-      return;
-    }
-    const q = new URLSearchParams({ start: start || '', end: end || '', view, state, order, userId });
-    const res = await fetch(`${apiBase}/list?${q}`);
-    if (!res.ok) { console.error('Erro ao carregar lista'); return; }
+    if (!userId) { console.error('Usuário não autenticado!'); return; }
+
+    // Always use last week's Monday-to-Monday
+    const { start, end } = getLastWeekMondayRange();
+
+    const q = new URLSearchParams({ userId, start, end });
+    const res = await fetch(`${apiBase}/getKpis?${q}`);
+    if (!res.ok) { console.error('Erro ao carregar KPIs'); return; }
     const data = await res.json();
-    renderList(data);
-  }
+    document.getElementById('kpi-total-val').textContent = data.totalAlerts ?? '—';
+    document.getElementById('kpi-critical-val').textContent = data.criticoAlerts ?? '—';
+    document.getElementById('kpi-top-model-val').textContent = data.topModel ? `${data.topModel.name} (${data.topModel.count})` : '—';
+    document.getElementById('kpi-top-lote-val').textContent = data.topLote ? `${data.topLote.name} (${data.topLote.count})` : '—';
+    document.getElementById('kpi-model-growth-val').textContent = data.modelGrowth ? `${data.modelGrowth.name} (${data.modelGrowth.pct}%)` : '';
+    document.getElementById('kpi-lote-growth-val').textContent = data.loteGrowth ? `${data.loteGrowth.name} (${data.loteGrowth.pct}%)` : '';
+}
 
-
-  function renderList(items) {
-    const tbody = document.querySelector('#listTable tbody');
-    tbody.innerHTML = '';
-    items.forEach(item => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${item.type}</td><td>${item.name}</td><td>${item.total}</td><td>${item.critico}</td><td>${severityLabel(item.state)}</td><td><button data-id='${item.type}|${item.id}' class='detailBtn'>Detalhes</button></td>`;
-      tbody.appendChild(tr);
-    });
-    document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
-      const [type,id] = e.target.dataset.id.split('|');
-      openDetails(type, id);
-    }));
-  }
-
-  async function fetchRecommendations() {
-    const start = document.getElementById('barModelsStart').value;
-    const end = document.getElementById('barModelsEnd').value;
+       async function fetchTopBars() {
+    const startM = document.getElementById('barModelsStart').value;
+    const endM = document.getElementById('barModelsEnd').value;
+    const startL = document.getElementById('barLotesStart').value;
+    const endL = document.getElementById('barLotesEnd').value;
     const userId = sessionStorage.ID_USUARIO;
-    if (!userId) {
-      console.error('Usuário não autenticado!');
-      return;
-    }
-    const q = new URLSearchParams({ start: start || '', end: end || '', userId });
-    const res = await fetch(`${apiBase}/recommend?${q}`);
-    if (!res.ok) { console.error('Erro ao carregar recomendações'); return; }
-    const data = await res.json();
-    document.getElementById('rec-investigate-content').textContent = data.investigate ? `${data.investigate.type} ${data.investigate.name}: ${data.investigate.reason}` : '—';
-    document.getElementById('rec-keep-content').textContent = data.keep ? `${data.keep.type} ${data.keep.name}: ${data.keep.reason}` : '—';
-    document.getElementById('rec-emerging-content').textContent = data.emerging ? `${data.emerging.type} ${data.emerging.name}: ${data.emerging.reason}` : '—';
-  }
+    if (!userId) return;
 
-  async function openDetails(type, id) {
-    const res = await fetch(`${apiBase}/alerts/${type}/${id}`);
-    if (!res.ok) { console.error('Erro ao carregar detalhes'); return; }
+    const qM = new URLSearchParams({ start: startM || '', end: endM || '', userId });
+    const resM = await fetch(`${apiBase}/topModels?${qM}`);
+    const qL = new URLSearchParams({ start: startL || '', end: endL || '', userId });
+    const resL = await fetch(`${apiBase}/topLotes?${qL}`);
+
+    if (!resM.ok || !resL.ok) return;
+    let dataM, dataL;
+    try {
+        dataM = await resM.json();
+    } catch (e) {
+        dataM = [];
+    }
+    try {
+        dataL = await resL.json();
+    } catch (e) {
+        dataL = [];
+    }
+
+    if (!Array.isArray(dataM)) dataM = [];
+    if (!Array.isArray(dataL)) dataL = [];
+
+    if (barModelsChart && barModelsChart.data && barModelsChart.data.datasets && barModelsChart.data.datasets[0]) {
+        barModelsChart.data.labels = dataM.map(x => x.name);
+        barModelsChart.data.datasets[0].data = dataM.map(x => x.count);
+        barModelsChart.update();
+    }
+
+    if (barLotesChart && barLotesChart.data && barLotesChart.data.datasets && barLotesChart.data.datasets[0]) {
+        barLotesChart.data.labels = dataL.map(x => x.name);
+        barLotesChart.data.datasets[0].data = dataL.map(x => x.count);
+        barLotesChart.update();
+    }
+}
+
+        async function fetchComparison() {
+            const start = document.getElementById('lineStart').value;
+            const end = document.getElementById('lineEnd').value;
+            const entityType = document.getElementById('compareEntityType').value;
+            const entity = document.getElementById('compareEntity').value;
+            const userId = sessionStorage.ID_USUARIO;
+            
+            if (!entity || !userId) return;
+            
+            const q = new URLSearchParams({ start: start||'', end: end||'', entityType, entity, userId });
+            const res = await fetch(`${apiBase}/comparison?${q}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            comparisonChart.data.labels = data.labels;
+            comparisonChart.data.datasets[0].data = data.datasets[0].data;
+            comparisonChart.update();
+        }
+
+       
+        
+
+        async function fetchList() {
+          let start = document.getElementById('listStart').value;
+          let end = document.getElementById('listEnd').value;
+          const view = document.getElementById('viewSelect').value;
+          const order = document.getElementById('orderSelect').value;
+          const userId = sessionStorage.ID_USUARIO;
+          if (!userId) return;
+
+          if (!start || !end) {
+            const today = new Date();
+            const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+            const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+            start = lastMonthStart.toISOString().slice(0, 10);
+            end = lastMonthEnd.toISOString().slice(0, 10);
+            document.getElementById('listStart').value = start;
+            document.getElementById('listEnd').value = end;
+          }
+
+          const q = new URLSearchParams({ start, end, view, order, userId });
+          const res = await fetch(`${apiBase}/list?${q}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          renderList(data);
+        }
+
+        function renderList(items) {
+          const tbody = document.querySelector('#listTable tbody');
+          tbody.innerHTML = '';
+          items.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.type}</td>
+                <td>${item.name}</td>
+                <td>${item.total}</td>
+                <td>${item.critico}</td>
+                <td>${item.atencao ?? 0}</td>
+                <td><button data-id='${item.type}|${item.id}' class='detailBtn'>Detalhes</button></td>`;
+            tbody.appendChild(tr);
+          });
+          document.querySelectorAll('.detailBtn').forEach(b => b.addEventListener('click', (e) => {
+            if(e.target.dataset.id) {
+              const [type,id] = e.target.dataset.id.split('|');
+              openDetails(type, id);
+            }
+          }));
+        }
+
+        async function fetchRecommendations() {
+            const userId = sessionStorage.ID_USUARIO;
+            if (!userId) return;
+            const q = new URLSearchParams({ userId });
+            const res = await fetch(`${apiBase}/recommend?${q}`);
+            if (!res.ok) return;
+            const data = await res.json();
+        }
+
+        async function openDetails(type, id) {
+    const userId = sessionStorage.ID_USUARIO;
+    // Get date range from list filters
+    const start = document.getElementById('listStart')?.value;
+    const end = document.getElementById('listEnd')?.value;
+
+    // Build query string with dates if present
+    const q = new URLSearchParams({ userId });
+    if (start) q.append('start', start);
+    if (end) q.append('end', end);
+
+    const res = await fetch(`${apiBase}/alerts/${type}/${id}?${q}`);
+    if (!res.ok) return;
     const alerts = await res.json();
     const content = document.getElementById('detailContent');
     content.innerHTML = `<h3>Detalhes — ${type} ${id}</h3>`;
     const table = document.createElement('table');
-    table.border = 1;
-    table.innerHTML = `<thead><tr><th>timestamp</th><th>tipo</th><th>severidade</th><th>mensagem</th></tr></thead>`;
-    const tbody = document.createElement('tbody');
-    alerts.forEach(a => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${a.timestamp}</td><td>${a.type}</td><td>${a.severity}</td><td>${a.message}</td>`;
-      tbody.appendChild(tr);
-    });
+table.innerHTML = `<thead><tr><th>Data</th><th>Hora</th><th>Tipo</th><th>Valor</th><th>Severidade</th></tr></thead>`;    const tbody = document.createElement('tbody');
+    alerts.slice(0,50).forEach(a => {
+    const [date, time] = a.timestamp.split('T');
+    const timeFmt = time ? time.slice(0,5) : '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${date}</td><td>${timeFmt}</td><td>${a.tipo}</td><td>${a.valor}</td><td>${a.severidade}</td>`;
+    tbody.appendChild(tr);
+});
     table.appendChild(tbody);
     content.appendChild(table);
-    document.getElementById('detailModal').style.display = 'block';
-  }
+    document.getElementById('detailModal').style.display = 'flex';
+}
 
-  document.getElementById('viewSelect').addEventListener('change', () => fetchList());
-  document.getElementById('stateSelect').addEventListener('change', () => fetchList());
-  document.getElementById('orderSelect').addEventListener('change', () => fetchList());
-  document.getElementById('detailModal').style.display = 'block';
-  document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
+        document.getElementById('viewSelect').addEventListener('change', fetchList);
+        document.getElementById('orderSelect').addEventListener('change', fetchList);
+        document.getElementById('closeDetail').addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
 
-  async function refreshAll() {
-    await Promise.all([
-      fetchKpis(),
-      fetchTopBars(),
-      fetchComparison(),
-      fetchHeatmap(),
-      fetchList(),
-      fetchRecommendations()
-    ]);
-  }
+        const btnApply = document.getElementById('applyRange');
+        if(btnApply) {
+            btnApply.addEventListener('click', () => {
+                refreshAll();
+            });
+        }
 
-  initCharts();
-  document.getElementById('compareEntityType').addEventListener('change', () => {
-    populateCompareEntity();
-    fetchComparison();
-  });
-  document.getElementById('compareEntity').addEventListener('change', fetchComparison);
-  document.getElementById('lineStart').addEventListener('change', fetchComparison);
-  document.getElementById('lineEnd').addEventListener('change', fetchComparison);
-  setPresetWeek(); 
-  refreshAll();
+        async function refreshAll() {
+            await Promise.all([ fetchKpis(), fetchTopBars(), fetchComparison(), fetchList(), fetchRecommendations() ]);
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            
+            document.getElementById('compareEntityType').addEventListener('change', () => { populateCompareEntity(); });
+            document.getElementById('compareEntity').addEventListener('change', fetchComparison);
+            document.getElementById('lineStart').addEventListener('change', fetchComparison);
+            document.getElementById('lineEnd').addEventListener('change', fetchComparison);
+            
+            const presetBtn = document.getElementById('presetWeek');
+            if(presetBtn) {
+                presetBtn.onclick = () => { setPresetWeek(); refreshAll(); };
+            }
+            const presetMonth = document.getElementById('presetMonth');
+            if(presetMonth) {
+                presetMonth.onclick = () => { setPresetMonth(); refreshAll(); };
+            }
+            
+            setTimeout(() => {
+                populateCompareEntity(); 
+                setPresetWeek();
+                refreshAll();
+            }, 500); 
+        });
+    </script>
 
-  </script>
-
-  <div id="detailModal" class="modal" style="display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-    <div class="modal-content" style="background:#0f1f2b; padding:20px; border-radius:10px; color:white; max-height:80%; overflow:auto; width:80%; position:relative;">
-      <span id="closeDetail" class="close" style="position:absolute; right:20px; top:10px; font-size:24px; cursor:pointer;">&times;</span>
-      <div id="detailContent"></div>
-    </div>
-  </div>
-    
-  <script>
-    function limparSessao() {
-      sessionStorage.clear();
-    }
-  </script>
+    <script>
+        function limparSessao() { sessionStorage.clear(); }
+    </script>
 </body>
 </html>
