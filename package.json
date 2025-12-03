@@ -10,6 +10,7 @@
   "author": "Feito pelos desenvolvedores @ São Paulo Tech School / Bandtec Digital School",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.940.0",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.13.2",
     "client-s3": "github:aws-sdk/client-s3",
