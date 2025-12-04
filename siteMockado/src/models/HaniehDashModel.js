@@ -1,194 +1,398 @@
-const { S3Client, ListObjectsV2Command, GetObjectCommand } = require("@aws-sdk/client-s3");
+const fs = require("fs");
+const path = require("path");
 const dadosModelosModel = require("./dadosModelosModel");
 
-const s3 = new S3Client({ region: "us-east-1" });
-const BUCKET_NAME = "vizor-client";
-const PREFIX = "hanieh-client/Tech_Solutions/";
+// Caminho do arquivo sincronizado do bucket
+const ALERTS_FILE = path.join(__dirname, "../tests/alerts.json");
 
-const streamToString = (stream) =>
-  new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
-    stream.on("error", reject);
-  });
+function carregarAlertasDoArquivo() {
+    if (!fs.existsSync(ALERTS_FILE)) return [];
+    const raw = fs.readFileSync(ALERTS_FILE, "utf8");
+    return JSON.parse(raw);
+}
 
 function parseDate(str) {
-    if(!str) return new Date(NaN);
-    const parts = str.split(/[\s/:]/);
-    // Formato DD/MM/YYYY HH:mm
-    if(parts.length >= 3) {
-        return new Date(parts[2], parts[1]-1, parts[0], parts[3]||0, parts[4]||0);
+    // Try ISO first
+    let d = new Date(str);
+    if (!isNaN(d)) return d;
+    // Try DD-MM-YYYY HH:mm:ss
+    const m = str.match(/^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+    if (m) {
+        return new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:${m[6]}`);
     }
-    return new Date(str);
+    return new Date(NaN);
 }
 
 function normalizeSeverity(sev) {
-    if (!sev) return "normal";
-    sev = sev.toLowerCase().trim();
-    if (sev.startsWith("crit") || sev === "critico") return "critico";
-    if (sev.startsWith("aten") || sev === "atencao") return "atencao";
-    return "normal";
+    if (!sev) return "";
+    sev = sev.toLowerCase();
+    if (sev.startsWith("crit")) return "critico";
+    if (sev.startsWith("aten")) return "atencao";
+    if (sev === "normal") return "normal";
+    return sev;
 }
 
-// --- CORE: Busca e Hidrata dados do S3 ---
-async function carregarTodosAlertasHidratados(userId) {
-    if (!userId || userId === "undefined") return [];
+async function filtrarPorUsuario(alertas, userId) {
+    const dadosUsuario = await dadosModelosModel.listarModelosELotes(userId);
 
-    try {
-        const maquinasPermitidas = await dadosModelosModel.listarModelosELotes(userId);
-        if (!maquinasPermitidas || maquinasPermitidas.length === 0) return [];
+    const modelosPermitidos = dadosUsuario.map(d => d.modelo);
+    const lotesPermitidos = dadosUsuario.map(d => d.lote);
 
-        const mapaMaquinas = {};
-        maquinasPermitidas.forEach(m => {
-            mapaMaquinas[m.codigo] = { modelo: m.modelo, lote: m.lote };
-        });
-
-        let keys = [];
-        let continuationToken;
-        do {
-            const listCmd = new ListObjectsV2Command({
-                Bucket: BUCKET_NAME, Prefix: PREFIX, ContinuationToken: continuationToken
-            });
-            const res = await s3.send(listCmd);
-            if (res.Contents) {
-                res.Contents.forEach(obj => { if (obj.Key.endsWith(".json")) keys.push(obj.Key); });
-            }
-            continuationToken = res.NextContinuationToken;
-        } while (continuationToken);
-
-        const promises = keys.map(async (key) => {
-            const parts = key.split('/');
-            let machineId = null;
-            // Procura qual parte do caminho é um código de máquina válido
-            for (const part of parts) {
-                if (mapaMaquinas[part]) { machineId = part; break; }
-            }
-            if (!machineId) return [];
-
-            try {
-                const getCmd = new GetObjectCommand({ Bucket: BUCKET_NAME, Key: key });
-                const res = await s3.send(getCmd);
-                const body = await streamToString(res.Body);
-                const jsonArr = JSON.parse(body);
-                const infoExtra = mapaMaquinas[machineId];
-                
-                return jsonArr.map(alerta => ({
-                    ...alerta,
-                    machine_id: machineId,
-                    modelo: infoExtra.modelo,
-                    lote: infoExtra.lote,
-                    timestamp: alerta.timestamp
-                }));
-            } catch (err) {
-                return [];
-            }
-        });
-
-        const resultados = await Promise.all(promises);
-        return resultados.flat();
-
-    } catch (error) {
-        console.error("Erro Model Hanieh S3:", error);
-        return [];
-    }
+    return alertas.filter(a =>
+        modelosPermitidos.includes(a.modelo) ||
+        lotesPermitidos.includes(a.lote)
+    );
 }
 
 module.exports = {
+
+    filtrarPorUsuario,
     async listarTodos(userId) {
-        return await carregarTodosAlertasHidratados(userId);
+        let alertas = carregarAlertasDoArquivo();
+        return await filtrarPorUsuario(alertas, userId);
     },
 
-    // [CORREÇÃO] Agora aceita start e end para filtrar os KPIs corretamente
-    async getKpis(userId, start, end) {
-        let alertas = await this.listarTodos(userId);
-        
-        // Filtro de Data Dinâmico (igual aos gráficos)
-        if (start) {
-            const ini = new Date(start);
+    async filtrar(userId, filtros = {}) {
+        let alertas = carregarAlertasDoArquivo();
+        alertas = await filtrarPorUsuario(alertas, userId);
+
+        const { modelo, lote, tipo, dataInicio, dataFim } = filtros;
+
+        if (modelo) {
+            alertas = alertas.filter(a => a.modelo === modelo);
+        }
+        if (lote) {
+            alertas = alertas.filter(a => a.lote === lote);
+        }
+        if (tipo) {
+            alertas = alertas.filter(a => a.tipo === tipo);
+        }
+        if (dataInicio) {
+            const ini = parseDate(dataInicio);
             alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
         }
-        if (end) {
-            const fim = new Date(end);
-            fim.setHours(23,59,59);
+        if (dataFim) {
+            const fim = parseDate(dataFim);
             alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
         }
 
-        const totalAlerts = alertas.length;
-        const criticoAlerts = alertas.filter(a => normalizeSeverity(a.severidade) === "critico").length;
-        
+        return alertas;
+    },
+
+    async getKpis(userId) {
+        let alertas = await this.listarTodos(userId);
+
+        // Calculate last full week (Monday to Sunday)
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        // Find last Monday
+        const lastMonday = new Date(today);
+        lastMonday.setDate(today.getDate() - ((dayOfWeek + 6) % 7) - 7);
+        lastMonday.setHours(0,0,0,0);
+        // Find Monday before that
+        const prevMonday = new Date(lastMonday);
+        prevMonday.setDate(lastMonday.getDate() - 7);
+
+        // Filter for last week (Monday to Sunday)
+        const weekAlerts = alertas.filter(a => {
+            const dt = parseDate(a.timestamp);
+            return dt >= lastMonday && dt < parseDate(lastMonday.getTime() + 7*24*60*60*1000);
+        });
+
+        // Filter for previous week
+        const prevWeekAlerts = alertas.filter(a => {
+            const dt = parseDate(a.timestamp);
+            return dt >= prevMonday && dt < lastMonday;
+        });
+
+        // KPIs
+        const totalAlerts = weekAlerts.length;
+        const criticoAlerts = weekAlerts.filter(a => normalizeSeverity(a.severidade) === "critico").length;
+
+        // Model with most critico alerts
         const modelCount = {};
-        alertas.forEach(a => { if(normalizeSeverity(a.severidade)==="critico") modelCount[a.modelo] = (modelCount[a.modelo]||0)+1; });
-        const topM = Object.entries(modelCount).sort((a,b)=>b[1]-a[1])[0];
-        
+        weekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                modelCount[a.modelo] = (modelCount[a.modelo] || 0) + 1;
+            }
+        });
+        const topModel = Object.entries(modelCount).sort((a, b) => b[1] - a[1])[0];
+        const topModelObj = topModel ? { name: topModel[0], count: topModel[1] } : null;
+
+        // Lote with most critico alerts
         const loteCount = {};
-        alertas.forEach(a => { if(normalizeSeverity(a.severidade)==="critico") loteCount[a.lote] = (loteCount[a.lote]||0)+1; });
-        const topL = Object.entries(loteCount).sort((a,b)=>b[1]-a[1])[0];
+        weekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                loteCount[a.lote] = (loteCount[a.lote] || 0) + 1;
+            }
+        });
+        const topLote = Object.entries(loteCount).sort((a, b) => b[1] - a[1])[0];
+        const topLoteObj = topLote ? { name: topLote[0], count: topLote[1] } : null;
+
+        // Model growth
+        const prevModelCount = {};
+        prevWeekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                prevModelCount[a.modelo] = (prevModelCount[a.modelo] || 0) + 1;
+            }
+        });
+        let modelGrowth = null;
+        Object.keys(modelCount).forEach(model => {
+            const prev = prevModelCount[model] || 0;
+            const curr = modelCount[model];
+            const pct = prev === 0 ? 100 : Math.round(((curr - prev) / prev) * 100);
+            if (!modelGrowth || pct > modelGrowth.pct) {
+                modelGrowth = { name: model, pct };
+            }
+        });
+
+        // Lote growth
+        const prevLoteCount = {};
+        prevWeekAlerts.forEach(a => {
+            if (normalizeSeverity(a.severidade) === "critico") {
+                prevLoteCount[a.lote] = (prevLoteCount[a.lote] || 0) + 1;
+            }
+        });
+        let loteGrowth = null;
+        Object.keys(loteCount).forEach(lote => {
+            const prev = prevLoteCount[lote] || 0;
+            const curr = loteCount[lote];
+            const pct = prev === 0 ? 100 : Math.round(((curr - prev) / prev) * 100);
+            if (!loteGrowth || pct > loteGrowth.pct) {
+                loteGrowth = { name: lote, pct };
+            }
+        });
 
         return {
             totalAlerts,
             criticoAlerts,
-            topModel: topM ? { name: topM[0], count: topM[1] } : null,
-            topLote: topL ? { name: topL[0], count: topL[1] } : null,
-            modelGrowth: { name: "-", pct: 0 },
-            loteGrowth: { name: "-", pct: 0 }
+            topModel: topModelObj,
+            topLote: topLoteObj,
+            modelGrowth,
+            loteGrowth
         };
     },
 
     async topModels(userId, start, end, limit = 5) {
         let alertas = await this.listarTodos(userId);
-        if (start) alertas = alertas.filter(a => parseDate(a.timestamp) >= new Date(start));
-        if (end) alertas = alertas.filter(a => parseDate(a.timestamp) <= new Date(end));
 
-        const count = {};
-        alertas.forEach(a => { if(normalizeSeverity(a.severidade)==="critico") count[a.modelo] = (count[a.modelo]||0)+1; });
-        return Object.entries(count).map(([name, count]) => ({ name, count })).sort((a,b)=>b.count-a.count).slice(0,limit);
+        if (start) {
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
+        }
+        if (end) {
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
+        }
+
+        const contador = {};
+
+        alertas.forEach(a => {
+            contador[a.modelo] = (contador[a.modelo] || 0) + 1;
+        });
+
+        return Object.entries(contador)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, limit);
     },
 
-    async topLotes(userId, start, end, limit = 5) {
+    async topLotes( userId, start, end,limit = 5) {
         let alertas = await this.listarTodos(userId);
-        if (start) alertas = alertas.filter(a => parseDate(a.timestamp) >= new Date(start));
-        if (end) alertas = alertas.filter(a => parseDate(a.timestamp) <= new Date(end));
+        console.log("Filtered critical alerts for lotes:", alertas.map(a => ({ lote: a.lote, timestamp: a.timestamp })));
 
-        const count = {};
-        alertas.forEach(a => { if(normalizeSeverity(a.severidade)==="critico") count[a.lote] = (count[a.lote]||0)+1; });
-        return Object.entries(count).map(([name, count]) => ({ name, count })).sort((a,b)=>b.count-a.count).slice(0,limit);
+
+        if (start) {
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
+        }
+        if (end) {
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
+        }
+
+        // Filter only critical alerts
+        console.log("After date filter:", alertas.length);
+alertas = alertas.filter(a => normalizeSeverity(a.severidade) === "critico");
+console.log("After severity filter:", alertas.length);
+
+        const contador = {};
+        alertas.forEach(a => {
+            contador[a.lote] = (contador[a.lote] || 0) + 1;
+        });
+
+        // Return in the same structure as topModels
+        return Object.entries(contador)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, limit);
     },
 
     async comparison(start, end, entityType, entity, userId) {
         let alertas = await this.listarTodos(userId);
-        if (start) alertas = alertas.filter(a => parseDate(a.timestamp) >= new Date(start));
-        if (end) alertas = alertas.filter(a => parseDate(a.timestamp) <= new Date(end));
 
-        if (entityType === "modelo") alertas = alertas.filter(a => a.modelo == entity);
-        else if (entityType === "lote") alertas = alertas.filter(a => a.lote == entity);
+        if (start) {
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
+        }
+        if (end) {
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
+        }
 
-        const sevs = ["normal", "atencao", "critico"];
-        const data = sevs.map(s => alertas.filter(a => normalizeSeverity(a.severidade) === s).length);
-        return { labels: sevs, datasets: [{ data }] };
+        // Filtra pelo modelo ou lote selecionado
+        if (entityType === "modelo") {
+            alertas = alertas.filter(a => a.modelo == entity);
+        } else if (entityType === "lote") {
+            alertas = alertas.filter(a => String(a.lote) == String(entity));
+        }
+
+        // Conta por severidade
+        const severidades = ["normal", "atencao", "critico"];
+        const data = severidades.map(sev =>
+            alertas.filter(a => normalizeSeverity(a.severidade) === sev).length
+        );
+
+        return {
+            labels: severidades,
+            datasets: [
+                {
+                    label: "Alertas",
+                    data
+                }
+            ]
+        };
     },
-
-    async list(start, end, view, order, userId) {
+    
+    async heatmap(userId) {
         let alertas = await this.listarTodos(userId);
-        if (start) alertas = alertas.filter(a => parseDate(a.timestamp) >= new Date(start));
-        if (end) alertas = alertas.filter(a => parseDate(a.timestamp) <= new Date(end));
 
-        const map = {};
+        // Descobre todos os dias e horas presentes nos alertas
+        const diasSet = new Set();
+        const horasSet = new Set();
+
         alertas.forEach(a => {
-            const key = view === 'lotes' ? a.lote : a.modelo;
-            if(!key) return;
-            if(!map[key]) map[key] = { type: view, name: key, total: 0, critico: 0, atencao: 0, id: key };
-            map[key].total++;
-            if(normalizeSeverity(a.severidade)==='critico') map[key].critico++;
-            if(normalizeSeverity(a.severidade)==='atencao') map[key].atencao++;
+            const dt = parseDate(a.timestamp);
+            const dia = dt.toISOString().slice(0, 10); // yyyy-mm-dd
+            const hora = dt.getHours();
+            diasSet.add(dia);
+            horasSet.add(hora);
         });
 
-        let res = Object.values(map);
-        if(order === 'asc') res.sort((a,b)=>a.total-b.total); else res.sort((a,b)=>b.total-a.total);
-        return res;
+        // Ordena dias e horas
+        const dias = Array.from(diasSet).sort();
+        const horas = Array.from(horasSet).sort((a, b) => a - b);
+
+        // Cria matriz [hora][dia]
+        const matrix = horas.map(h =>
+            dias.map(d =>
+                alertas.filter(a => {
+                    const dt = parseDate(a.timestamp);
+                    return dt.toISOString().slice(0, 10) === d && dt.getHours() === h;
+                }).length
+            )
+        );
+
+        // Formata horas para "08:00", "09:00", etc
+        const horasFmt = horas.map(h => (h < 10 ? "0" : "") + h + ":00");
+
+        return {
+            days: dias,
+            hours: horasFmt,
+            matrix
+        };
+    },
+
+    async list(start, end, view, state, order, userId) {
+        let alertas = await this.listarTodos(userId);
+
+        if (start) {
+            const ini = parseDate(start);
+            alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
+        }
+        if (end) {
+            const fim = parseDate(end);
+            alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
+        }
+
+        // Filtro por tipo de visualização
+        let agrupados = [];
+        if (view === "models" || view === "modelos") {
+            agrupados = agruparPor(alertas, "modelo");
+        } else if (view === "lotes") {
+            agrupados = agruparPor(alertas, "lote");
+        } else {
+            // both
+            agrupados = [
+                ...agruparPor(alertas, "modelo"),
+                ...agruparPor(alertas, "lote")
+            ];
+        }
+
+        // Filtro por severidade/estado
+        if (state && state !== "all") {
+            agrupados = agrupados.filter(item => item.state === state);
+        }
+
+        // Ordenação
+        if (order === "asc") {
+            agrupados.sort((a, b) => a.total - b.total);
+        } else {
+            agrupados.sort((a, b) => b.total - a.total);
+        }   
+
+        return agrupados;
+
+        // Função auxiliar para agrupar
+        function agruparPor(alertas, campo) {
+    const map = {};
+    alertas.forEach(a => {
+        const key = a[campo];
+        if (!map[key]) {
+            map[key] = { type: campo, name: key, total: 0, critico: 0, atencao: 0, id: key };
+        }
+        map[key].total++;
+        const sev = normalizeSeverity(a.severidade);
+        if (sev === "critico") map[key].critico++;
+        if (sev === "atencao") map[key].atencao++;
+        if (sev === "critico") map[key].state = "critico";
+        else if (sev === "atencao" && map[key].state !== "critico") map[key].state = "atencao";
+        else if (sev === "normal" && !["critico", "atencao"].includes(map[key].state)) map[key].state = "normal";
+    });
+    return Object.values(map);
+}
     },
 
     async recommend(userId) {
-        return { investigate: null, keep: null, emerging: null };
+        // Exemplo simples: recomenda o modelo/lote com mais alertas críticos, o com menos e um emergente
+        let alertas = await this.listarTodos(userId);
+
+        // Agrupa por modelo
+        const modelos = {};
+        alertas.forEach(a => {
+            if (!modelos[a.modelo]) modelos[a.modelo] = { total: 0, critico: 0 };
+            modelos[a.modelo].total++;
+            if (a.severidade === "critico") modelos[a.modelo].critico++;
+        });
+
+        // Agrupa por lote
+        const lotes = {};
+        alertas.forEach(a => {
+            if (!lotes[a.lote]) lotes[a.lote] = { total: 0, critico: 0 };
+            lotes[a.lote].total++;
+            if (a.severidade === "critico") lotes[a.lote].critico++;
+        });
+
+        // Recomendações simples
+        const topModel = Object.entries(modelos).sort((a, b) => b[1].critico - a[1].critico)[0];
+        const keepModel = Object.entries(modelos).sort((a, b) => a[1].critico - b[1].critico)[0];
+        const emergingModel = Object.entries(modelos).find(([k, v]) => v.critico > 0 && v.critico < 3);
+
+        return {
+            investigate: topModel ? { type: "modelo", name: topModel[0], reason: "Mais alertas críticos" } : null,
+            keep: keepModel ? { type: "modelo", name: keepModel[0], reason: "Menos alertas críticos" } : null,
+            emerging: emergingModel ? { type: "modelo", name: emergingModel[0], reason: "Alertas críticos emergentes" } : null
+        };
     }
 };
+ 
