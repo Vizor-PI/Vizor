@@ -25,7 +25,7 @@ navbarConstructor.innerHTML += `
       </li>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/incidentes.png" alt="" id="logoNavbarDash" />
-        <a href="dashboardIncidentes.html"> Incidentes </a>
+        <a href="dashboardIncidentesLocal.html"> Incidentes </a>
       <li class="nav-item">
         <img src="../assets/imgs/logosDash/manutencao.png" alt="" id="logoNavbarDash" />
         <a href="pedroDashboard.html"> Manutenção </a>
