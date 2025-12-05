@@ -33,6 +33,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+
+// Para acessar a pasta vizor-client (com os JSONs do S3 mockados localmente)
+app.use("/vizor-client", express.static(path.join(__dirname, "vizor-client")));
+
 app.use(cors());
 
 app.use("/", indexRouter);
