@@ -1,0 +1,86 @@
+{
+"machine_id": "COD001",
+"company": "Tech_Solutions",
+"status": "critico",
+"last_update": "01/10/2025 14:00",
+"raw_metrics": {
+"cpu": "91.3%",
+"ram": "60.7%",
+"disco": "81.2%",
+"temp": "76.0°C",
+"uptime": "840.0",
+"latitude": -23.55052,
+"longitude": -46.633308
+},
+"risk_model": {
+"prob": 77.0,
+"stress": 79.0,
+"days": "IMEDIATA",
+"riskLevel": "high",
+"cause": "Desgaste",
+"rec": "Verificar refrigeração"
+},
+"medianas": {
+"dia": {
+"cpu": 90.685,
+"ram": 61.665,
+"temp": 75.0
+},
+"semanal": {
+"cpu": 68.45,
+"ram": 60.6,
+"temp": 64.0
+}
+},
+"regressao_risco": {
+"inclinacao": 0,
+"tendencia": "estavel"
+},
+"historico_7d": {
+"labels": [
+"01/10",
+"01/10",
+"01/10",
+"01/10",
+"01/10",
+"01/10",
+"01/10"
+],
+"cpu": [
+77.41,
+93.69,
+98.39,
+99.41,
+93.49,
+89.9,
+91.33
+],
+"ram": [
+61.8,
+62.89,
+62.4,
+61.53,
+62.16,
+62.47,
+60.66
+],
+"disco": [
+81.15,
+81.15,
+81.15,
+81.15,
+81.15,
+81.15,
+81.15
+],
+"temp": [
+69.0,
+75.0,
+79.0,
+79.0,
+77.0,
+74.0,
+76.0
+]
+}
+}
