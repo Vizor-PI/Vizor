@@ -35,8 +35,9 @@ async function syncAlerts(req, res) {
 
 async function getKpis(req, res) {
     const userId = req.query.userId || req.params.userId;
+    const { start, end } = req.query; // <-- add this
     try {
-        const resultado = await model.getKpis(userId); // no start/end
+        const resultado = await model.getKpis(userId, start, end); // <-- pass start/end
         res.status(200).json(resultado);
     } catch (erro) {
         console.log("Erro ao obter KPIs:", erro);

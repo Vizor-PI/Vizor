@@ -79,99 +79,54 @@ module.exports = {
         return alertas;
     },
 
-    async getKpis(userId) {
-        let alertas = await this.listarTodos(userId);
+    async getKpis(userId, start, end) {
+    let alertas = await this.listarTodos(userId);
 
-        // Calculate last full week (Monday to Sunday)
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
-        // Find last Monday
-        const lastMonday = new Date(today);
-        lastMonday.setDate(today.getDate() - ((dayOfWeek + 6) % 7) - 7);
-        lastMonday.setHours(0,0,0,0);
-        // Find Monday before that
-        const prevMonday = new Date(lastMonday);
-        prevMonday.setDate(lastMonday.getDate() - 7);
+    // Filter by date if provided
+    if (start) {
+        const ini = parseDate(start);
+        alertas = alertas.filter(a => parseDate(a.timestamp) >= ini);
+    }
+    if (end) {
+        const fim = parseDate(end);
+        alertas = alertas.filter(a => parseDate(a.timestamp) <= fim);
+    }
 
-        // Filter for last week (Monday to Sunday)
-        const weekAlerts = alertas.filter(a => {
-            const dt = parseDate(a.timestamp);
-            return dt >= lastMonday && dt < parseDate(lastMonday.getTime() + 7*24*60*60*1000);
-        });
+    // Use filtered alerts for KPIs
+    const totalAlerts = alertas.length;
+    const criticoAlerts = alertas.filter(a => normalizeSeverity(a.severidade) === "critico").length;
 
-        // Filter for previous week
-        const prevWeekAlerts = alertas.filter(a => {
-            const dt = parseDate(a.timestamp);
-            return dt >= prevMonday && dt < lastMonday;
-        });
+    // Model with most critico alerts
+    const modelCount = {};
+    alertas.forEach(a => {
+        if (normalizeSeverity(a.severidade) === "critico") {
+            modelCount[a.modelo] = (modelCount[a.modelo] || 0) + 1;
+        }
+    });
+    const topModel = Object.entries(modelCount).sort((a, b) => b[1] - a[1])[0];
+    const topModelObj = topModel ? { name: topModel[0], count: topModel[1] } : null;
 
-        // KPIs
-        const totalAlerts = weekAlerts.length;
-        const criticoAlerts = weekAlerts.filter(a => normalizeSeverity(a.severidade) === "critico").length;
+    // Lote with most critico alerts
+    const loteCount = {};
+    alertas.forEach(a => {
+        if (normalizeSeverity(a.severidade) === "critico") {
+            loteCount[a.lote] = (loteCount[a.lote] || 0) + 1;
+        }
+    });
+    const topLote = Object.entries(loteCount).sort((a, b) => b[1] - a[1])[0];
+    const topLoteObj = topLote ? { name: topLote[0], count: topLote[1] } : null;
 
-        // Model with most critico alerts
-        const modelCount = {};
-        weekAlerts.forEach(a => {
-            if (normalizeSeverity(a.severidade) === "critico") {
-                modelCount[a.modelo] = (modelCount[a.modelo] || 0) + 1;
-            }
-        });
-        const topModel = Object.entries(modelCount).sort((a, b) => b[1] - a[1])[0];
-        const topModelObj = topModel ? { name: topModel[0], count: topModel[1] } : null;
+    // Growth calculation (optional, only if you want it)
+    // You need to calculate the previous period based on start/end
 
-        // Lote with most critico alerts
-        const loteCount = {};
-        weekAlerts.forEach(a => {
-            if (normalizeSeverity(a.severidade) === "critico") {
-                loteCount[a.lote] = (loteCount[a.lote] || 0) + 1;
-            }
-        });
-        const topLote = Object.entries(loteCount).sort((a, b) => b[1] - a[1])[0];
-        const topLoteObj = topLote ? { name: topLote[0], count: topLote[1] } : null;
-
-        // Model growth
-        const prevModelCount = {};
-        prevWeekAlerts.forEach(a => {
-            if (normalizeSeverity(a.severidade) === "critico") {
-                prevModelCount[a.modelo] = (prevModelCount[a.modelo] || 0) + 1;
-            }
-        });
-        let modelGrowth = null;
-        Object.keys(modelCount).forEach(model => {
-            const prev = prevModelCount[model] || 0;
-            const curr = modelCount[model];
-            const pct = prev === 0 ? 100 : Math.round(((curr - prev) / prev) * 100);
-            if (!modelGrowth || pct > modelGrowth.pct) {
-                modelGrowth = { name: model, pct };
-            }
-        });
-
-        // Lote growth
-        const prevLoteCount = {};
-        prevWeekAlerts.forEach(a => {
-            if (normalizeSeverity(a.severidade) === "critico") {
-                prevLoteCount[a.lote] = (prevLoteCount[a.lote] || 0) + 1;
-            }
-        });
-        let loteGrowth = null;
-        Object.keys(loteCount).forEach(lote => {
-            const prev = prevLoteCount[lote] || 0;
-            const curr = loteCount[lote];
-            const pct = prev === 0 ? 100 : Math.round(((curr - prev) / prev) * 100);
-            if (!loteGrowth || pct > loteGrowth.pct) {
-                loteGrowth = { name: lote, pct };
-            }
-        });
-
-        return {
-            totalAlerts,
-            criticoAlerts,
-            topModel: topModelObj,
-            topLote: topLoteObj,
-            modelGrowth,
-            loteGrowth
-        };
-    },
+    return {
+        totalAlerts,
+        criticoAlerts,
+        topModel: topModelObj,
+        topLote: topLoteObj
+        // modelGrowth, loteGrowth (if you implement)
+    };
+},
 
     async topModels(userId, start, end, limit = 5) {
         let alertas = await this.listarTodos(userId);
