@@ -73,16 +73,31 @@ header .date-filters {
 
 .kpi-row {
   display: flex;
-  gap: 18px;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .kpi-card {
   flex: 1 1 0;
-  min-width: 120px;
-  max-width: 220px;
+  min-width: 220px;
+  max-width: 270px;
   height: 120px;
   margin: 0;
+}
+
+.kpi-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: center;
+}
+
+.kpi-value {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Charts on the same line */
@@ -451,23 +466,25 @@ function initCharts() {
   }
   const ctxPie = document.getElementById('pieChart').getContext('2d');
   pieChart = new Chart(ctxPie, {
-    type: 'pie',
-    data: {
-      labels: ['critico', 'atençao', 'normal'], // Fill with your labels
-      datasets: [{
-        data: [], // Fill with your data
-        backgroundColor: [
-          '#00c8d2', '#ff6384', '#36a2eb', '#ffce56', '#4bc0c0'
-        ]
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom' }
-      }
+  type: 'pie',
+  data: {
+    labels: ['critico', 'atençao', 'normal'], // Fill with your labels
+    datasets: [{
+      data: [], // Fill with your data
+      backgroundColor: [
+        '#e74c3c', // Red for critico
+        '#f1c40f', // Yellow for atencao
+        '#27ae60'  // Green for normal
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' }
     }
-  });
+  }
+});
 }
         function severityLabel(sev) {
             if (sev === "critico") return "Crítico";
