@@ -463,7 +463,7 @@
       try {
         // Caminho relativo da pasta onde estão os JSONs
         // Se o HTML estiver em 'site/dashboard.html', e vizor-client em 'site/vizor-client', use './vizor-client'
-        const BASE_PATH = "/vizor-client/aquino-client/Tech_Solutions"; 
+        const BASE_PATH = "/Bucket/vizor-client/aquino-client/Tech_Solutions"; 
         
         const maquinas = ['COD001', 'COD002', 'COD003'];
         
@@ -498,21 +498,21 @@
     }
 
     function getMockData(cod) {
-        // JSON aqui caso o arquivo local não carregue (por segurança)
+        // Dados falsos caso o arquivo local não carregue (por segurança)
         if(cod === 'COD001') return {
              "machine_id": "COD001", "company": "Tech_Solutions", "last_update": "02/12/2025 14:10",
-             "raw_metrics": { "cpu": "96.5%", "ram": "65.0%", "disco": "81.4%", "temp": "82.0°C", "latitude": -23.55052, "longitude": -46.633308 },
+             "raw_metrics": { "cpu": "91.33%", "ram": "60.66%", "disco": "81.15%", "temp": "76°C", "latitude": -23.55052, "longitude": -46.633308 },
              "ui": { "severity": "CRITICO", "color": "red", "title": "Falha Crítica", "message": "CPU Alto", "action": "Reboot" }
         };
         if(cod === 'COD002') return {
              "machine_id": "COD002", "company": "Tech_Solutions", "last_update": "02/12/2025 14:15",
-             "raw_metrics": { "cpu": "72.0%", "ram": "45.0%", "disco": "60.3%", "temp": "74.0°C", "latitude": -23.55052, "longitude": -46.633308 },
+             "raw_metrics": { "cpu": "67.63%", "ram": "43.33%", "disco": "90.77%", "temp": "61°C", "latitude": -23.55052, "longitude": -46.633308 },
              "ui": { "severity": "ALERTA", "color": "yellow", "title": "Atenção", "message": "Hardware instável", "action": "Verificar" }
         };
         return {
              "machine_id": "COD003", "company": "Tech_Solutions", "last_update": "02/12/2025 14:20",
-             "raw_metrics": { "cpu": "45.2%", "ram": "55.0%", "disco": "50.0%", "temp": "58.0°C", "latitude": -23.55052, "longitude": -46.633308 },
-             "ui": { "severity": "INFO", "color": "green", "title": "Normal", "message": "Monitorando", "action": "Nenhuma" }
+             "raw_metrics": { "cpu": "66.08%", "ram": "63.59%", "disco": "77.15%", "temp": "63°C", "latitude": -23.55052, "longitude": -46.633308 },
+             "ui": { "severity": "INFO", "color": "yellow", "title": "Atenção", "message": "Disco elevado", "action": "Verificar armazenamento" }
         };
     }
 
