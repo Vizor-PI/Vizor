@@ -1,51 +1,43 @@
+const BASE_DIR = "/vizor-client/miguel-client/Tech_Solutions";
+
 document.addEventListener("DOMContentLoaded", async () => {
 
     const params = new URLSearchParams(window.location.search);
     const loteId = params.get("lote");
-    const empresa = sessionStorage.NOME_EMPRESA;
 
-    if (!loteId || !empresa) {
-        console.error("Lote ou empresa não encontrados.");
+    if (!loteId) {
+        console.error("Nenhum lote recebido via URL.");
         return;
     }
 
-    document.getElementById("titulo-lote").innerText = `Lote ${loteId}`;
+    document.getElementById("titulo-lote").innerText = `Detalhes do LOTE ${loteId}`;
 
     try {
-        const resp = await fetch(`/reclamacaoLote/lote/${empresa}/${loteId}`);
-        const lote = await resp.json();
+        const respLote = await fetch(`${BASE_DIR}/${loteId}/lote.json`);
+        const lote = await respLote.json();
 
         preencherInformacoesGerais(lote);
         preencherResumoComponentes(lote);
         preencherComponenteCritico(lote);
 
-        const respRecl = await fetch(`/reclamacaoLote/reclamacoes/${empresa}`);
-        const reclamacoesData = await respRecl.json();
+        const respRecl = await fetch(`${BASE_DIR}/reclamacoes.json`);
+        const dadosRecl = await respRecl.json();
 
-        const reclamacoesDoLote = reclamacoesData.reclamacoes.filter(r => r.lote == loteId);
+        const reclamacoesDoLote = dadosRecl.reclamacoes.filter(r => r.lote == loteId);
 
         preencherTabelaReclamacoes(reclamacoesDoLote);
 
     } catch (err) {
-        console.error("Erro ao carregar detalhes do lote:", err);
+        console.error("Erro ao carregar detalhes:", err);
     }
 });
 
 function preencherInformacoesGerais(lote) {
-
     document.getElementById("info-id-lote").innerText = lote.lote;
-
-    document.getElementById("info-data").innerText = lote.data_fabricacao
-        ? lote.data_fabricacao
-        : "Sem registro";
-
+    document.getElementById("info-data").innerText = lote.data_fabricacao || "Sem registro";
     document.getElementById("info-qtd-players").innerText = lote.total_players || 0;
-
-    document.getElementById("info-porcent-problemas").innerText =
-        `${lote.percentual_problemas || 0}%`;
-
+    document.getElementById("info-porcent-problemas").innerText = `${lote.percentual_problemas || 0}%`;
     document.getElementById("info-score").innerText = lote.score || 0;
-
     document.getElementById("info-status").innerText = lote.status || "--";
 }
 
@@ -69,30 +61,18 @@ function preencherResumoComponentes(lote) {
     });
 }
 
-
 function preencherComponenteCritico(lote) {
+    const falhas = lote.falhas_por_componente || {};
+    const total = lote.falhas_totais || 0;
 
-    let falhas = lote.falhas_por_componente || {};
-    let total = lote.falhas_totais || 0;
+    const [comp, qtd] = Object.entries(falhas).sort((a, b) => b[1] - a[1])[0] || ["CPU", 0];
+    const perc = total ? ((qtd / total) * 100).toFixed(1) : 0;
 
-    let maiorComponente = "CPU";
-    let maiorValor = 0;
-
-    for (let comp in falhas) {
-        if (falhas[comp] > maiorValor) {
-            maiorValor = falhas[comp];
-            maiorComponente = comp.toUpperCase();
-        }
-    }
-
-    let perc = total ? ((maiorValor / total) * 100).toFixed(1) : 0;
-
-    document.getElementById("critico-nome").innerText = maiorComponente;
-    document.getElementById("critico-nome2").innerText = maiorComponente;
+    document.getElementById("critico-nome").innerText = comp.toUpperCase();
+    document.getElementById("critico-nome2").innerText = comp.toUpperCase();
     document.getElementById("critico-percent").innerText = `${perc}%`;
-    document.getElementById("critico-total").innerText = maiorValor;
+    document.getElementById("critico-total").innerText = qtd;
 }
-
 
 function preencherTabelaReclamacoes(lista) {
     const tbody = document.getElementById("reclamacoes-body");
@@ -100,34 +80,20 @@ function preencherTabelaReclamacoes(lista) {
 
     total.innerText = lista.length;
 
-    const peso = {
-        "Crítica": 3,
-        "Média": 2,
-        "Baixa": 1
-    };
+    const peso = { "Crítica": 3, "Média": 2, "Baixa": 1 };
 
-    lista.sort((a, b) => {
-        if (peso[b.gravidade] !== peso[a.gravidade]) {
-            return peso[b.gravidade] - peso[a.gravidade];
-        }
-
-        const parse = (d) => {
-            const [dia, mes, ano] = d.split("/").map(Number);
-            return new Date(ano, mes - 1, dia);
-        };
-
-        return parse(b.data) - parse(a.data);
-    });
+    lista.sort((a, b) => peso[b.gravidade] - peso[a.gravidade]);
 
     tbody.innerHTML = "";
 
     lista.forEach(r => {
-        let classe = r.gravidade === "Crítica" ? "gravidade-alta" :
+        let classe =
+            r.gravidade === "Crítica" ? "gravidade-alta" :
             r.gravidade === "Média" ? "gravidade-media" :
-                "gravidade-baixa";
+            "gravidade-baixa";
 
         tbody.innerHTML += `
-            <tr>
+            <tr onclick="window.location='detalhesReclamacao.html?reclamacao=${r.id}&lote=${r.lote}'">
                 <td>#${r.id}</td>
                 <td>${r.data}</td>
                 <td>${r.descricao}</td>

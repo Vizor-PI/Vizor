@@ -1,0 +1,84 @@
+{
+    "reclamacoes": [
+        {
+            "id": 1,
+            "player_id": "COD001",
+            "lote": "1008234",
+            "data": "15/11/2025",
+            "gravidade": "Crítica",
+            "descricao": "Superaquecimento frequente da CPU durante uso moderado."
+        },
+        {
+            "id": 2,
+            "player_id": "COD002",
+            "lote": "1008234",
+            "data": "16/11/2025",
+            "gravidade": "Média",
+            "descricao": "Memória RAM ocasionalmente não é reconhecida pelo sistema."
+        },
+        {
+            "id": 3,
+            "player_id": "COD003",
+            "lote": "1008234",
+            "data": "17/11/2025",
+            "gravidade": "Crítica",
+            "descricao": "SSD apresentando setores corrompidos após poucos dias de uso."
+        },
+        {
+            "id": 4,
+            "player_id": "COD001",
+            "lote": "1008234",
+            "data": "18/11/2025",
+            "gravidade": "Baixa",
+            "descricao": "Ruído incomum vindo das ventoinhas em cargas leves."
+        },
+        {
+            "id": 5,
+            "player_id": "COD003",
+            "lote": "1008234",
+            "data": "19/11/2025",
+            "gravidade": "Crítica",
+            "descricao": "Máquina desligando sozinha devido a falha na placa-mãe."
+        },
+        {
+            "id": 6,
+            "player_id": "COD001",
+            "lote": "1008234",
+            "data": "20/11/2025",
+            "gravidade": "Média",
+            "descricao": "Conectividade instável da placa de rede integrada."
+        },
+        {
+            "id": 7,
+            "player_id": "COD002",
+            "lote": "1008234",
+            "data": "21/11/2025",
+            "gravidade": "Crítica",
+            "descricao": "Temperaturas anormais na GPU integrada durante tarefas simples."
+        },
+        {
+            "id": 8,
+            "player_id": "COD003",
+            "lote": "1008234",
+            "data": "22/11/2025",
+            "gravidade": "Baixa",
+            "descricao": "Portas USB parando de funcionar temporariamente."
+        },
+        {
+            "id": 9,
+            "player_id": "COD001",
+            "lote": "1008234",
+            "data": "23/11/2025",
+            "gravidade": "Crítica",
+            "descricao": "Falha completa no sistema de boot após atualização."
+        },
+        {
+            "id": 10,
+            "player_id": "COD002",
+            "lote": "1008234",
+            "data": "24/11/2025",
+            "gravidade": "Média",
+            "descricao": "Tela apresentando artefatos quando ligada por mais de 2 horas."
+        }
+    ]
+}

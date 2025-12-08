@@ -120,14 +120,12 @@
 
         <section class="grafico-barra">
 
-            <section class="grafico-barra">
-
             <section class="card grafico-card">
                 <header class="card-header-grafico">
                     <h2 class="card-title">Componentes Críticos por Lote</h2>
 
                     <select id="select-lote" class="grafico-select">
-                        <!-- será preenchido via JS mock -->
+                        <!-- será preenchido via JS -->
                     </select>
                 </header>
 
@@ -135,8 +133,6 @@
                     <div id="grafico-componentes" class="chart-box"></div>
                 </div>
             </section>
-
-        </section>
 
         </section>
 
@@ -151,251 +147,108 @@
 </body>
 
 <script>
+    let chartFalhas = null;
 
-        const mockDashboard = {
-            lotes_problematicos: 1,
-            lotes_saudaveis: 25,  
-            reclamacoes_criticas: 5,
-            mediana_score_lotes: 49.5
-        };
-
-        const mockLotes = [
-            {
-                lote: "1008234",
-                falhas_totais: 127,
-                score: 34,
-                status: "Crítico",
-                falhas_por_componente: { cpu: 54, ram: 32, disco: 14 }
+    function criarGrafico() {
+        const options = {
+            chart: {
+                type: "bar",
+                height: 350,
+                toolbar: { show: false }
             },
-            {
-                lote: "2204102",
-                falhas_totais: 94,
-                score: 41,
-                status: "Alerta",
-                falhas_por_componente: { cpu: 41, ram: 44, disco: 15 }
+            series: [{
+                name: "Falhas",
+                data: [0, 0, 0]
+            }],
+            xaxis: {
+                categories: ["CPU", "RAM", "DISCO"],
+                labels: { style: { colors: "#cce4ff" } }
             },
-            {
-                lote: "3001111",
-                falhas_totais: 76,
-                score: 58,
-                status: "Alerta",
-                falhas_por_componente: { cpu: 28, ram: 51, disco: 21 }
+            yaxis: {
+                labels: { style: { colors: "#cce4ff" } }
             },
-            {
-                lote: "3001112",
-                falhas_totais: 23,
-                score: 89,
-                status: "Saudável",
-                falhas_por_componente: { cpu: 5, ram: 9, disco: 9 }
-            }
-        ];
-
-        const mockReclamacoes = {
-            reclamacoes: [
-                { id: 3321, lote: "1008234", data: "03/12/2024", descricao: "Falha no boot", gravidade: "Crítica" },
-                { id: 3322, lote: "1008234", data: "02/12/2024", descricao: "Superaquecimento", gravidade: "Média" },
-                { id: 3323, lote: "2204102", data: "01/12/2024", descricao: "RAM não reconhece", gravidade: "Crítica" },
-                { id: 3324, lote: "1008234", data: "01/12/2024", descricao: "BIOS travando", gravidade: "Baixa" },
-                { id: 3325, lote: "3001111", data: "30/11/2024", descricao: "Ruído no disco", gravidade: "Média" }
-            ]
-        };
-
-        
-        let chartFalhas = null;
-
-        function preencherKPIsMock() {
-            const kpiElems = {
-                lotes_problematicos: document.getElementById("kpi-lote-problematico"),
-                lotes_saudaveis: document.getElementById("kpi-lote-saudavel"),
-                reclamacoes_criticas: document.getElementById("kpi-reclamacoes-criticas"),
-                mediana_score_lotes: document.getElementById("kpi-mediana-score")
-            };
-
-            if (!kpiElems.lotes_problematicos) return;
-
-            kpiElems.lotes_problematicos.innerText = mockDashboard.lotes_problematicos;
-            kpiElems.lotes_saudaveis.innerText = mockDashboard.lotes_saudaveis + "%";
-            kpiElems.reclamacoes_criticas.innerText = mockDashboard.reclamacoes_criticas;
-            kpiElems.mediana_score_lotes.innerText = mockDashboard.mediana_score_lotes;
-        }
-
-        function criarGrafico() {
-            const options = {
-                chart: {
-                    type: "bar",
-                    height: 350,
-                    toolbar: { show: false }
-                },
-                series: [{
-                    name: "Falhas",
-                    data: [0, 0, 0]
-                }],
-                xaxis: {
-                    categories: ["CPU", "RAM", "DISCO"],
-                    labels: { style: { colors: "#cce4ff" } }
-                },
-                yaxis: {
-                    labels: { style: { colors: "#cce4ff" } }
-                },
-                plotOptions: {
-                    bar: { borderRadius: 8, columnWidth: "45%" }
-                },
-                dataLabels: { enabled: false },
-                colors: ["#00aaff"],
-                grid: { borderColor: "rgba(255,255,255,0.08)" },
-                tooltip: {
-                    theme: "dark",
-                    followCursor: true,
-                    marker: { show: false },
-                    x: { show: false },
-                    y: {
-                        title: {
-                            formatter: function (_, opts) {
-                                const categoria = opts.w.globals.labels[opts.dataPointIndex];
-                                return categoria + ": ";
-                            }
-                        },
-                        formatter: function (val) {
-                            return val + "  falhas";
+            plotOptions: {
+                bar: { borderRadius: 8, columnWidth: "45%" }
+            },
+            dataLabels: { enabled: false },
+            colors: ["#00aaff"],
+            grid: { borderColor: "rgba(255,255,255,0.08)" },
+            tooltip: {
+                theme: "dark",
+                followCursor: true,
+                marker: { show: false },
+                x: { show: false },
+                y: {
+                    title: {
+                        formatter: function (_, opts) {
+                            const categoria = opts.w.globals.labels[opts.dataPointIndex];
+                            return categoria + ": ";
                         }
+                    },
+                    formatter: function (val) {
+                        return val + "  falhas";
                     }
                 }
-            };
+            }
+        };
 
-            chartFalhas = new ApexCharts(
-                document.querySelector("#grafico-componentes"),
-                options
-            );
+        chartFalhas = new ApexCharts(
+            document.querySelector("#grafico-componentes"),
+            options
+        );
 
-            chartFalhas.render();
-        }
+        chartFalhas.render();
+    }
 
-        function atualizarGrafico(falhas) {
-            const valores = [
-                (falhas.cpu || 0),
-                (falhas.ram || 0),
-                (falhas.disco || 0)
-            ];
+    function atualizarGrafico(falhas) {
+        const valores = [
+            falhas.cpu || 0,
+            falhas.ram || 0,
+            falhas.disco || 0
+        ];
 
-            chartFalhas.updateSeries([{ data: valores }]);
-        }
+        chartFalhas.updateSeries([{ data: valores }]);
+    }
 
-        function popularSelectLotesMock() {
+    // usa o mesmo BASE_DIR declarado no arquivo reclamacaoLote.js
+    async function carregarLotesParaGrafico() {
+        try {
+            const resp = await fetch(`${BASE_DIR}/1008234/lote.json`);
+            if (!resp.ok) throw new Error("Erro ao buscar lote.json para gráfico");
+
+            const data = await resp.json();
+
+            // aceita array ou objeto único
+            const lotes = Array.isArray(data)
+                ? data
+                : Array.isArray(data.lotes)
+                    ? data.lotes
+                    : [data];
+
             const select = document.getElementById("select-lote");
-            if (!select) return;
-
             select.innerHTML = "";
 
-            mockLotes.forEach(lote => {
+            lotes.forEach((lote) => {
                 const opt = document.createElement("option");
                 opt.value = lote.lote;
                 opt.textContent = `LOTE-${lote.lote}`;
-                opt.dataset.falhas = JSON.stringify(lote.falhas_por_componente);
+                opt.dataset.falhas = JSON.stringify(lote.falhas_por_componente || {});
                 select.appendChild(opt);
             });
 
-            if (mockLotes.length > 0) {
-                atualizarGrafico(mockLotes[0].falhas_por_componente);
+            if (lotes.length > 0) {
+                atualizarGrafico(lotes[0].falhas_por_componente || {});
             }
 
             select.addEventListener("change", function () {
-                const falhas = JSON.parse(select.selectedOptions[0].dataset.falhas);
+                const falhas = JSON.parse(select.selectedOptions[0].dataset.falhas || "{}");
                 atualizarGrafico(falhas);
             });
+
+        } catch (err) {
+            console.error("Erro ao carregar lotes para gráfico:", err);
         }
-
-        function montarRankingLotesMock() {
-            const tbody = document.getElementById("tabela-ranking-lote");
-            if (!tbody) return;
-
-            tbody.innerHTML = "";
-
-            const ranking = [...mockLotes].sort((a, b) => {
-                if (b.falhas_totais !== a.falhas_totais)
-                    return b.falhas_totais - a.falhas_totais;
-                return a.score - b.score;
-            });
-
-            ranking.forEach((lote, i) => {
-                let badgeClass = "";
-                switch (lote.status) {
-                    case "Crítico": badgeClass = "badge--crit"; break;
-                    case "Alerta": badgeClass = "badge--warn"; break;
-                    default: badgeClass = "badge--ok";
-                }
-
-                const tr = document.createElement("tr");
-                tr.classList.add("linha-lote");
-                tr.setAttribute("data-lote", lote.lote);
-                tr.innerHTML = `
-                    <td>#${i + 1}</td>
-                    <td>${lote.lote}</td>
-                    <td>${lote.falhas_totais}</td>
-                    <td><span class="badge ${badgeClass}">${lote.score}</span></td>
-                    <td><span class="badge ${badgeClass}">${lote.status}</span></td>
-                    <td>➜</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.querySelectorAll(".linha-lote").forEach(tr => {
-                tr.addEventListener("click", () => {
-                    const id = tr.getAttribute("data-lote");
-                    window.location = `detalhesLote.html?lote=${id}`;
-                });
-            });
-        }
-
-        function montarRankingReclamacoesMock() {
-            const tbody = document.getElementById("tabela-ranking-reclamacoes");
-            if (!tbody) return;
-
-            tbody.innerHTML = "";
-
-            const peso = { "Crítica": 3, "Média": 2, "Baixa": 1 };
-
-            const parseData = (d) => {
-                const [dia, mes, ano] = d.split("/").map(Number);
-                return new Date(ano, mes - 1, dia);
-            };
-
-            const ranking = [...mockReclamacoes.reclamacoes].sort((a, b) => {
-                if (peso[b.gravidade] !== peso[a.gravidade]) {
-                    return peso[b.gravidade] - peso[a.gravidade];
-                }
-                return parseData(b.data) - parseData(a.data);
-            });
-
-            ranking.forEach((rec, i) => {
-                const tr = document.createElement("tr");
-                tr.classList.add("linha-reclamacao");
-                tr.setAttribute("data-id", rec.id);
-                tr.innerHTML = `
-                    <td>#${i + 1}</td>
-                    <td>${rec.lote}</td>
-                    <td>${rec.data}</td>
-                    <td>${rec.descricao}</td>
-                    <td>➜</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.querySelectorAll(".linha-reclamacao").forEach(tr => {
-                tr.onclick = () => {
-                    const id = tr.getAttribute("data-id");
-                    window.location.href = `detalhesReclamacao.html?reclamacao=${id}`;
-                };
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            preencherKPIsMock();
-            criarGrafico();
-            popularSelectLotesMock();
-            montarRankingLotesMock();
-            montarRankingReclamacoesMock();
-        });
-
+    }
 </script>
 
 </html>

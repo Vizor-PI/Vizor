@@ -1,14 +1,9 @@
+
+const BASE_DIR = "/vizor-client/miguel-client/Tech_Solutions";
+
 document.addEventListener("DOMContentLoaded", () => {
-  (async function initKPIs() {
+  (async function initDashboard() {
     try {
-      const empresa = sessionStorage.NOME_EMPRESA;
-
-      if (!empresa) {
-        console.error("Empresa não encontrada no sessionStorage.");
-        return;
-      }
-
-
       const kpiElems = {
         lotes_problematicos: document.getElementById("kpi-lote-problematico"),
         lotes_saudaveis: document.getElementById("kpi-lote-saudavel"),
@@ -20,8 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (el) el.innerText = "—";
       });
 
-      const resp = await fetch(`/reclamacaoLote/dashboard/${encodeURIComponent(empresa)}`);
-      if (!resp.ok) throw new Error(`Erro ${resp.status} ao buscar dashboard`);
+      const resp = await fetch(`${BASE_DIR}/dashboard.json`);
+      if (!resp.ok) throw new Error(`Erro ${resp.status} ao buscar dashboard.json`);
 
       const dados = await resp.json();
 
@@ -57,37 +52,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     criarGrafico();
-    carregarLotesParaGrafico(sessionStorage.NOME_EMPRESA);
-    carregarRankingLote(sessionStorage.NOME_EMPRESA);
-    carregarRankingReclamacoes(sessionStorage.NOME_EMPRESA);
-
-  }
-
-  )();
+    carregarLotesParaGrafico();          
+    carregarRankingLote();               
+    carregarRankingReclamacoes();        
+  })();
 });
 
-async function carregarRankingLote(empresa) {
+async function carregarRankingLote() {
   try {
-    const resp = await fetch(`/reclamacaoLote/lotes/${encodeURIComponent(empresa)}`);
-    if (!resp.ok) throw new Error("Erro ao buscar lotes");
+    const resp = await fetch(`${BASE_DIR}/1008234/lote.json`);
+    if (!resp.ok) throw new Error("Erro ao buscar lote.json");
 
-    const lotes = await resp.json();
+    const data = await resp.json();
 
-    const ranking = lotes
-      .sort((a, b) => {
-        if (b.falhas_totais !== a.falhas_totais)
-          return b.falhas_totais - a.falhas_totais;
+    const lotes = Array.isArray(data)
+      ? data
+      : Array.isArray(data.lotes)
+        ? data.lotes
+        : [data];
 
-        return a.score - b.score;
-      })
+    const ranking = lotes.sort((a, b) => {
+      const falhasA = a.falhas_totais ?? 0;
+      const falhasB = b.falhas_totais ?? 0;
 
+      if (falhasB !== falhasA) return falhasB - falhasA;
+
+      const scoreA = a.score ?? 0;
+      const scoreB = b.score ?? 0;
+      return scoreA - scoreB;
+    });
 
     const tbody = document.getElementById("tabela-ranking-lote");
-
     tbody.innerHTML = "";
 
     ranking.forEach((lote, i) => {
-
       let badgeClass = "";
       switch (lote.status) {
         case "Crítico": badgeClass = "badge--crit"; break;
@@ -99,9 +97,9 @@ async function carregarRankingLote(empresa) {
         <tr class="linha-lote" data-lote="${lote.lote}">
             <td>#${i + 1}</td>
             <td>${lote.lote}</td>
-            <td>${lote.falhas_totais}</td>
-            <td><span class="badge ${badgeClass}">${lote.score}</span></td>
-            <td><span class="badge ${badgeClass}">${lote.status}</span></td>
+            <td>${lote.falhas_totais ?? 0}</td>
+            <td><span class="badge ${badgeClass}">${lote.score ?? "-"}</span></td>
+            <td><span class="badge ${badgeClass}">${lote.status ?? "-"}</span></td>
             <td>➜</td>
         </tr>
       `;
@@ -115,18 +113,17 @@ async function carregarRankingLote(empresa) {
     });
 
   } catch (err) {
-    console.error("Erro carregando ranking:", err);
+    console.error("Erro carregando ranking de lotes:", err);
   }
 }
 
-async function carregarRankingReclamacoes(empresa) {
+async function carregarRankingReclamacoes() {
   try {
-    const resp = await fetch(`/reclamacaoLote/reclamacoes/${encodeURIComponent(empresa)}`);
-    if (!resp.ok) throw new Error("Erro ao buscar reclamações");
+    const resp = await fetch(`${BASE_DIR}/reclamacoes.json`);
+    if (!resp.ok) throw new Error("Erro ao buscar reclamacoes.json");
 
     const data = await resp.json();
-
-    let lista = data.reclamacoes;
+    let lista = Array.isArray(data.reclamacoes) ? data.reclamacoes : data;
 
     const peso = { "Crítica": 3, "Média": 2, "Baixa": 1 };
 
@@ -148,14 +145,14 @@ async function carregarRankingReclamacoes(empresa) {
 
     ranking.forEach((rec, i) => {
       tbody.innerHTML += `
-                <tr class="linha-reclamacao" data-id="${rec.id}">
-                    <td>#${i + 1}</td>
-                    <td>${rec.lote}</td>
-                    <td>${rec.data}</td>
-                    <td>${rec.descricao}</td>
-                    <td>➜</td>
-                </tr>
-            `;
+        <tr class="linha-reclamacao" data-id="${rec.id}">
+            <td>#${i + 1}</td>
+            <td>${rec.lote}</td>
+            <td>${rec.data}</td>
+            <td>${rec.descricao}</td>
+            <td>➜</td>
+        </tr>
+      `;
     });
 
     document.querySelectorAll(".linha-reclamacao").forEach(tr => {

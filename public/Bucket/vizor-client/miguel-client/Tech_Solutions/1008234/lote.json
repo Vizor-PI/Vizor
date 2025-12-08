@@ -1,0 +1,16 @@
+{
+  "lote": "1008234",
+  "empresa": "Tech Solutions",
+  "modelo": "MiniPC s300",
+  "total_players": 1,
+  "players_com_problema": 1,
+  "percentual_problemas": 100,
+  "score": 0,
+  "status": "Crítico",
+  "falhas_totais": 300,
+  "falhas_por_componente": {
+    "cpu": 132,
+    "ram": 101,
+    "disco": 67
+  }
+}
