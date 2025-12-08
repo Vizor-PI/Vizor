@@ -1,0 +1,86 @@
+{
+  "machine_id": "COD002",
+  "company": "Tech_Solutions",
+  "status": "alerta",
+  "last_update": "02/12/2025 14:15",
+  "raw_metrics": {
+    "cpu": "72.0%",
+    "ram": "45.0%",
+    "disco": "60.3%",
+    "temp": "74.0°C",
+    "uptime": "1320.0",
+    "latitude": -23.55052,
+    "longitude": -46.633308
+  },
+  "risk_model": {
+    "prob": 55.0,
+    "stress": 60.0,
+    "days": "3-5 dias",
+    "riskLevel": "medium",
+    "cause": "Processos em excesso",
+    "rec": "Analisar processos em segundo plano e serviços em execução"
+  },
+  "medianas": {
+    "dia": {
+      "cpu": 72.0,
+      "ram": 45.0,
+      "temp": 73.5
+    },
+    "semanal": {
+      "cpu": 65.0,
+      "ram": 44.5,
+      "temp": 72.0
+    }
+  },
+  "regressao_risco": {
+    "inclinacao": 1.0,
+    "tendencia": "subindo"
+  },
+  "historico_7d": {
+    "labels": [
+      "02/12",
+      "02/12",
+      "02/12",
+      "02/12",
+      "02/12",
+      "02/12",
+      "02/12"
+    ],
+    "cpu": [
+      68.0,
+      70.5,
+      71.2,
+      72.0,
+      73.3,
+      74.1,
+      72.7
+    ],
+    "ram": [
+      44.0,
+      45.0,
+      45.2,
+      45.0,
+      46.1,
+      44.8,
+      45.3
+    ],
+    "disco": [
+      60.3,
+      60.3,
+      60.3,
+      60.3,
+      60.3,
+      60.3,
+      60.3
+    ],
+    "temp": [
+      70.0,
+      71.5,
+      73.0,
+      74.0,
+      74.5,
+      75.0,
+      73.5
+    ]
+  }
+}
