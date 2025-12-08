@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2025-01-01T08:00:00",
+    "timestamp": "2025-12-08T08:10:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "cpu",
@@ -9,7 +9,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-01T08:05:00",
+    "timestamp": "2025-12-07T08:33:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "ram",
@@ -18,7 +18,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-01T08:10:00",
+    "timestamp": "2025-12-06T03:50:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "disco",
@@ -27,7 +27,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-01T08:15:00",
+    "timestamp": "2025-12-05T02:08:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "ram",
@@ -36,7 +36,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-01T09:00:00",
+    "timestamp": "2025-12-04T08:10:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "cpu",
@@ -45,7 +45,7 @@
     "indoor": true
   },
   {
-    "timestamp": "2025-01-01T09:05:00",
+    "timestamp": "2025-12-03T09:39:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "ram",
@@ -54,7 +54,7 @@
     "indoor": true
   },
   {
-    "timestamp": "2025-01-01T09:10:00",
+    "timestamp": "2025-12-02T02:08:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "disco",
@@ -63,7 +63,7 @@
     "indoor": true
   },
   {
-    "timestamp": "2025-01-02T10:00:00",
+    "timestamp": "2025-12-01T08:10:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "cpu",
@@ -72,7 +72,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-02T10:05:00",
+    "timestamp": "2025-11-30T10:07:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "disco",
@@ -81,7 +81,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-02T10:10:00",
+    "timestamp": "2025-11-29T05:35:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "cpu",
@@ -90,7 +90,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-03T14:00:00",
+    "timestamp": "2025-11-28T02:08:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "ram",
@@ -99,7 +99,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-03T14:05:00",
+    "timestamp": "2025-11-27T14:05:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "cpu",
@@ -108,7 +108,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-03T14:10:00",
+    "timestamp": "2025-11-26T14:10:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "disco",
@@ -117,7 +117,7 @@
     "indoor": true
   },
   {
-    "timestamp": "2025-01-04T11:00:00",
+    "timestamp": "2025-11-25T11:00:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "cpu",
@@ -126,7 +126,7 @@
     "indoor": false
   },
   {
-    "timestamp": "2025-01-04T11:05:00",
+    "timestamp": "2025-11-24T11:05:00",
     "modelo": "MiniPC s300",
     "lote": 1008234,
     "tipo": "ram",
