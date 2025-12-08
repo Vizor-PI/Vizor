@@ -65,6 +65,77 @@
     <script src="../js/detalhesReclamacao.js"></script>
 
     <script>
+        const mockReclamacoes = {
+            reclamacoes: [
+                { id: 3321, lote: "1008234", player_id: "P-7781", data: "03/12/2024", descricao: "Falha no boot", gravidade: "Crítica" },
+                { id: 3322, lote: "1008234", player_id: "P-5512", data: "02/12/2024", descricao: "Superaquecimento", gravidade: "Média" },
+                { id: 3324, lote: "1008234", player_id: "P-2211", data: "01/12/2024", descricao: "BIOS travando", gravidade: "Baixa" },
+                { id: 3323, lote: "2204102", player_id: "P-9802", data: "01/12/2024", descricao: "RAM não reconhece", gravidade: "Crítica" },
+                { id: 3325, lote: "3001111", player_id: "P-1118", data: "30/11/2024", descricao: "Ruído no disco", gravidade: "Média" }
+            ]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const idRec = params.get("reclamacao");
+
+            const rec = mockReclamacoes.reclamacoes.find(r => r.id == idRec);
+            if (!rec) return;
+
+            document.getElementById("titulo-reclamacao").innerText =
+                `Detalhes da Reclamação #${idRec}`;
+
+            preencherInfo(rec);
+            
+            const reclamacoesMesmoLote = mockReclamacoes.reclamacoes.filter(r => r.lote == rec.lote && r.id != rec.id);
+
+            document.getElementById("nome-lote-titulo").innerText = rec.lote;
+            document.getElementById("recl-lote-total").innerText = reclamacoesMesmoLote.length;
+
+            montarListaLote(reclamacoesMesmoLote);
+        });
+
+        function preencherInfo(rec) {
+            document.getElementById("rec-player").innerText = rec.player_id;
+            document.getElementById("rec-lote").innerText = rec.lote;
+            document.getElementById("rec-data").innerText = rec.data;
+            document.getElementById("rec-descricao").innerText = rec.descricao;
+
+            const badge = document.getElementById("rec-gravidade");
+            badge.innerText = rec.gravidade;
+
+            badge.className = "gravidade-badge " + (
+                rec.gravidade === "Crítica" ? "gravidade-alta" :
+                    rec.gravidade === "Média" ? "gravidade-media" :
+                        "gravidade-baixa"
+            );
+        }
+
+        function montarListaLote(lista) {
+            const div = document.getElementById("reclamacoes-lote-lista");
+
+            const peso = { "Crítica": 3, "Média": 2, "Baixa": 1 };
+            lista.sort((a, b) => peso[b.gravidade] - peso[a.gravidade]);
+
+            div.innerHTML = "";
+
+            lista.forEach(r => {
+                let classe =
+                    r.gravidade === "Crítica" ? "gravidade-alta" :
+                        r.gravidade === "Média" ? "gravidade-media" :
+                            "gravidade-baixa";
+
+                div.innerHTML += `
+            <div class="reclam-item" onclick="window.location='detalhesReclamacao.html?reclamacao=${r.id}'">
+                <span class="badge gravidade-badge badge-na-lista ${classe}">${r.gravidade}</span>
+                <strong>#${r.id} — ${r.player_id}</strong>
+                <p class="desc">${r.descricao}</p>
+                <p class="data">📅 ${r.data}</p>
+            </div>
+        `;
+            });
+        }
+
         const params = new URLSearchParams(window.location.search);
         const reclamacao = params.get("reclamacao");
 

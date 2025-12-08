@@ -116,10 +116,152 @@
     <script src="../js/detalhesLote.js"></script>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const lote = params.get("lote");
+        const mockLotes = [
+            {
+                lote: "1008234",
+                data_fabricacao: "12/08/2024",
+                total_players: 150,
+                percentual_problemas: 38,
+                score: 34,
+                status: "Crítico",
+                falhas_por_componente: { cpu: 54, ram: 32, disco: 14 },
+                falhas_totais: 127
+            },
+            {
+                lote: "2204102",
+                data_fabricacao: "19/09/2024",
+                total_players: 132,
+                percentual_problemas: 28,
+                score: 41,
+                status: "Alerta",
+                falhas_por_componente: { cpu: 41, ram: 44, disco: 15 },
+                falhas_totais: 94
+            },
+            {
+                lote: "3001111",
+                data_fabricacao: "07/10/2024",
+                total_players: 120,
+                percentual_problemas: 14,
+                score: 58,
+                status: "Alerta",
+                falhas_por_componente: { cpu: 28, ram: 51, disco: 21 },
+                falhas_totais: 76
+            },
+            {
+                lote: "3001112",
+                data_fabricacao: "07/10/2024",
+                total_players: 120,
+                percentual_problemas: 3,
+                score: 89,
+                status: "Saudável",
+                falhas_por_componente: { cpu: 5, ram: 9, disco: 9 },
+                falhas_totais: 23,
+            }
+        ];
 
-        document.getElementById("titulo-lote").innerText = `Lote ${lote}`;
+        const mockReclamacoes = {
+            reclamacoes: [
+                { id: 3321, lote: "1008234", data: "03/12/2024", descricao: "Falha no boot", gravidade: "Crítica" },
+                { id: 3322, lote: "1008234", data: "02/12/2024", descricao: "Superaquecimento", gravidade: "Média" },
+                { id: 3323, lote: "2204102", data: "01/12/2024", descricao: "RAM não reconhece", gravidade: "Crítica" },
+                { id: 3324, lote: "1008234", data: "01/12/2024", descricao: "BIOS travando", gravidade: "Baixa" },
+                { id: 3325, lote: "3001111", data: "30/11/2024", descricao: "Ruído no disco", gravidade: "Média" }
+            ]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const loteId = params.get("lote");
+
+            if (!loteId) return;
+
+            document.getElementById("titulo-lote").innerText = `Detalhes do LOTE ${loteId}`;
+
+            const lote = mockLotes.find(l => l.lote == loteId);
+
+            if (!lote) return;
+
+            preencherInformacoesGerais(lote);
+            preencherResumoComponentes(lote);
+            preencherComponenteCritico(lote);
+
+            const reclamacoesDoLote = mockReclamacoes.reclamacoes.filter(r => r.lote == loteId);
+            preencherTabelaReclamacoes(reclamacoesDoLote);
+        });
+
+        function preencherInformacoesGerais(lote) {
+            document.getElementById("info-id-lote").innerText = lote.lote;
+            document.getElementById("info-data").innerText = lote.data_fabricacao;
+            document.getElementById("info-qtd-players").innerText = lote.total_players;
+            document.getElementById("info-porcent-problemas").innerText = lote.percentual_problemas + "%";
+            document.getElementById("info-score").innerText = lote.score;
+            document.getElementById("info-status").innerText = lote.status;
+        }
+
+        function preencherResumoComponentes(lote) {
+            const tbody = document.getElementById("tabela-componentes-body");
+            tbody.innerHTML = "";
+
+            const total = lote.falhas_totais;
+
+            Object.entries(lote.falhas_por_componente).forEach(([comp, qtd]) => {
+                const perc = ((qtd / total) * 100).toFixed(1);
+                tbody.innerHTML += `
+            <tr>
+                <td>${comp.toUpperCase()}</td>
+                <td>${qtd}</td>
+                <td>${perc}%</td>
+            </tr>
+        `;
+            });
+        }
+
+        function preencherComponenteCritico(lote) {
+            let falhas = lote.falhas_por_componente;
+            let maior = Object.entries(falhas).sort((a, b) => b[1] - a[1])[0];
+
+            const [comp, qtd] = maior;
+            const perc = ((qtd / lote.falhas_totais) * 100).toFixed(1);
+
+            document.getElementById("critico-nome").innerText = comp.toUpperCase();
+            document.getElementById("critico-nome2").innerText = comp.toUpperCase();
+            document.getElementById("critico-percent").innerText = perc + "%";
+            document.getElementById("critico-total").innerText = qtd;
+        }
+
+        function preencherTabelaReclamacoes(lista) {
+            const tbody = document.getElementById("reclamacoes-body");
+            const total = document.getElementById("recl-total");
+
+            total.innerText = lista.length;
+
+            const peso = { "Crítica": 3, "Média": 2, "Baixa": 1 };
+
+            lista.sort((a, b) => peso[b.gravidade] - peso[a.gravidade]);
+
+            tbody.innerHTML = "";
+
+            lista.forEach(r => {
+                let classe =
+                    r.gravidade === "Crítica" ? "gravidade-alta" :
+                        r.gravidade === "Média" ? "gravidade-media" :
+                            "gravidade-baixa";
+
+                tbody.innerHTML += `
+            <tr onclick="window.location='detalhesReclamacao.html?reclamacao=${r.id}'">
+                <td>#${r.id}</td>
+                <td>${r.data}</td>
+                <td>${r.descricao}</td>
+                <td><span class="gravidade-badge ${classe}">${r.gravidade}</span></td>
+            </tr>
+        `;
+            });
+
+            const params = new URLSearchParams(window.location.search);
+            const lote = params.get("lote");
+
+            document.getElementById("titulo-lote").innerText = `Lote ${lote}`;
+        }
     </script>
 
 </body>
